@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: genesis-meituan-openapi-java-service
   # 设置上传文件大小.
