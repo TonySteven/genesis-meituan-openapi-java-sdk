@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URL:mongodb://wechat-service:jjfLw6GYjbQQfWu5@dds-2ze6c2d0874ef6741485-pub.mongodb.rds.aliyuncs.com:3717,dds-2ze6c2d0874ef6742523-pub.mongodb.rds.aliyuncs.com:3717/wechat?replicaSet=mgset-20475807}
+
+
+# 日志配置
+logging:
+  level:
+    org.springframework.web: INFO
+    com.github.binarywang.demo.wx.mp: DEBUG
+    me.chanjar.weixin: DEBUG

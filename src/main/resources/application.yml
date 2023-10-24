@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: genesis-meituan-openapi-java-service
+  profiles:
+    active: dev
+
+
+server:
+  port: 8080
+
+# ===== 自定义swagger配置 ===== #
+swagger:
+  enable: true
+  application-name: ${spring.application.name}
+  application-version: 1.0
+  application-description: 对接美团SaaS平台服务
+  try-host: http://localhost:${server.port}/wechat-api
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  health:
+    binders:
+      enabled: false
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 1200000
+        readTimeout: 12000000
