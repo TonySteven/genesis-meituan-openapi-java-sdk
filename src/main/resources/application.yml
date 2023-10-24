@@ -1,12 +1,30 @@
 spring:
   application:
     name: genesis-meituan-openapi-java-service
-  profiles:
-    active: dev
-
+  # 设置上传文件大小.
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    url: ${DATASOURCE_URL:jdbc:mysql://150.158.93.174:3306/}MC_gyl?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8&connectTimeout=30000&socketTimeout=30000&useSSL=false&useCursorFetch=true&rewriteBatchedStatements=true
+    username: ${DATASOURCE_USER_NAME:root}
+    password: ${DATASOURCE_PASSWORD:Mc666888@@}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 100000
+      max-lifetime: 110000
+      connection-test-query: SELECT 1
 
 server:
   port: 8080
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
 
 # ===== 自定义swagger配置 ===== #
 swagger:
@@ -14,28 +32,4 @@ swagger:
   application-name: ${spring.application.name}
   application-version: 1.0
   application-description: 对接美团SaaS平台服务
-  try-host: http://localhost:${server.port}/wechat-api
-
-management:
-  server:
-    port: 8081
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  health:
-    binders:
-      enabled: false
-
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 1200000
-        readTimeout: 12000000
+  try-host: http://localhost:${server.port}

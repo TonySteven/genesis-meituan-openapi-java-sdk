@@ -1,5 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.config;
 
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
  * @author: stevenL
  * @create: 2022-04-01 18:57
  **/
+@Getter
 @Component
 @ConfigurationProperties("swagger")
 public class SwaggerProperties {
@@ -37,40 +39,20 @@ public class SwaggerProperties {
      */
     private String tryHost;
 
-    public Boolean getEnable() {
-        return enable;
-    }
-
     public void setEnable(Boolean enable) {
         this.enable = enable;
-    }
-
-    public String getApplicationName() {
-        return applicationName;
     }
 
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
     }
 
-    public String getApplicationVersion() {
-        return applicationVersion;
-    }
-
     public void setApplicationVersion(String applicationVersion) {
         this.applicationVersion = applicationVersion;
     }
 
-    public String getApplicationDescription() {
-        return applicationDescription;
-    }
-
     public void setApplicationDescription(String applicationDescription) {
         this.applicationDescription = applicationDescription;
-    }
-
-    public String getTryHost() {
-        return tryHost;
     }
 
     public void setTryHost(String tryHost) {

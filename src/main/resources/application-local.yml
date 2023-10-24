@@ -1,0 +1,5 @@
+# 日志配置
+logging:
+  level:
+    root: debug
+    org.springframework.web: INFO
