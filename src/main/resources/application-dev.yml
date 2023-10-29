@@ -9,7 +9,6 @@ logging:
     me.chanjar.weixin: DEBUG
 
 # ===== 美团SaaS配置 ===== #
-# 诺诺开票平台配置
 meituan:
   api:
     # appId

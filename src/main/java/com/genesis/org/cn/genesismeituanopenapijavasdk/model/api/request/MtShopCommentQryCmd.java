@@ -1,11 +1,11 @@
-package com.genesis.org.cn.genesismeituanopenapijavasdk.api.request;
+package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
 import com.bty.scm.boot.jointblock.validator.IValidate;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
+import java.util.List;
 
 /**
  * mt shop comment qry cmd
@@ -19,15 +19,17 @@ import java.util.Date;
 public class MtShopCommentQryCmd implements IValidate {
 
     /**
-     * 门店id
+     * 门店id list
      */
-    @ApiModelProperty("门店id")
-    private @NotBlank String shopId;
+    @ApiModelProperty("门店ids 默认不穿查询全部id")
+    private List<String> shopIds;
 
     @ApiModelProperty(value = "开始时间 yyyyMMdd格式 实例：20210101")
-    private Date beginTime;
+    @NotBlank(message = "开始时间不能为空")
+    private String beginDate;
 
     @ApiModelProperty(value = "结束时间 yyyyMMdd格式 实例：20210101")
-    private Date endTime;
+    @NotBlank(message = "结束时间不能为空")
+    private String endDate;
 
 }

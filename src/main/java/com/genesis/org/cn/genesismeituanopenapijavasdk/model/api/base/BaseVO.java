@@ -1,4 +1,4 @@
-package com.genesis.org.cn.genesismeituanopenapijavasdk.api.base;
+package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

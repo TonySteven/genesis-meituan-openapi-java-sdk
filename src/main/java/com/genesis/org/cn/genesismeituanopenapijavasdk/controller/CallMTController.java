@@ -1,8 +1,8 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.bty.scm.boot.jointblock.core.ExecutorContext;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.api.base.BaseVO;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.api.request.MtShopCommentQryCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.MtShopCommentQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopCommentQueryCmdExe;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

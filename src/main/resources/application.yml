@@ -39,10 +39,11 @@ swagger:
 
 
 # ===== 美团SaaS配置 ===== #
-# 诺诺开票平台配置
 meituan:
   api:
     # appId
     appId: ${MEITUAN_APP_ID:8580}
     # appSecret
     appSecret: ${MEITUAN_APP_SECRET:a273343145dc44394c3a1365f49c6c22}
+    # 单店单次最大评论数
+    maxCommentCount: ${MEITUAN_MAX_COMMENT_COUNT:1000}

@@ -1,12 +1,13 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bty.scm.boot.mybatis.base.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 /**
@@ -17,6 +18,9 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName(value = "mt_shop_comment")
 public class MtShopCommentEntity extends BaseEntity {
 
@@ -72,13 +76,13 @@ public class MtShopCommentEntity extends BaseEntity {
      * 新增评论
      */
     @TableField(value = "add_comment")
-    private Integer addComment;
+    private String addComment;
 
     /**
      * 新增评论时间
      */
     @TableField(value = "add_comment_time")
-    private Integer addCommentTime;
+    private String addCommentTime;
 
     /**
      * 包装打分
@@ -90,16 +94,16 @@ public class MtShopCommentEntity extends BaseEntity {
      * 评论时间
      */
     @TableField(value = "comment_time")
-    private Date commentTime;
+    private String commentTime;
 
     /**
      * 评论标签
      */
     @TableField(value = "comment_lables")
-    private Integer commentLables;
+    private String commentLables;
 
     /**
-     * 送达时间
+     * 次数
      */
     @TableField(value = "ship_time")
     private Integer shipTime;
@@ -114,13 +118,13 @@ public class MtShopCommentEntity extends BaseEntity {
      * 点赞食物列表
      */
     @TableField(value = "praise_food_list")
-    private Integer praiseFoodList;
+    private String praiseFoodList;
 
     /**
      * 吐槽食物列表
      */
     @TableField(value = "critic_food_list")
-    private Integer criticFoodList;
+    private String criticFoodList;
 
     /**
      * 回复状态
@@ -132,7 +136,7 @@ public class MtShopCommentEntity extends BaseEntity {
      * 超时原因描述
      */
     @TableField(value = "over_delivery_time_desc")
-    private Integer overDeliveryTimeDesc;
+    private String overDeliveryTimeDesc;
 
     /**
      * 商家回复内容
@@ -144,7 +148,7 @@ public class MtShopCommentEntity extends BaseEntity {
      * 商家回复时间
      */
     @TableField(value = "e_reply_time")
-    private Date eReplyTime;
+    private String eReplyTime;
 
     /**
      * 评论类型
@@ -159,10 +163,35 @@ public class MtShopCommentEntity extends BaseEntity {
     private Integer valid;
 
     /**
+     * 创建人
+     */
+    @TableField(value = "create_by", fill = FieldFill.INSERT)
+    private String createBy;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 最后修改人
+     */
+    @TableField(value = "update_by", fill = FieldFill.INSERT_UPDATE)
+    private String updateBy;
+
+    /**
+     * 最后修改时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
      * 是否删除
      */
     @TableField(value = "is_deleted")
-    private Boolean isDeleted;
+    @TableLogic(delval = "1", value = "0")
+    private Integer isDeleted;
 
     /**
      * 备注
