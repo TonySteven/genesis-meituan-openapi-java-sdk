@@ -5,16 +5,18 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.api.request.MtShopCommentQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IMtShopCommentDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 /**
- * 采购发票业务-查询列表执行具体逻辑
+ * 美团SaaS-定时调用并落库api具体逻辑.
  *
  * @author steven
- * &#064;date  2023/01/10
+ * &#064;date  2023/10/29
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class MtShopCommentQueryCmdExe implements Executor<MtShopCommentQryCmd, BaseVO> {
 
     @Resource

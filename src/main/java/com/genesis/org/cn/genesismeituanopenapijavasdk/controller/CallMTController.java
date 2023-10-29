@@ -30,7 +30,7 @@ import javax.validation.Valid;
 @RequestMapping("/mt/api")
 public class CallMTController {
 
-    @ApiOperation(value = "美团SaaS-  定时调用并落库api", notes = "美团SaaS-  定时调用并落库api")
+    @ApiOperation(value = "美团SaaS-定时调用并落库api", notes = "美团SaaS-定时调用并落库api")
     @PostMapping("/saveComment")
     public BaseVO saveComment(@RequestBody @Valid MtShopCommentQryCmd cmd) {
         // 在执行器里面执行具体的业务逻辑.
