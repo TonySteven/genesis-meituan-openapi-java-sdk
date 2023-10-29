@@ -81,6 +81,11 @@
             <artifactId>spring-boot-actuator</artifactId>
             <version>3.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.bty.scm</groupId>
+            <artifactId>scm-spring-boot-mybatis-starter</artifactId>
+            <version>1.1.4-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 
