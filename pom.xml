@@ -18,6 +18,7 @@
         <mybatis.boot.version>2.1.2</mybatis.boot.version>
         <mybatis.plus.boot.version>3.5.2</mybatis.plus.boot.version>
         <mysql.connector.version>8.0.33</mysql.connector.version>
+        <jointblock.version>1.16.0-SNAPSHOT</jointblock.version>
     </properties>
     <dependencies>
         <dependency>
@@ -81,12 +82,18 @@
             <artifactId>spring-boot-actuator</artifactId>
             <version>3.0.1</version>
         </dependency>
+
         <dependency>
             <groupId>com.bty.scm</groupId>
             <artifactId>scm-spring-boot-mybatis-starter</artifactId>
             <version>1.1.4-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.bty.scm.boot.jointblock</groupId>
+            <artifactId>scm-jointblock-starter</artifactId>
+            <version>${jointblock.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
