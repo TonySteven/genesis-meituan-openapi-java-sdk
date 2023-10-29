@@ -1,6 +1,5 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
-import com.bty.scm.boot.jointblock.validator.IValidate;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * &#064;date  2023/10/29
  */
 @Data
-public class MtShopCommentQryCmd implements IValidate {
+public class MtShopCommentQryCmd {
 
     /**
      * 门店id list

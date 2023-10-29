@@ -2,7 +2,6 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bty.scm.boot.jointblock.core.Executor;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IMtShopCommentDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopCommentEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
@@ -14,7 +13,6 @@ import com.sankuai.meituan.waimai.opensdk.factory.APIFactory;
 import com.sankuai.meituan.waimai.opensdk.vo.SystemParam;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +30,7 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class)
 @Slf4j
-public class MtShopCommentQueryCmdExe implements Executor<MtShopCommentQryCmd, BaseVO> {
+public class MtShopCommentQueryCmdExe {
 
     /**
      * 美团AppId
@@ -63,11 +61,8 @@ public class MtShopCommentQueryCmdExe implements Executor<MtShopCommentQryCmd, B
      * @return {@link BaseVO}
      */
     @SneakyThrows
-    @Override
     public BaseVO execute(MtShopCommentQryCmd cmd) {
-        // 1. 参数校验.
-        cmd.validate();
-
+        // 1. 根据美团AppId和AppSecret获取SystemParam.
         SystemParam systemParam = new SystemParam(appId, appSecret);
 
         // 2. 业务校验.
@@ -143,7 +138,6 @@ public class MtShopCommentQueryCmdExe implements Executor<MtShopCommentQryCmd, B
      * @param shopId      shop id
      * @return {@link List}<{@link MtShopCommentResponseData}>
      */
-    @NotNull
     @SneakyThrows
     private List<MtShopCommentResponseData> queryCommentByShopId(SystemParam systemParam, String shopId
         , String beginDate, String endDate) {

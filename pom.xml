@@ -54,12 +54,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.connector.version}</version>
         </dependency>
-        <!--mybatis-plus 依赖-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis.plus.boot.version}</version>
-        </dependency>
+        <!--        &lt;!&ndash;mybatis-plus 依赖&ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.baomidou</groupId>-->
+        <!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
+        <!--            <version>${mybatis.plus.boot.version}</version>-->
+        <!--        </dependency>-->
 
         <!-- 引入Swagger3依赖 -->
         <dependency>
@@ -82,18 +82,24 @@
             <artifactId>spring-boot-actuator</artifactId>
             <version>3.0.1</version>
         </dependency>
-
+        <!-- 引入Swagger3依赖 -->
         <dependency>
             <groupId>com.bty.scm</groupId>
             <artifactId>scm-spring-boot-mybatis-starter</artifactId>
             <version>1.1.4-SNAPSHOT</version>
         </dependency>
 
+        <!-- 引入美团SDK依赖 -->
         <dependency>
-            <groupId>com.bty.scm.boot.jointblock</groupId>
-            <artifactId>scm-jointblock-starter</artifactId>
-            <version>${jointblock.version}</version>
+            <groupId>com.sankuai.sdk</groupId>
+            <artifactId>member-center-util</artifactId>
+            <version>1.1.2</version>
+            <scope>system</scope>
+            <systemPath>
+                ${project.basedir}/src/main/resources/lib/waimai_open_java_sdk_request-1.1.2-jar-with-dependencies.jar
+            </systemPath>
         </dependency>
+
     </dependencies>
 
     <build>
