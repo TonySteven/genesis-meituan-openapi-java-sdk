@@ -7,7 +7,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopCommentE
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.MtShopCommentQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response.MtShopCommentResponse;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response.MtShopIdResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response.model.MtShopCommentResponseData;
 import com.sankuai.meituan.waimai.opensdk.factory.APIFactory;
 import com.sankuai.meituan.waimai.opensdk.vo.SystemParam;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -87,10 +87,15 @@ public class MtShopCommentQueryCmdExe {
             log.info("查询所有门店id结果:{}", result);
             // 如果返回结果不为空,则转换为MtShopIdResponse对象.
             if (StrUtil.isNotBlank(result)) {
-                // result 转换为MtShopIdResponse对象.
-                MtShopIdResponse mtShopIdResponse = MtShopIdResponse.parse(result);
+                // result(["140476","142037"]) 转换为List<String>对象.
+                result = result.replace("[", "").replace("]", "");
+                result = result.replace("\"", "");
+                result = result.replace(" ", "");
+                result = result.replace("\n", "");
+                result = result.replace("\r", "");
+                String[] resultArray = result.split(",");
                 // 获取MtShopIdResponse对象中的data.
-                List<String> responseShopIdList = mtShopIdResponse.getData();
+                List<String> responseShopIdList = Arrays.asList(resultArray);
                 // 如果data不为空,则遍历data,查询每个门店的评论.
                 if (CollectionUtil.isNotEmpty(responseShopIdList)) {
                     // 遍历shopIds,查询每个门店的评论.
@@ -175,6 +180,9 @@ public class MtShopCommentQueryCmdExe {
                 if (CollectionUtil.isNotEmpty(mtShopCommentResponseDataList)) {
                     result.addAll(mtShopCommentResponseDataList);
                 }
+            } else {
+                // 如果返回结果为空,则跳出循环.
+                break;
             }
         }
 
