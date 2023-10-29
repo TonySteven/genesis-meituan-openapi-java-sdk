@@ -4,3 +4,12 @@ logging:
     org.springframework.web: INFO
     com.github.binarywang.demo.wx.mp: DEBUG
     me.chanjar.weixin: DEBUG
+
+# ===== 美团SaaS配置 ===== #
+# 诺诺开票平台配置
+meituan:
+  api:
+    # appId
+    appId: ${MEITUAN_APP_ID:8580}
+    # appSecret
+    appSecret: ${MEITUAN_APP_SECRET:a273343145dc44394c3a1365f49c6c22}
