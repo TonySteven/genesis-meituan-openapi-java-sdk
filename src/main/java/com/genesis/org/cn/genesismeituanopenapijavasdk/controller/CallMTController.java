@@ -3,12 +3,10 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.MtShopCommentQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopCommentQueryCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopIdQueryAndSaveCmdExe;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import javax.annotation.Resource;
@@ -29,10 +27,21 @@ public class CallMTController {
     @Resource
     MtShopCommentQueryCmdExe mtShopCommentQueryCmdExe;
 
-    @ApiOperation(value = "美团SaaS-定时调用并落库api", notes = "美团SaaS-定时调用并落库api")
-    @PostMapping("/saveComment")
+    @Resource
+    MtShopIdQueryAndSaveCmdExe mtShopIdQueryAndSaveCmdExe;
+
+    @ApiOperation(value = "美团SaaS-定时调用评论并落库api", notes = "美团SaaS-定时调用评论并落库api")
+    @PostMapping("/save-comment")
     public BaseVO saveComment(@RequestBody @Valid MtShopCommentQryCmd cmd) {
         // 在执行器里面执行具体的业务逻辑.
         return mtShopCommentQueryCmdExe.execute(cmd);
+    }
+
+
+    @ApiOperation(value = "美团SaaS-调用查询所有门店并落库api", notes = "美团SaaS-调用查询所有门店并落库api")
+    @GetMapping("/save-shopId")
+    public BaseVO saveShopId() {
+        // 在执行器里面执行具体的业务逻辑.
+        return mtShopIdQueryAndSaveCmdExe.execute();
     }
 }

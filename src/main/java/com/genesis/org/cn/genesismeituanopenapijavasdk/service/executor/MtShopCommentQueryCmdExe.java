@@ -14,7 +14,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -28,7 +27,6 @@ import java.util.List;
  * &#064;date  2023/10/29
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 @Slf4j
 public class MtShopCommentQueryCmdExe {
 
@@ -76,6 +74,10 @@ public class MtShopCommentQueryCmdExe {
         if (CollectionUtil.isNotEmpty(shopIds)) {
             // 遍历shopIds,查询每个门店的评论.
             for (String shopId : shopIds) {
+                // 打印循环到第几次
+                log.info("第{}次查询门店评论", shopIds.indexOf(shopId) + 1);
+                // 打印百分比 shopIds.indexOf(shopId) + 1 / shopIds.size() * 100
+                log.info("完成{}%查询门店评论百分比", (shopIds.indexOf(shopId) + 1) / shopIds.size() * 100);
                 queryShopCommentAndSave(shopId, beginDate, endDate, systemParam);
             }
 
@@ -94,6 +96,10 @@ public class MtShopCommentQueryCmdExe {
                 if (CollectionUtil.isNotEmpty(responseShopIdList)) {
                     // 遍历shopIds,查询每个门店的评论.
                     for (String shopId : responseShopIdList) {
+                        // 打印循环到第几次
+                        log.info("第{}次查询门店评论", responseShopIdList.indexOf(shopId) + 1);
+                        // 打印百分比 完成查询门店评论百分比{} shopIds.indexOf(shopId) + 1 / shopIds.size() * 100
+                        log.info("完成{}%查询门店评论百分比", (responseShopIdList.indexOf(shopId) + 1) / responseShopIdList.size() * 100);
                         queryShopCommentAndSave(shopId, beginDate, endDate, systemParam);
                     }
                 }
@@ -156,14 +162,13 @@ public class MtShopCommentQueryCmdExe {
 
         // 根据maxCommentCount 每次查询最大步长,查询所有评论.
         for (int i = 0; i < requestCount; i++) {
+            // 打印日志 循环次数.
             // 查询门店评论.
             // 偏移量 = i * maxStep
             int offset = i * maxStep;
             // systemParam, String appPoiCode, String startTime, String endTime, int page-offset, int page-size, int replyStatus
             String poiCommentSting = APIFactory.getPoiAPI().poiCommentQuery(systemParam, shopId, beginDate, endDate
                 , offset, maxStep, -1);
-            // 打印日志.
-            log.info("查询门店评论结果:{}", poiCommentSting);
             // 如果返回结果不为空,则转换为MtShopCommentResponse对象.
             if (StrUtil.isNotBlank(poiCommentSting)) {
                 // poiCommentSting 转换为MtShopCommentResponse对象.
