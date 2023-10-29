@@ -98,6 +98,12 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- mybatis-plus 代码生成器 -->
+            <plugin>
+                <groupId>com.bty</groupId>
+                <artifactId>bty-mybatis-generator</artifactId>
+                <inherited>false</inherited>
+            </plugin>
         </plugins>
     </build>
 
