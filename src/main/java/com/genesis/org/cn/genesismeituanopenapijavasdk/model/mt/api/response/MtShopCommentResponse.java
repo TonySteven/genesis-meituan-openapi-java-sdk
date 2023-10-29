@@ -1,7 +1,5 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response;
 
-import cn.hutool.json.JSONObject;
-import com.alibaba.fastjson.JSON;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response.model.MtShopCommentResponseData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,14 +21,4 @@ public class MtShopCommentResponse {
      */
     private List<MtShopCommentResponseData> data;
 
-    public static MtShopCommentResponse parse(String poiCommentSting) {
-        // String 转 JsonObject
-        JSONObject jsonObj = new JSONObject(poiCommentSting);
-
-        // JsonObject 转 MtShopCommentResponse
-        return JSON.parseObject(jsonObj.toString()
-            , MtShopCommentResponse.class);
-
-
-    }
 }

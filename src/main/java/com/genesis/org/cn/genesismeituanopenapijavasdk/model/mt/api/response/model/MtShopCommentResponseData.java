@@ -26,7 +26,7 @@ public class MtShopCommentResponseData {
     /**
      * comment id
      */
-    private int commentId;
+    private String commentId;
     /**
      * comment content
      */

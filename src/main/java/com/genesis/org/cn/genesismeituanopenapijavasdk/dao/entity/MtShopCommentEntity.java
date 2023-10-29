@@ -25,6 +25,12 @@ import java.time.LocalDateTime;
 public class MtShopCommentEntity extends BaseEntity {
 
     /**
+     * id
+     */
+    @TableField(value = "id")
+    private String id;
+
+    /**
      * 品牌
      */
     @TableField(value = "brand")
@@ -46,7 +52,7 @@ public class MtShopCommentEntity extends BaseEntity {
      * 评论id
      */
     @TableField(value = "comment_id")
-    private Integer commentId;
+    private String commentId;
 
     /**
      * 评论内容

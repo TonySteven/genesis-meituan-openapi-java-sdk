@@ -2,11 +2,11 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IMtShopCommentDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopCommentEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.MtShopCommentQryCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response.MtShopCommentResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response.model.MtShopCommentResponseData;
 import com.sankuai.meituan.waimai.opensdk.factory.APIFactory;
 import com.sankuai.meituan.waimai.opensdk.vo.SystemParam;
@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -87,15 +87,9 @@ public class MtShopCommentQueryCmdExe {
             log.info("查询所有门店id结果:{}", result);
             // 如果返回结果不为空,则转换为MtShopIdResponse对象.
             if (StrUtil.isNotBlank(result)) {
-                // result(["140476","142037"]) 转换为List<String>对象.
-                result = result.replace("[", "").replace("]", "");
-                result = result.replace("\"", "");
-                result = result.replace(" ", "");
-                result = result.replace("\n", "");
-                result = result.replace("\r", "");
-                String[] resultArray = result.split(",");
+                // JSONArray 转换 List<String> 类型
                 // 获取MtShopIdResponse对象中的data.
-                List<String> responseShopIdList = Arrays.asList(resultArray);
+                List<String> responseShopIdList = JSON.parseArray(result, String.class);
                 // 如果data不为空,则遍历data,查询每个门店的评论.
                 if (CollectionUtil.isNotEmpty(responseShopIdList)) {
                     // 遍历shopIds,查询每个门店的评论.
@@ -129,8 +123,12 @@ public class MtShopCommentQueryCmdExe {
 
         // 如果mtShopCommentResponseDataList不为空,则落库.
         if (CollectionUtil.isNotEmpty(mtShopCommentResponseDataList)) {
+            // 打印日志. 查询门店shopId评论条数 beginDate 到 endDate.
+            log.info("完成查询门店{}评论条数{}到{}:{}", shopId, beginDate, endDate, mtShopCommentResponseDataList.size());
             // 落库.
-            iMtShopCommentDao.saveBatch(createMtShopCommentEntity(shopId, mtShopCommentResponseDataList));
+            iMtShopCommentDao.saveOrUpdateBatch(createMtShopCommentEntity(shopId, mtShopCommentResponseDataList));
+            // 打印日志. 落库门店shopId评论条数 beginDate 到 endDate.
+            log.info("完成落库门店{}评论条数{}到{}:{}", shopId, beginDate, endDate, mtShopCommentResponseDataList.size());
         }
     }
 
@@ -149,10 +147,6 @@ public class MtShopCommentQueryCmdExe {
 
         // 设置返回对象.
         List<MtShopCommentResponseData> result = new ArrayList<>();
-        // beginDateString转换成int类型.
-        int beginDateInt = Integer.parseInt(beginDate);
-        // endDateString转换成int类型.
-        int endDateInt = Integer.parseInt(endDate);
         // maxCommentCount转换成int类型.
         int maxCommentCountInt = Integer.parseInt(this.maxCommentCount);
         // 设置最大步长
@@ -161,21 +155,20 @@ public class MtShopCommentQueryCmdExe {
         int requestCount = maxCommentCountInt / maxStep + 1;
 
         // 根据maxCommentCount 每次查询最大步长,查询所有评论.
-        for (int i = 0; i < requestCount; i += maxStep) {
+        for (int i = 0; i < requestCount; i++) {
             // 查询门店评论.
             // 偏移量 = i * maxStep
             int offset = i * maxStep;
-            // systemParam, String appPoiCode, int startTime, int endTime, int page-offset, int page-size
-            String poiCommentSting = APIFactory.getPoiAPI().poiComment(systemParam, shopId, beginDateInt, endDateInt
-                , offset, maxStep);
+            // systemParam, String appPoiCode, String startTime, String endTime, int page-offset, int page-size, int replyStatus
+            String poiCommentSting = APIFactory.getPoiAPI().poiCommentQuery(systemParam, shopId, beginDate, endDate
+                , offset, maxStep, -1);
             // 打印日志.
             log.info("查询门店评论结果:{}", poiCommentSting);
             // 如果返回结果不为空,则转换为MtShopCommentResponse对象.
             if (StrUtil.isNotBlank(poiCommentSting)) {
                 // poiCommentSting 转换为MtShopCommentResponse对象.
-                MtShopCommentResponse mtShopCommentResponse = MtShopCommentResponse.parse(poiCommentSting);
-                // 获取MtShopCommentResponse对象中的data.
-                List<MtShopCommentResponseData> mtShopCommentResponseDataList = mtShopCommentResponse.getData();
+                // JSONArray 转换 List<MtShopCommentResponseData> 类型
+                List<MtShopCommentResponseData> mtShopCommentResponseDataList = JSON.parseArray(poiCommentSting, MtShopCommentResponseData.class);
                 // 如果data不为空,则添加到result中.
                 if (CollectionUtil.isNotEmpty(mtShopCommentResponseDataList)) {
                     result.addAll(mtShopCommentResponseDataList);
@@ -200,6 +193,7 @@ public class MtShopCommentQueryCmdExe {
         for (MtShopCommentResponseData mtShopCommentResponseData : mtShopCommentResponseDataList) {
             // 2.1 创建MtShopCommentEntity对象.
             MtShopCommentEntity mtShopCommentEntity = MtShopCommentEntity.builder()
+                .id(mtShopCommentResponseData.getCommentId())
                 // 写死品牌为米村.
                 .brand("米村")
                 .shopId(shopId)
@@ -245,6 +239,14 @@ public class MtShopCommentQueryCmdExe {
                 .commentType(mtShopCommentResponseData.getCommentType())
                 // 是否有效
                 .valid(mtShopCommentResponseData.getValid())
+                // 创建人
+                .createBy("system")
+                // 创建时间
+                .createTime(LocalDateTime.now())
+                // 更新人
+                .updateBy("system")
+                // 更新时间
+                .updateTime(LocalDateTime.now())
                 .build();
             // 2.2 添加到result中.
             result.add(mtShopCommentEntity);

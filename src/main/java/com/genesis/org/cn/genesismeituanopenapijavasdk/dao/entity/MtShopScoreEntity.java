@@ -26,6 +26,12 @@ import java.time.LocalDateTime;
 public class MtShopScoreEntity extends BaseEntity {
 
     /**
+     * id
+     */
+    @TableField(value = "id")
+    private String id;
+
+    /**
      * 品牌
      */
     @TableField(value = "brand")

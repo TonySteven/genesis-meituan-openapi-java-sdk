@@ -23,6 +23,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @TableName(value = "mt_shop")
 public class MtShopEntity extends BaseEntity {
+    /**
+     * id
+     */
+    @TableField(value = "id")
+    private String id;
 
     /**
      * 品牌
