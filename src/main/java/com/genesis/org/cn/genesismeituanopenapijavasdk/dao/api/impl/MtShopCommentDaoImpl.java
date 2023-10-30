@@ -15,4 +15,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MtShopCommentDaoImpl extends BaseDaoImpl<MtShopCommentMapper, MtShopCommentEntity> implements IMtShopCommentDao {
 
+    /**
+     * query last one by shop id
+     *
+     * @return {@link String}
+     */
+    @Override
+    public String queryLastOneByShopId() {
+        // 根据shop_id order by desc limit 1
+        return this.lambdaQuery()
+            .orderByDesc(MtShopCommentEntity::getShopId)
+            .last("limit 1")
+            .oneOpt()
+            .map(MtShopCommentEntity::getShopId)
+            .orElse(null);
+    }
 }

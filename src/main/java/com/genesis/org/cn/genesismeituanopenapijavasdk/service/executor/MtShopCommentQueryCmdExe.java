@@ -77,7 +77,7 @@ public class MtShopCommentQueryCmdExe {
                 // 打印循环到第几次
                 log.info("第{}次查询门店评论", shopIds.indexOf(shopId) + 1);
                 // 打印百分比 shopIds.indexOf(shopId) + 1 / shopIds.size() * 100
-                log.info("完成{}%查询门店评论百分比", (shopIds.indexOf(shopId) + 1) / shopIds.size() * 100);
+                log.info("完成{}%查询门店评论百分比", ((shopIds.indexOf(shopId) + 1) / shopIds.size()) * 1000);
                 queryShopCommentAndSave(shopId, beginDate, endDate, systemParam);
             }
 
@@ -94,12 +94,26 @@ public class MtShopCommentQueryCmdExe {
                 List<String> responseShopIdList = JSON.parseArray(result, String.class);
                 // 如果data不为空,则遍历data,查询每个门店的评论.
                 if (CollectionUtil.isNotEmpty(responseShopIdList)) {
+                    // 查询门店评论表 order by shop_id 最后一个店的shopId
+                    String lastShopId = iMtShopCommentDao.queryLastOneByShopId();
+                    // 如果lastShopId不为空,则从lastShopId开始查询.
+                    if (StrUtil.isNotBlank(lastShopId)) {
+                        // 判断lastShopId是否在responseShopIdList中,如果存在,则截取lastShopId之后的数据.
+                        if (responseShopIdList.contains(lastShopId)) {
+                            // 获取lastShopId在responseShopIdList中的索引.
+                            int index = responseShopIdList.indexOf(lastShopId);
+                            // 打印日志.
+                            log.info("lastShopId在responseShopIdList中的索引:{}", index);
+                            // 截取lastShopId之后和本身的数据.
+                            responseShopIdList = responseShopIdList.subList(index, responseShopIdList.size());
+                        }
+                    }
                     // 遍历shopIds,查询每个门店的评论.
                     for (String shopId : responseShopIdList) {
                         // 打印循环到第几次
                         log.info("第{}次查询门店评论", responseShopIdList.indexOf(shopId) + 1);
                         // 打印百分比 完成查询门店评论百分比{} shopIds.indexOf(shopId) + 1 / shopIds.size() * 100
-                        log.info("完成{}%查询门店评论百分比", (responseShopIdList.indexOf(shopId) + 1) / responseShopIdList.size() * 100);
+                        log.info("完成{}%查询门店评论百分比", ((responseShopIdList.indexOf(shopId) + 1) / responseShopIdList.size()) * 1000);
                         queryShopCommentAndSave(shopId, beginDate, endDate, systemParam);
                     }
                 }

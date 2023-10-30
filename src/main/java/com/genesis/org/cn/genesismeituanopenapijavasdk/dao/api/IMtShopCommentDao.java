@@ -11,4 +11,11 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopCommentE
  */
 public interface IMtShopCommentDao extends IBaseDao<MtShopCommentEntity> {
 
+    /**
+     * query last one by shop id
+     *
+     * @return {@link String}
+     */
+    String queryLastOneByShopId();
+
 }
