@@ -1,5 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bty.scm.boot.mybatis.base.BaseDaoImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IMtShopCommentDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopCommentEntity;
@@ -22,12 +23,10 @@ public class MtShopCommentDaoImpl extends BaseDaoImpl<MtShopCommentMapper, MtSho
      */
     @Override
     public String queryLastOneByShopId() {
-        // 根据shop_id order by desc limit 1
-        return this.lambdaQuery()
-            .orderByDesc(MtShopCommentEntity::getShopId)
-            .last("limit 1")
-            .oneOpt()
-            .map(MtShopCommentEntity::getShopId)
-            .orElse(null);
+        // 根据 order shop_id by desc limit 1
+        QueryWrapper<MtShopCommentEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderBy(true, false, "shop_id");
+        queryWrapper.last("limit 1");
+        return this.baseMapper.selectList(queryWrapper).get(0).getShopId();
     }
 }

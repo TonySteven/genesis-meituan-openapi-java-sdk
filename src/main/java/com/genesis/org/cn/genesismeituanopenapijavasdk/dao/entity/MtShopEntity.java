@@ -1,9 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.bty.scm.boot.mybatis.base.BaseEntity;
 import lombok.*;
 
@@ -27,6 +24,7 @@ public class MtShopEntity extends BaseEntity {
      * id
      */
     @TableField(value = "id")
+    @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**
