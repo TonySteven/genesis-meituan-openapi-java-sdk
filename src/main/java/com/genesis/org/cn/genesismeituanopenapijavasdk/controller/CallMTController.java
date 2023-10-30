@@ -3,6 +3,7 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.MtShopCommentQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopCommentQueryCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopCommentScoreQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopIdQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopInfoQueryAndSaveCmdExe;
 import io.swagger.annotations.Api;
@@ -34,6 +35,9 @@ public class CallMTController {
     @Resource
     MtShopInfoQueryAndSaveCmdExe mtShopInfoQueryAndSaveCmdExe;
 
+    @Resource
+    MtShopCommentScoreQueryAndSaveCmdExe mtShopCommentScoreQueryAndSaveCmdExe;
+
     @ApiOperation(value = "美团SaaS-调用查询所有门店并落库api", notes = "美团SaaS-调用查询所有门店并落库api")
     @GetMapping("/save-shopId")
     public BaseVO saveShopId() {
@@ -61,5 +65,15 @@ public class CallMTController {
         return mtShopCommentQueryCmdExe.execute(cmd);
     }
 
-
+    /**
+     * 美团SaaS-调用查询所有门店总评分并落库api
+     *
+     * @return {@link BaseVO}
+     */
+    @ApiOperation(value = "美团SaaS-调用查询所有门店总评分并落库api", notes = "美团SaaS-调用查询所有门店总评分并落库api")
+    @GetMapping("/save-comment-score")
+    public BaseVO saveCommentScore() {
+        // 在执行器里面执行具体的业务逻辑.
+        return mtShopCommentScoreQueryAndSaveCmdExe.execute();
+    }
 }
