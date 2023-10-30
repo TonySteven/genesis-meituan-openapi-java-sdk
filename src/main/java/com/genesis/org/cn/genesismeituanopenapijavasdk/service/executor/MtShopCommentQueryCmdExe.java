@@ -173,9 +173,17 @@ public class MtShopCommentQueryCmdExe {
         int maxStep = 20;
         // 请求次数 maxCommentCountInt/maxStep + 1
         int requestCount = maxCommentCountInt / maxStep + 1;
+        // 初始化是否已经查询完毕tag
+        boolean isFinish = false;
 
         // 根据maxCommentCount 每次查询最大步长,查询所有评论.
         for (int i = 0; i < requestCount; i++) {
+            // 如果isFinish为true,则跳出循环.
+            if (isFinish) {
+                // 打印日志. 查询门店shopId评论条数 beginDate 到 endDate已经查询完毕,执行了x次.
+                log.info("完成查询门店{}评论条数{}到{}已经查询完毕,执行了{}次", shopId, beginDate, endDate, i - 1);
+                break;
+            }
             // 打印日志 循环次数.
             // 查询门店评论.
             // 偏移量 = i * maxStep
@@ -183,8 +191,13 @@ public class MtShopCommentQueryCmdExe {
             // systemParam, String appPoiCode, String startTime, String endTime, int page-offset, int page-size, int replyStatus
             String poiCommentSting = APIFactory.getPoiAPI().poiCommentQuery(systemParam, shopId, beginDate, endDate
                 , offset, maxStep, -1);
+            // 如果 poiCommentSting =[],则不执行后面的循环.
+            if (StrUtil.isNotBlank(poiCommentSting) && "[]".equals(poiCommentSting)) {
+                isFinish = true;
+            }
             // 如果返回结果不为空,则转换为MtShopCommentResponse对象.
             if (StrUtil.isNotBlank(poiCommentSting)) {
+
                 // poiCommentSting 转换为MtShopCommentResponse对象.
                 // JSONArray 转换 List<MtShopCommentResponseData> 类型
                 List<MtShopCommentResponseData> mtShopCommentResponseDataList = JSON.parseArray(poiCommentSting, MtShopCommentResponseData.class);
@@ -192,9 +205,6 @@ public class MtShopCommentQueryCmdExe {
                 if (CollectionUtil.isNotEmpty(mtShopCommentResponseDataList)) {
                     result.addAll(mtShopCommentResponseDataList);
                 }
-            } else {
-                // 如果返回结果为空,则跳出循环.
-                break;
             }
         }
 
