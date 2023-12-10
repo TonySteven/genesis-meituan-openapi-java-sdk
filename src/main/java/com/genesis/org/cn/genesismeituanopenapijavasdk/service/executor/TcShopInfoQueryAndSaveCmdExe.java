@@ -4,6 +4,9 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopGroupInfoDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
 import com.sankuai.meituan.waimai.opensdk.vo.PoiParam;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,23 @@ import java.util.List;
 @Service
 @Slf4j
 public class TcShopInfoQueryAndSaveCmdExe {
+
+    /**
+     * 服务器请求协议
+     */
+    @Value("${tiancai.protocol}")
+    private String protocol;
+
+    /**
+     * 服务器地址
+     */
+    @Value("${tiancai.url}")
+    private String applicationServer;
+    /**
+     * 服务器端口
+     */
+    @Value("${tiancai.port}")
+    private Integer applicationPort;
 
     /**
      * 天财AppId
@@ -51,7 +71,20 @@ public class TcShopInfoQueryAndSaveCmdExe {
      */
     @SneakyThrows
     public BaseVO execute() {
+        // 打印日志 - 开始.
+        log.info("TcShopInfoQueryAndSaveCmdExe.execute() start");
         // 1. 根据天财AppId和accessId进行鉴权.
+        LoginResult loginResult = LoginToServerAction.login(protocol, applicationServer, applicationPort
+            , appId, accessId);
+        String msg = loginResult.getMsg();
+        // 如果msg不为success,则抛出异常.
+        if (!ResponseStatusEnum.SUCCESS.getValue().equals(msg)) {
+            throw new Exception("鉴权失败!");
+        }
+        // 如果msg为success,则获取accessToken.
+        String accessToken = loginResult.getAccessToken();
+        // 打印日志 - 鉴权成功.
+        log.info("TcShopInfoQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
         // 2. 调用天财接口获取所有门店信息.
 

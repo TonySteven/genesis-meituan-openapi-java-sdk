@@ -16,13 +16,15 @@ meituan:
 # ===== 天财SaaS配置 ===== #
 tiancai:
   # http还是https
-  protocol: ${O2OA_PROTOCOL:https}
+  protocol: ${PROTOCOL:https}
   # o2oa 服务地址
-  url: ${O2OA_URL:cysms.wuuxiang.com}
+  url: ${URL:cysms.wuuxiang.com}
   # o2oa 服务端口
-  port: ${O2OA_PORT:443}
+  port: ${PORT:443}
   api:
     # appId
     appId: ${TIANCAI_APP_ID:2a36bf799e6b4c90941bf84b67789111}
     # accessId
     accessId: ${TIANCAI_APP_ACCESS_ID:a1fca758ed104119889f46df3528d9fa}
+    # centerId 餐饮集团ID
+    centerId: ${TIANCAI_APP_CENTER_ID:94630}

@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
- * 此示例演示如何使用java发送Http请求来登录o2server，获取登录认证xtoken信息
+ * login to server action
  *
- * @author O2OA
+ * @author steven
+ * &#064;date  2023/12/10
  */
 @Slf4j
 public class LoginToServerAction {
@@ -31,12 +33,12 @@ public class LoginToServerAction {
     private static String protocol = "https";
 
     /**
-     * oa服务器地址
+     * 服务器地址
      */
     @Value("${tiancai.url}")
     private static String applicationServer = "cysms.wuuxiang.com";
     /**
-     * oa服务器端口
+     * 服务器端口
      */
     @Value("${tiancai.port}")
     private static Integer applicationPort = 443;
