@@ -1,8 +1,8 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopCommentScoreQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopInfoQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +25,10 @@ import javax.annotation.Resource;
 public class CallTCController {
 
     @Resource
-    MtShopInfoQueryAndSaveCmdExe mtShopInfoQueryAndSaveCmdExe;
+    TcShopInfoQueryAndSaveCmdExe tcShopInfoQueryAndSaveCmdExe;
 
     @Resource
-    MtShopCommentScoreQueryAndSaveCmdExe mtShopCommentScoreQueryAndSaveCmdExe;
+    TcShopBillingDetailQueryAndSaveCmdExe tcShopBillingDetailQueryAndSaveCmdExe;
 
 
     /**
@@ -40,7 +40,7 @@ public class CallTCController {
     @GetMapping("/save-shopInfo")
     public BaseVO saveShopInfo() {
         // 在执行器里面执行具体的业务逻辑.
-        return mtShopInfoQueryAndSaveCmdExe.execute();
+        return tcShopInfoQueryAndSaveCmdExe.execute();
     }
 
     /**
@@ -52,6 +52,6 @@ public class CallTCController {
     @GetMapping("/save-billing-details-in-real-time")
     public BaseVO saveCommentScore() {
         // 在执行器里面执行具体的业务逻辑.
-        return mtShopCommentScoreQueryAndSaveCmdExe.execute();
+        return tcShopBillingDetailQueryAndSaveCmdExe.execute();
     }
 }
