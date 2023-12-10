@@ -150,7 +150,7 @@ public class TcShopEntity extends BaseEntity {
     private String openTime;
 
     /**
-     * 理位置坐标-纬度
+     * 地理位置坐标-纬度
      */
     @TableField(value = "gc_x")
     private BigDecimal gcX;

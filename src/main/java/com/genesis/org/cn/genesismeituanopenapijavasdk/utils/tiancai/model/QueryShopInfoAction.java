@@ -71,7 +71,7 @@ public class QueryShopInfoAction {
                 log.info("成功鉴权！token=" + result.getAccessToken());
                 // 启动指定的流程
                 QueryShopInfoResponse queryShopInfoResponse = queryShopInfo(protocol
-                    , applicationServer, applicationPort, accessId, result.getAccessToken());
+                    , applicationServer, applicationPort, accessId, result.getAccessToken(), 1, 10);
                 if (Boolean.TRUE.equals(queryShopInfoResponse.getSuccess())) {
                     log.info("查询店铺信息成功！data=" + JSON.toJSONString(queryShopInfoResponse.getData()));
                 } else {
@@ -88,26 +88,25 @@ public class QueryShopInfoAction {
 
     /**
      * query shop info
-     * query shop info
-     * query shop info
-     * login
      *
      * @param applicationServer 127.0.0.1
      * @param applicationPort   20020
      * @param protocol          protocol
      * @param accessId          access id
      * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
      * @return {@link QueryShopInfoResponse}
      */
     public static QueryShopInfoResponse queryShopInfo(String protocol, String applicationServer, Integer applicationPort
-        , String accessId, String token) {
+        , String accessId, String token, Integer pageNo, Integer pageSize) {
 
         // 参数
         String url = protocol + "://" + applicationServer + ":" + applicationPort + URL_LOGIN;
         Map<String, String> loginParams = new HashMap<>();
         loginParams.put("centerId", centerId);
-        loginParams.put("pageNo", "1");
-        loginParams.put("pageSize", "50");
+        loginParams.put("pageNo", String.valueOf(pageNo));
+        loginParams.put("pageSize", String.valueOf(pageSize));
 
         // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
         Map<String, String> headMap = getHeader(token, accessId);

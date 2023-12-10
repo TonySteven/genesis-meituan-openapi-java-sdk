@@ -104,6 +104,11 @@
             <artifactId>json</artifactId>
             <version>20211205</version>
         </dependency>
+        <dependency>
+            <groupId>com.xfvape.uid</groupId>
+            <artifactId>uid-generator</artifactId>
+            <version>0.0.4-RELEASE</version>
+        </dependency>
 
     </dependencies>
 

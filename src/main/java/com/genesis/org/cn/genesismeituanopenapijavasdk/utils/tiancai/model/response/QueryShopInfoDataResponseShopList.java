@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * query shop info data response shop list
  *
@@ -36,6 +38,11 @@ public class QueryShopInfoDataResponseShopList {
      * crm company id
      */
     private String crmCompanyId;
+
+    /**
+     * crm shop id
+     */
+    private String crmShopId;
 
     /**
      * gc id
@@ -128,11 +135,6 @@ public class QueryShopInfoDataResponseShopList {
     private String countyName;
 
     /**
-     * crm shop id
-     */
-    private String crmShopId;
-
-    /**
      * province name
      */
     private String provinceName;
@@ -161,5 +163,16 @@ public class QueryShopInfoDataResponseShopList {
      * city id
      */
     private String cityId;
+
+    /**
+     * area
+     */
+    private String area;
+
+
+    /**
+     * group list
+     */
+    private List<GroupList> groupList;
 
 }
