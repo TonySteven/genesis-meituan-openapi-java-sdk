@@ -12,7 +12,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   datasource:
-    url: ${DATASOURCE_URL:jdbc:mysql://150.158.93.174:3306/}MC_gyl?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8&connectTimeout=30000&socketTimeout=30000&useSSL=false&useCursorFetch=true&rewriteBatchedStatements=true
+    url: ${DATASOURCE_URL:jdbc:mysql://150.158.93.174:3306/}dth_gyl?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8&connectTimeout=30000&socketTimeout=30000&useSSL=false&useCursorFetch=true&rewriteBatchedStatements=true
     username: ${DATASOURCE_USER_NAME:root}
     password: ${DATASOURCE_PASSWORD:Mc666888@@}
     driver-class-name: com.mysql.cj.jdbc.Driver

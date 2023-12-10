@@ -1,5 +1,7 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopGroupInfoDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopEntity;
@@ -13,7 +15,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryShopInfoDataResponseShopList;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryShopInfoResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.base.BasePageInfo;
-import com.xfvape.uid.impl.CachedUidGenerator;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,9 +76,6 @@ public class TcShopInfoQueryAndSaveCmdExe {
 
     @Resource
     private ITcShopGroupInfoDao iTcShopGroupInfoDao;
-
-    @Resource
-    private CachedUidGenerator cachedUidGenerator;
 
     /**
      * execute
@@ -177,12 +175,15 @@ public class TcShopInfoQueryAndSaveCmdExe {
 
         // 2. 遍历shopList, 创建TcShopEntity对象.
         for (QueryShopInfoDataResponseShopList shopListInfo : shopList) {
+            // 初始化shopId
             String shopId = shopListInfo.getShopId();
+            String shopInfoEntityId = IdUtil.objectId();
+            String id = ObjectUtil.cloneByStream(shopInfoEntityId);
 
             // 2.1 创建TcShopEntity对象.
             TcShopEntity shopInfoEntity = TcShopEntity.builder()
                 // id
-                .id(String.valueOf(cachedUidGenerator.getUID()))
+                .id(shopInfoEntityId)
                 // 集团id
                 .centerId(centerId)
                 // 天财门店id
@@ -252,13 +253,13 @@ public class TcShopInfoQueryAndSaveCmdExe {
                     // 2.2 创建TcShopGroupInfoEntity对象.
                     TcShopGroupInfoEntity tcShopGroupInfoEntity = TcShopGroupInfoEntity.builder()
                         // id cachedUidGenerator
-                        .id(String.valueOf(cachedUidGenerator.getUID()))
+                        .id(IdUtil.objectId())
                         // 集团id
                         .centerId(centerId)
                         // 门店id
                         .shopId(shopId)
                         // 门店编码
-                        .tcShopId(shopId)
+                        .tcShopId(id)
                         // 一级分组id
                         .oneLevelId(groupListInfo.getOneLevelId())
                         // 一级分组code

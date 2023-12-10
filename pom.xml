@@ -99,15 +99,11 @@
                 ${project.basedir}/src/main/resources/lib/waimai_open_java_sdk_request-1.1.2-jar-with-dependencies.jar
             </systemPath>
         </dependency>
+        <!-- json依赖 -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20211205</version>
-        </dependency>
-        <dependency>
-            <groupId>com.xfvape.uid</groupId>
-            <artifactId>uid-generator</artifactId>
-            <version>0.0.4-RELEASE</version>
         </dependency>
 
     </dependencies>
