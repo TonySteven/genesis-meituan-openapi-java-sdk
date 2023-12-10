@@ -1,11 +1,11 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.bty.scm.boot.mybatis.base.BaseEntity;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -22,6 +22,13 @@ import java.util.Date;
 @AllArgsConstructor
 @TableName(value = "tc_shop_billing_detail")
 public class TcShopBillingDetailEntity extends BaseEntity {
+    /**
+     * id
+     */
+    @TableField(value = "id")
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
+
 
     /**
      * 餐饮集团ID
@@ -420,10 +427,35 @@ public class TcShopBillingDetailEntity extends BaseEntity {
     private Date deliveryTime;
 
     /**
+     * 创建人
+     */
+    @TableField(value = "create_by", fill = FieldFill.INSERT)
+    private String createBy;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 最后修改人
+     */
+    @TableField(value = "update_by", fill = FieldFill.INSERT_UPDATE)
+    private String updateBy;
+
+    /**
+     * 最后修改时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
      * 是否删除
      */
     @TableField(value = "is_deleted")
-    private Boolean isDeleted;
+    @TableLogic(delval = "null", value = "0")
+    private Integer isDeleted;
 
     /**
      * 备注
