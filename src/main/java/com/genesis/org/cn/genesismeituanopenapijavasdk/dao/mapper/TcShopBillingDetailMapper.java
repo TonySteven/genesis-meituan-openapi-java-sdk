@@ -1,6 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bty.scm.boot.mybatis.base.BaseMapper;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailEntity;
 
 /**
