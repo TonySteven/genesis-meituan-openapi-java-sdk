@@ -61,7 +61,7 @@ public class BillListItem {
     /**
      * people qty
      */
-    private BigDecimal peopleQty;
+    private Integer peopleQty;
     /**
      * open time
      */
@@ -81,7 +81,7 @@ public class BillListItem {
     /**
      * state
      */
-    private String state;
+    private Integer state;
     /**
      * trt user id
      */
@@ -137,7 +137,7 @@ public class BillListItem {
     /**
      * quota money
      */
-    private String quotaMoney;
+    private BigDecimal quotaMoney;
     /**
      * present money
      */
@@ -165,7 +165,7 @@ public class BillListItem {
     /**
      * sale type id
      */
-    private BigDecimal saleTypeId;
+    private String saleTypeId;
     /**
      * sale type name
      */
@@ -249,7 +249,7 @@ public class BillListItem {
     /**
      * last total
      */
-    private String lastTotal;
+    private BigDecimal lastTotal;
     /**
      * is give invoice
      */
@@ -374,6 +374,12 @@ public class BillListItem {
      * delflg
      */
     private int delflg;
+
+    /**
+     * is designates
+     */
+    private String isDesignates;
+
     /**
      * item
      */
@@ -399,4 +405,7 @@ public class BillListItem {
      */
     private List<String> ticketDetail;
 
+    public Boolean getIsContinuedBill() {
+        return isContinuedBill;
+    }
 }

@@ -88,19 +88,19 @@ public class TcShopBillingDetailEntity extends BaseEntity {
      * 开台时间
      */
     @TableField(value = "open_time")
-    private Date openTime;
+    private String openTime;
 
     /**
      * 结算时间
      */
     @TableField(value = "settle_time")
-    private Date settleTime;
+    private String settleTime;
 
     /**
      * 营业日
      */
     @TableField(value = "settle_biz_date")
-    private Date settleBizDate;
+    private String settleBizDate;
 
     /**
      * 0:未结（默认），1:已结（已关账），2:空帐删除（已关账），3:废单
@@ -286,7 +286,7 @@ public class TcShopBillingDetailEntity extends BaseEntity {
      * 结算状态 1表示正常结算，-1表示返位结算，-2表示预结（即结算中）
      */
     @TableField(value = "settle_state")
-    private Integer settleState;
+    private String settleState;
 
     /**
      * 发票号
@@ -358,7 +358,7 @@ public class TcShopBillingDetailEntity extends BaseEntity {
      * 牌号
      */
     @TableField(value = "order_code")
-    private BigDecimal orderCode;
+    private String orderCode;
 
     /**
      * 所属集团代码
@@ -424,7 +424,7 @@ public class TcShopBillingDetailEntity extends BaseEntity {
      * 外卖送餐时间
      */
     @TableField(value = "delivery_time")
-    private Date deliveryTime;
+    private String deliveryTime;
 
     /**
      * 创建人
