@@ -146,10 +146,10 @@ public class HttpPostRequestUtil {
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 
 
-            // 构建包含查询参数的URL
+            // 构建包含查询参数的URL 有空格的话，会被替换成%20
             url = url + "?" +
                 params.entrySet().stream()
-                    .map(entry -> entry.getKey() + "=" + entry.getValue())
+                    .map(entry -> entry.getKey() + "=" + entry.getValue().replace(" ", "%20"))
                     .collect(Collectors.joining("&"));
             HttpURLConnection conn = getHttpURLConnection(url, "POST", headers);
 

@@ -8,7 +8,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopGroupInfoEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.QueryShopInfoAction;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.QueryShopInfoAction;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.GroupList;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;

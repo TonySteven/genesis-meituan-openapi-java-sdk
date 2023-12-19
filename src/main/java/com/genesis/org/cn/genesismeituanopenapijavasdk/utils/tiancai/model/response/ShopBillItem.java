@@ -6,22 +6,27 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * query shop info data response
+ * shop bill item
  *
  * @author steven
- * &#064;date  2023/12/10
+ * &#064;date  2023/12/19
  */
 @Data
-public class QueryShopInfoDataResponse {
+public class ShopBillItem {
 
     /**
-     * shop list
+     * bill list
      */
-    private List<QueryShopInfoDataResponseShopList> shopList;
+    private List<BillListItem> billList;
 
     /**
      * shop list
      */
     private BasePageInfo pageInfo;
+
+    /**
+     * shop id
+     */
+    private String shopId;
 
 }

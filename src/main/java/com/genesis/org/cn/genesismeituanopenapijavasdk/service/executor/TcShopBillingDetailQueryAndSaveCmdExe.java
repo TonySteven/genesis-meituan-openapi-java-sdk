@@ -4,6 +4,9 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDet
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailItemDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
 import com.sankuai.meituan.waimai.opensdk.vo.PoiParam;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,23 @@ import java.util.List;
 public class TcShopBillingDetailQueryAndSaveCmdExe {
 
     /**
+     * 服务器请求协议
+     */
+    @Value("${tiancai.protocol}")
+    private String protocol;
+
+    /**
+     * 服务器地址
+     */
+    @Value("${tiancai.url}")
+    private String applicationServer;
+    /**
+     * 服务器端口
+     */
+    @Value("${tiancai.port}")
+    private Integer applicationPort;
+
+    /**
      * 天财AppId
      */
     @Value("${tiancai.api.appId}")
@@ -37,6 +57,12 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
      */
     @Value("${tiancai.api.accessId}")
     private String accessId;
+
+    /**
+     * 餐饮集团ID
+     */
+    @Value("${tiancai.api.centerId}")
+    private String centerId;
 
     @Resource
     private ITcShopBillingDetailDao iTcShopBillingDetailDao;
@@ -52,9 +78,26 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
      */
     @SneakyThrows
     public BaseVO execute() {
+        // 打印日志 - 开始.
+        log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() - start");
         // 1. 根据天财AppId和accessId进行鉴权.
+        LoginResult loginResult = LoginToServerAction.login(protocol, applicationServer, applicationPort
+            , appId, accessId);
+        String msg = loginResult.getMsg();
+        // 如果msg不为success,则抛出异常.
+        if (!ResponseStatusEnum.SUCCESS.getValue().equals(msg)) {
+            throw new Exception("鉴权失败!");
+        }
+        // 如果msg为success,则获取accessToken.
+        String accessToken = loginResult.getAccessToken();
+        // 打印日志 - 鉴权成功.
+        log.info("TcShopInfoQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
         // 2. 调用天财接口获取所有账单明细实时信息.
+        // 初始化分页参数.
+        Integer pageNo = 1;
+        Integer pageSize = 50;
+
 
         // 3. 转换为TcShopBillingDetailEntity对象.
 
