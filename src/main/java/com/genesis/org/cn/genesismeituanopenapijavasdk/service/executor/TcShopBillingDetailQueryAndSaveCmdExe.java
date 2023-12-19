@@ -106,7 +106,7 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         // 如果msg为success,则获取accessToken.
         String accessToken = loginResult.getAccessToken();
         // 打印日志 - 鉴权成功.
-        log.info("TcShopInfoQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
+        log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
         // 2. 调用天财接口获取所有账单明细实时信息.
         // 2.0 获取所有店铺ids
@@ -122,8 +122,8 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             Integer pageSize = 500;
             // 2.1 获取所有门店实时账单信息.
             QueryBillDetailsInRealTimeResponse queryBillDetailsInRealTimeResponse = QueryShopInfoAction
-                .queryBillingDetailsInRealTime(protocol, applicationServer, applicationPort
-                    , accessToken, centerId, pageNo, pageSize, shopId);
+                .queryBillingDetailsInRealTime(protocol, applicationServer, applicationPort, accessId
+                    , accessToken, pageNo, pageSize, shopId);
 
             // 2.2 获取账单明细列表.
             List<ShopBillItem> shopBillList = queryBillDetailsInRealTimeResponse.getData().getShopBillList();
@@ -152,6 +152,10 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                 }
             }
             List<BillListItem> billList = shopBillItem.getBillList();
+            // 如果billList为空,则跳过.
+            if (CollectionUtils.isEmpty(billList)) {
+                continue;
+            }
             MergeEntity mergeEntity = createTcShopBillingDetailEntity(centerId, shopId, billList);
             List<TcShopBillingDetailEntity> tcShopBillingDetailEntityList = mergeEntity
                 .getTcShopBillingDetailEntityList();
@@ -163,19 +167,31 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
 
             // 3. 落库.
             // 3.1 落库tcShopBillingDetailEntityList.
-            boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveBatch(tcShopBillingDetailEntityList);
-            if (!tcShopBillingDetailEntityTag) {
-                throw new Exception("落库tcShopBillingDetailEntityList失败!");
+            // 如果tcShopBillingDetailEntityList不为空,则落库.
+            if (CollectionUtils.isNotEmpty(tcShopBillingDetailEntityList)) {
+                boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveBatch(tcShopBillingDetailEntityList);
+                if (!tcShopBillingDetailEntityTag) {
+                    throw new Exception("落库tcShopBillingDetailEntityList失败!");
+                }
             }
-            // 3.2 落库tcShopBillingDetailItemEntityList.
-            boolean tcShopBillingDetailItemEntityListTag = iTcShopBillingDetailItemDao.saveBatch(tcShopBillingDetailItemEntityList);
-            if (!tcShopBillingDetailItemEntityListTag) {
-                throw new Exception("落库tcShopBillingDetailItemEntityList失败!");
+
+            // 如果tcShopBillingDetailItemEntityList不为空,则落库.
+            if (CollectionUtils.isNotEmpty(tcShopBillingDetailItemEntityList)) {
+                // 3.2 落库tcShopBillingDetailItemEntityList.
+                boolean tcShopBillingDetailItemEntityListTag = iTcShopBillingDetailItemDao.saveBatch(tcShopBillingDetailItemEntityList);
+                if (!tcShopBillingDetailItemEntityListTag) {
+                    throw new Exception("落库tcShopBillingDetailItemEntityList失败!");
+                }
             }
-            // 3.3 落库tcShopBillingSettleDetailEntityList.
-            boolean tcShopBillingSettleDetailEntityListTag = iTcShopBillingSettleDetailDao.saveBatch(tcShopBillingSettleDetailEntityList);
-            if (!tcShopBillingSettleDetailEntityListTag) {
-                throw new Exception("落库tcShopBillingSettleDetailEntityList失败!");
+
+            // 如果tcShopBillingSettleDetailEntityList不为空,则落库.
+            if (CollectionUtils.isNotEmpty(tcShopBillingSettleDetailEntityList)) {
+                // 3.3 落库tcShopBillingSettleDetailEntityList.
+                boolean tcShopBillingSettleDetailEntityListTag = iTcShopBillingSettleDetailDao
+                    .saveBatch(tcShopBillingSettleDetailEntityList);
+                if (!tcShopBillingSettleDetailEntityListTag) {
+                    throw new Exception("落库tcShopBillingSettleDetailEntityList失败!");
+                }
             }
         }
 
