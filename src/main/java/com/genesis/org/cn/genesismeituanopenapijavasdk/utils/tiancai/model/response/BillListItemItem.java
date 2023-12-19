@@ -60,7 +60,7 @@ public class BillListItemItem {
     /**
      * size id
      */
-    private int sizeId;
+    private String sizeId;
     /**
      * orig subtotal
      */
