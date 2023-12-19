@@ -114,6 +114,9 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
         // 遍历shopIds,获取每个shopId的账单明细实时信息.
         for (String shopId : shopIds) {
+            // 打印日志 - 执行百分比
+            log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 执行百分比:{}"
+                , shopIds.indexOf(shopId) / shopIds.size());
             // 初始化分页参数.
             Integer pageNo = 1;
             Integer pageSize = 500;
