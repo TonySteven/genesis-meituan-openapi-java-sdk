@@ -1,7 +1,7 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,7 +28,7 @@ public class CallTCController {
     TcShopInfoQueryAndSaveCmdExe tcShopInfoQueryAndSaveCmdExe;
 
     @Resource
-    TcShopBillingDetailQueryAndSaveCmdExe tcShopBillingDetailQueryAndSaveCmdExe;
+    TcShopBillingDetailInRealTimeQueryAndSaveCmdExe tcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 
 
     /**
@@ -50,8 +50,20 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取账单明细实时并落库api", notes = "天财SaaS-调用获取账单明细实时并落库api")
     @GetMapping("/save-billing-details-in-real-time")
-    public BaseVO saveCommentScore() {
+    public BaseVO saveBillingDetailsInRealTime() {
         // 在执行器里面执行具体的业务逻辑.
-        return tcShopBillingDetailQueryAndSaveCmdExe.execute();
+        return tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 天财SaaS-调用获取账单明细实时并落库api
+     *
+     * @return {@link BaseVO}
+     */
+    @ApiOperation(value = "天财SaaS-调用获取账单明细落库api", notes = "天财SaaS-调用获取账单明细实时并落库api")
+    @GetMapping("/save-billing-details")
+    public BaseVO saveBillingDetails() {
+        // 在执行器里面执行具体的业务逻辑.
+        return tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute();
     }
 }

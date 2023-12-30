@@ -36,7 +36,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class TcShopBillingDetailQueryAndSaveCmdExe {
+public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
 
     /**
      * 服务器请求协议
