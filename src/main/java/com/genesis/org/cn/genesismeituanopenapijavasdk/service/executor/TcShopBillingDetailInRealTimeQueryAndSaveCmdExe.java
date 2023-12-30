@@ -94,7 +94,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
     @SneakyThrows
     public BaseVO execute() {
         // 打印日志 - 开始.
-        log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() - start");
+        log.info("TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute() - start");
         // 1. 根据天财AppId和accessId进行鉴权.
         LoginResult loginResult = LoginToServerAction.login(protocol, applicationServer, applicationPort
             , appId, accessId);
@@ -106,7 +106,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         // 如果msg为success,则获取accessToken.
         String accessToken = loginResult.getAccessToken();
         // 打印日志 - 鉴权成功.
-        log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
+        log.info("TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
         // 2. 调用天财接口获取所有账单明细实时信息.
         // 2.0 获取所有店铺ids
@@ -115,7 +115,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         // 遍历shopIds,获取每个shopId的账单明细实时信息.
         for (String shopId : shopIds) {
             // 打印日志 - 执行百分比
-            log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 执行百分比:{}"
+            log.info("TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute() 执行百分比:{}"
                 , shopIds.indexOf(shopId) / shopIds.size());
             // 初始化分页参数.
             Integer pageNo = 1;
@@ -127,10 +127,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
 
             // 2.2 获取账单明细列表.
             List<ShopBillItem> shopBillList = queryBillDetailsInRealTimeResponse.getData().getShopBillList();
-            // 如果shopBillList为空,则跳过.
-            if (shopBillList.isEmpty()) {
-                continue;
-            }
+
             ShopBillItem shopBillItem = shopBillList.get(0);
             BasePageInfo pageInfo = shopBillItem.getPageInfo();
             // 获取总页数, 如果总页数大于1, 则遍历获取所有门店信息.
@@ -166,33 +163,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
 
 
             // 3. 落库.
-            // 3.1 落库tcShopBillingDetailEntityList.
-            // 如果tcShopBillingDetailEntityList不为空,则落库.
-            if (CollectionUtils.isNotEmpty(tcShopBillingDetailEntityList)) {
-                boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveBatch(tcShopBillingDetailEntityList);
-                if (!tcShopBillingDetailEntityTag) {
-                    throw new Exception("落库tcShopBillingDetailEntityList失败!");
-                }
-            }
-
-            // 如果tcShopBillingDetailItemEntityList不为空,则落库.
-            if (CollectionUtils.isNotEmpty(tcShopBillingDetailItemEntityList)) {
-                // 3.2 落库tcShopBillingDetailItemEntityList.
-                boolean tcShopBillingDetailItemEntityListTag = iTcShopBillingDetailItemDao.saveBatch(tcShopBillingDetailItemEntityList);
-                if (!tcShopBillingDetailItemEntityListTag) {
-                    throw new Exception("落库tcShopBillingDetailItemEntityList失败!");
-                }
-            }
-
-            // 如果tcShopBillingSettleDetailEntityList不为空,则落库.
-            if (CollectionUtils.isNotEmpty(tcShopBillingSettleDetailEntityList)) {
-                // 3.3 落库tcShopBillingSettleDetailEntityList.
-                boolean tcShopBillingSettleDetailEntityListTag = iTcShopBillingSettleDetailDao
-                    .saveBatch(tcShopBillingSettleDetailEntityList);
-                if (!tcShopBillingSettleDetailEntityListTag) {
-                    throw new Exception("落库tcShopBillingSettleDetailEntityList失败!");
-                }
-            }
+            saveBillDetail(tcShopBillingDetailEntityList, tcShopBillingDetailItemEntityList, tcShopBillingSettleDetailEntityList);
         }
 
         // 返回参数.
@@ -201,6 +172,47 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
             .state("success")
             .msg("成功")
             .build();
+    }
+
+    /**
+     * extracted
+     *
+     * @param tcShopBillingDetailEntityList       tc shop billing detail entity list
+     * @param tcShopBillingDetailItemEntityList   tc shop billing detail item entity list
+     * @param tcShopBillingSettleDetailEntityList tc shop billing settle detail entity list
+     * @throws Exception exception
+     */
+    public void saveBillDetail(List<TcShopBillingDetailEntity> tcShopBillingDetailEntityList
+        , List<TcShopBillingDetailItemEntity> tcShopBillingDetailItemEntityList
+        , List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList) throws Exception {
+        // 3.1 落库tcShopBillingDetailEntityList.
+        // 如果tcShopBillingDetailEntityList不为空,则落库.
+        if (CollectionUtils.isNotEmpty(tcShopBillingDetailEntityList)) {
+            boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveBatch(tcShopBillingDetailEntityList);
+            if (!tcShopBillingDetailEntityTag) {
+                throw new Exception("落库tcShopBillingDetailEntityList失败!");
+            }
+        }
+
+        // 如果tcShopBillingDetailItemEntityList不为空,则落库.
+        if (CollectionUtils.isNotEmpty(tcShopBillingDetailItemEntityList)) {
+            // 3.2 落库tcShopBillingDetailItemEntityList.
+            boolean tcShopBillingDetailItemEntityListTag = iTcShopBillingDetailItemDao
+                .saveBatch(tcShopBillingDetailItemEntityList);
+            if (!tcShopBillingDetailItemEntityListTag) {
+                throw new Exception("落库tcShopBillingDetailItemEntityList失败!");
+            }
+        }
+
+        // 如果tcShopBillingSettleDetailEntityList不为空,则落库.
+        if (CollectionUtils.isNotEmpty(tcShopBillingSettleDetailEntityList)) {
+            // 3.3 落库tcShopBillingSettleDetailEntityList.
+            boolean tcShopBillingSettleDetailEntityListTag = iTcShopBillingSettleDetailDao
+                .saveBatch(tcShopBillingSettleDetailEntityList);
+            if (!tcShopBillingSettleDetailEntityListTag) {
+                throw new Exception("落库tcShopBillingSettleDetailEntityList失败!");
+            }
+        }
     }
 
 
@@ -212,7 +224,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
      * @param billList bill list
      * @return {@link MergeEntity}
      */
-    private MergeEntity createTcShopBillingDetailEntity(String centerId, String shopId
+    public MergeEntity createTcShopBillingDetailEntity(String centerId, String shopId
         , List<BillListItem> billList) {
 
         // 1. 创建返回值
@@ -555,7 +567,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class MergeEntity {
+    public static class MergeEntity {
 
         /**
          * tc shop billing detail entity list

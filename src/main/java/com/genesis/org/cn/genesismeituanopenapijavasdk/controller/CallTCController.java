@@ -2,15 +2,19 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * 天财SaaS 相关接口
@@ -26,6 +30,9 @@ public class CallTCController {
 
     @Resource
     TcShopInfoQueryAndSaveCmdExe tcShopInfoQueryAndSaveCmdExe;
+
+    @Resource
+    TcShopBillingDetailQueryAndSaveCmdExe tcShopBillingDetailQueryAndSaveCmdExe;
 
     @Resource
     TcShopBillingDetailInRealTimeQueryAndSaveCmdExe tcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
@@ -62,8 +69,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取账单明细落库api", notes = "天财SaaS-调用获取账单明细实时并落库api")
     @GetMapping("/save-billing-details")
-    public BaseVO saveBillingDetails() {
+    public BaseVO saveBillingDetails(@RequestBody @Valid TcShopBillingDetailQueryCmd cmd) {
         // 在执行器里面执行具体的业务逻辑.
-        return tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute();
+        return tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd);
     }
 }

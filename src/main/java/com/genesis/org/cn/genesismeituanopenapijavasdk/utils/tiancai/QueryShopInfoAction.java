@@ -8,6 +8,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.HttpPostRequestUtil
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsInRealTimeResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryShopInfoResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,11 @@ public class QueryShopInfoAction {
      * url query bill in realtime
      */
     static final String URL_QUERY_BILL_IN_REALTIME = "/api/datatransfer/getserialdatalivewithpage";
+
+    /**
+     * url query bill info
+     */
+    static final String URL_QUERY_BILL = "/api/datatransfer/getserialdata";
 
     /**
      * 服务器请求协议
@@ -194,6 +200,49 @@ public class QueryShopInfoAction {
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , QueryBillDetailsInRealTimeResponse.class);
+    }
+
+
+    /**
+     * query billing details
+     *
+     * @param protocol          protocol
+     * @param applicationServer application server
+     * @param applicationPort   application port
+     * @param accessId          access id
+     * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static QueryBillDetailsResponse queryBillingDetails(String protocol
+        , String applicationServer, Integer applicationPort
+        , String accessId, String token, Integer pageNo, Integer pageSize, String shopId
+        , Date beginDate, Date endDate) {
+
+        // 参数
+        String url = protocol + "://" + applicationServer + ":" + applicationPort + URL_QUERY_BILL;
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", centerId);
+        loginParams.put("pageNo", String.valueOf(pageNo));
+        loginParams.put("pageSize", String.valueOf(pageSize));
+        loginParams.put("shopId", shopId);
+        loginParams.put("dateType", "1");
+        loginParams.put("beginDate", String.valueOf(beginDate));
+        loginParams.put("endDate", String.valueOf(endDate));
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, accessId);
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        // responseData如果blank，说明请求失败
+        if (StringUtils.isBlank(responseData)) {
+            // 如果responseData为空, 则抛出异常.
+            throw new RuntimeException("请求店铺实时账单失败!");
+        }
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , QueryBillDetailsResponse.class);
     }
 
     /**
