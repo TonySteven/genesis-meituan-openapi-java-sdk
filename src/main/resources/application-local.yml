@@ -5,7 +5,6 @@ logging:
     org.springframework.web: INFO
 
 # ===== 美团SaaS配置 ===== #
-# 诺诺开票平台配置
 meituan:
   api:
     # appId

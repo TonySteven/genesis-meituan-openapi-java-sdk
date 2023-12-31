@@ -190,7 +190,7 @@ public class TcShopBillingDetailItemEntity extends BaseEntity {
      * 套餐明细所属的服务内容 该字段若不为空，则对应相应品项消费明细的sc_id（即主套餐）
      */
     @TableField(value = "pkg_sc_id")
-    private Integer pkgScId;
+    private String pkgScId;
 
     /**
      * 0：无；1：赠；2：折；3、变；4、促；5、会

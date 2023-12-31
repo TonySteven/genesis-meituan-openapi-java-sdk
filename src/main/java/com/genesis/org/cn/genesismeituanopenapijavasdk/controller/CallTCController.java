@@ -15,6 +15,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 天财SaaS 相关接口
@@ -70,7 +71,14 @@ public class CallTCController {
     @ApiOperation(value = "天财SaaS-调用获取账单明细落库api", notes = "天财SaaS-调用获取账单明细实时并落库api")
     @GetMapping("/save-billing-details")
     public BaseVO saveBillingDetails(@RequestBody @Valid TcShopBillingDetailQueryCmd cmd) {
-        // 在执行器里面执行具体的业务逻辑.
-        return tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd);
+        // 异步执行 tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd)
+        CompletableFuture.runAsync(() -> tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd));
+
+        // 返回成功
+        return BaseVO.builder()
+            .id("1")
+            .state("success")
+            .msg("异步执行中")
+            .build();
     }
 }

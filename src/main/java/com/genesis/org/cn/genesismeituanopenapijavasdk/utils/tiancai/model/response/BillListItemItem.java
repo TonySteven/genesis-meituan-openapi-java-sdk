@@ -208,7 +208,7 @@ public class BillListItemItem {
     /**
      * pkg sc id
      */
-    private int pkgScId;
+    private String pkgScId;
     /**
      * size code
      */

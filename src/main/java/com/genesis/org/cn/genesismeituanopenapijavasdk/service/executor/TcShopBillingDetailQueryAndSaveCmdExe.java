@@ -18,6 +18,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -104,17 +105,26 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         // 2.0 获取所有店铺ids
         List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
         List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
+        // 获取cmd中的shopIds
+        String cmdShopId = cmd.getShopId();
+        // 如果cmd中的shopId不为空,则shopIds截取cmdShopId后面的shopIds.
+        if (StringUtils.isNotBlank(cmdShopId) && shopIds.contains(cmdShopId)) {
+            shopIds = shopIds.subList(shopIds.indexOf(cmdShopId), shopIds.size());
+        }
+
         // 遍历shopIds,获取每个shopId的账单明细实时信息.
         // 2.1 获取入参
         Date beginDate = cmd.getBeginDate();
         Date endDate = cmd.getEndDate();
         for (String shopId : shopIds) {
+            // 打印日志 - 获取到的门店id.
+            log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 获取到的门店id:{}", shopId);
             // 打印日志 - 执行百分比
-            log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 执行百分比:{}"
-                , shopIds.indexOf(shopId) / shopIds.size());
+            log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 执行第{}家:"
+                , (shopIds.indexOf(shopId) + 1));
             // 初始化分页参数.
             Integer pageNo = 1;
-            Integer pageSize = 500;
+            Integer pageSize = 50;
             // 2.1 获取所有门店实时账单信息.
             QueryBillDetailsResponse queryBillDetailsResponse = QueryShopInfoAction
                 .queryBillingDetails(protocol, applicationServer, applicationPort, accessId
@@ -123,6 +133,13 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             // 2.2 获取账单明细列表.
             QueryBillDetailsDataResponse data = queryBillDetailsResponse.getData();
             List<BillListItem> billList = data.getBillList();
+            // 如果billList为空,则跳过.
+            if (CollectionUtils.isEmpty(billList)) {
+                continue;
+            }
+            // 落库.
+            saveBillDetail(shopId, billList);
+
             BasePageInfo pageInfo = data.getPageInfo();
             // 获取总页数, 如果总页数大于1, 则遍历获取所有门店信息.
             int totalPage = pageInfo.getPageTotal();
@@ -131,34 +148,17 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                     // 获取所有门店实时账单信息.
                     QueryBillDetailsResponse queryBillDetailsResponse2 = QueryShopInfoAction
                         .queryBillingDetails(protocol, applicationServer, applicationPort, accessId
-                            , accessToken, pageNo, pageSize, shopId, beginDate, endDate);
+                            , accessToken, i, pageSize, shopId, beginDate, endDate);
                     // 如果success为false,则抛出异常.
-                    if (!ResponseStatusEnum.SUCCESS.getValue().equals(queryBillDetailsResponse2.getMsg())) {
+                    if (!ResponseStatusEnum.SUCCESS.getInfo().equals(queryBillDetailsResponse2.getMsg())) {
                         throw new Exception("获取所有门店实时账单信息失败!");
                     }
                     // 如果success为true,则获取门店实时账单.
                     List<BillListItem> billList1 = queryBillDetailsResponse2.getData().getBillList();
-                    // 将billList1添加到billList中.
-                    billList.addAll(billList1);
+                    // 因为将billList1添加到billList中,数据量很大, 所有改为查一次落库一次.
+                    saveBillDetail(shopId, billList1);
                 }
             }
-            // 如果billList为空,则跳过.
-            if (CollectionUtils.isEmpty(billList)) {
-                break;
-            }
-            TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.MergeEntity mergeEntity
-                = tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.createTcShopBillingDetailEntity(centerId, shopId, billList);
-            List<TcShopBillingDetailEntity> tcShopBillingDetailEntityList = mergeEntity
-                .getTcShopBillingDetailEntityList();
-            List<TcShopBillingDetailItemEntity> tcShopBillingDetailItemEntityList = mergeEntity
-                .getTcShopBillingDetailItemEntityList();
-            List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList = mergeEntity
-                .getTcShopBillingSettleDetailEntityList();
-
-
-            // 3. 落库.
-            tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.saveBillDetail(tcShopBillingDetailEntityList
-                , tcShopBillingDetailItemEntityList, tcShopBillingSettleDetailEntityList);
         }
 
         // 返回参数.
@@ -167,6 +167,35 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             .state("success")
             .msg("成功")
             .build();
+    }
+
+    /**
+     * save bill detail
+     *
+     * @param shopId   shop id
+     * @param billList bill list
+     */
+    private void saveBillDetail(String shopId, List<BillListItem> billList) throws Exception {
+
+        // 1. 根据billList获取所有账单明细实时信息.
+        TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.MergeEntity mergeEntity
+            = tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.createTcShopBillingDetailEntity(centerId
+            , shopId, billList);
+        List<TcShopBillingDetailEntity> tcShopBillingDetailEntityList = mergeEntity
+            .getTcShopBillingDetailEntityList();
+        List<TcShopBillingDetailItemEntity> tcShopBillingDetailItemEntityList = mergeEntity
+            .getTcShopBillingDetailItemEntityList();
+        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList = mergeEntity
+            .getTcShopBillingSettleDetailEntityList();
+
+        // 3. 落库.
+        // 打印日志 哪家门店的账单明细正在落库. 对应的落库数量
+        log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 门店:{} 的账单明细正在落库. 对应的落库数量表1:{}" +
+                ",对应的落库数量表2:{},对应的落库数量表3:{} ", shopId
+            , tcShopBillingDetailEntityList.size()
+            , tcShopBillingDetailItemEntityList.size(), tcShopBillingSettleDetailEntityList.size());
+        tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.saveBillDetail(tcShopBillingDetailEntityList
+            , tcShopBillingDetailItemEntityList, tcShopBillingSettleDetailEntityList);
     }
 
 }

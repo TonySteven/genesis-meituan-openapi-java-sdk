@@ -17,8 +17,16 @@ import java.util.Date;
 @Data
 public class TcShopBillingDetailQueryCmd {
 
+    // shopId
+
     /**
-     * 开始时间
+     * shop id
+     */
+    @ApiModelProperty(name = "门店id", notes = "如果不传则查询所有门店,从头开始")
+    private String shopId;
+
+    /**
+     * begin date
      */
     @ApiModelProperty(name = "开始时间", required = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -27,7 +35,7 @@ public class TcShopBillingDetailQueryCmd {
     private Date beginDate;
 
     /**
-     * 结束时间
+     * end date
      */
     @ApiModelProperty(name = "结束时间", required = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

@@ -139,7 +139,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                         .queryBillingDetailsInRealTime(protocol, applicationServer, applicationPort
                             , accessToken, centerId, i, pageSize, shopId);
                     // 如果success为false,则抛出异常.
-                    if (!ResponseStatusEnum.SUCCESS.getValue().equals(queryBillDetailsInRealTimeResponse2.getMsg())) {
+                    if (!ResponseStatusEnum.SUCCESS.getInfo().equals(queryBillDetailsInRealTimeResponse2.getMsg())) {
                         throw new Exception("获取所有门店实时账单信息失败!");
                     }
                     // 如果success为true,则获取门店实时账单.
@@ -213,6 +213,12 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                 throw new Exception("落库tcShopBillingSettleDetailEntityList失败!");
             }
         }
+
+        // 打印日志 - 结束.
+        log.info("TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute() - end");
+        log.info("TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.execute() 完成落库, 对应的落库数量表1:{}" +
+                ",对应的落库数量表2:{},对应的落库数量表3:{} ", tcShopBillingDetailEntityList.size()
+            , tcShopBillingDetailItemEntityList.size(), tcShopBillingSettleDetailEntityList.size());
     }
 
 

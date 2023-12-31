@@ -107,13 +107,16 @@ public class QueryShopInfoAction {
                 // 成功登录 到O2Server
                 log.info("成功鉴权！token=" + result.getAccessToken());
                 // 启动指定的流程
-                QueryBillDetailsInRealTimeResponse queryBillDetailsInRealTimeResponse = queryBillingDetailsInRealTime
+                // 自定义开始时间和结束时间
+                Date beginDate = DateUtil.parse("2021-12-01 00:00:00");
+                Date endDate = DateUtil.parse("2021-12-10 23:59:59");
+                QueryBillDetailsResponse queryBillDetailsResponse = queryBillingDetails
                     (protocol, applicationServer, applicationPort, accessId, result.getAccessToken()
-                        , 1, 10, "94631");
-                if (Boolean.TRUE.equals(queryBillDetailsInRealTimeResponse.getSuccess())) {
-                    log.info("查询店铺实时账单成功！data=" + JSONUtil.toJsonStr(queryBillDetailsInRealTimeResponse.getData()));
+                        , 1, 50, "94631", beginDate, endDate);
+                if (Boolean.TRUE.equals(queryBillDetailsResponse.getSuccess())) {
+                    log.info("查询店铺实时账单成功！data=" + JSONUtil.toJsonStr(queryBillDetailsResponse.getData()));
                 } else {
-                    log.info("查询店铺实时账单失败！message=" + queryBillDetailsInRealTimeResponse.getMsg());
+                    log.info("查询店铺实时账单失败！message=" + queryBillDetailsResponse.getMsg());
                 }
             } else {
                 // 登录失败
@@ -151,10 +154,13 @@ public class QueryShopInfoAction {
         // 打印loginUrl
         log.info("requestUrl=" + url);
         String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败
-        if (org.apache.commons.lang3.StringUtils.isBlank(responseData)) {
-            // 如果responseData为空, 则抛出异常.
-            throw new RuntimeException("请求店铺信息失败!");
+
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求店铺实时账单失败.
+            log.warn("请求店铺信息失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
         }
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
@@ -192,10 +198,12 @@ public class QueryShopInfoAction {
         // 打印loginUrl
         log.info("requestUrl=" + url);
         String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败
-        if (StringUtils.isBlank(responseData)) {
-            // 如果responseData为空, 则抛出异常.
-            throw new RuntimeException("请求店铺实时账单失败!");
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求店铺实时账单失败.
+            log.warn("请求店铺实时账单失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
         }
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
@@ -220,6 +228,12 @@ public class QueryShopInfoAction {
         , String accessId, String token, Integer pageNo, Integer pageSize, String shopId
         , Date beginDate, Date endDate) {
 
+        // beginDate 转成 2023-12-19 20:20:00 格式 String
+        String beginDateStr = DateUtil.parse(DateUtil.format(beginDate, "yyyy-MM-dd HH:mm:ss"))
+            .toString("yyyy-MM-dd HH:mm:ss");
+        // endDate 转成 2023-12-19 20:20:00 格式 String
+        String endDateStr = DateUtil.parse(DateUtil.format(endDate, "yyyy-MM-dd HH:mm:ss"))
+            .toString("yyyy-MM-dd HH:mm:ss");
         // 参数
         String url = protocol + "://" + applicationServer + ":" + applicationPort + URL_QUERY_BILL;
         Map<String, String> loginParams = new HashMap<>();
@@ -228,18 +242,23 @@ public class QueryShopInfoAction {
         loginParams.put("pageSize", String.valueOf(pageSize));
         loginParams.put("shopId", shopId);
         loginParams.put("dateType", "1");
-        loginParams.put("beginDate", String.valueOf(beginDate));
-        loginParams.put("endDate", String.valueOf(endDate));
+        loginParams.put("beginDate", beginDateStr);
+        loginParams.put("endDate", endDateStr);
+        // needPkgDetail 0:不返回套餐明细数据，1：返回套餐明细数据,define:0
+        loginParams.put("needPkgDetail", "1");
         // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
         Map<String, String> headMap = getHeader(token, accessId);
         // 打印loginUrl
         log.info("requestUrl=" + url);
         String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败
-        if (StringUtils.isBlank(responseData)) {
-            // 如果responseData为空, 则抛出异常.
-            throw new RuntimeException("请求店铺实时账单失败!");
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求店铺实时账单失败.
+            log.warn("请求店铺实时账单失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
         }
+
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , QueryBillDetailsResponse.class);
