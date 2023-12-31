@@ -17,8 +17,6 @@ import java.util.Date;
 @Data
 public class TcShopBillingDetailQueryCmd {
 
-    // shopId
-
     /**
      * shop id
      */
