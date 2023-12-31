@@ -15,18 +15,16 @@
     <description>genesis-meituan-openapi-java-sdk</description>
     <properties>
         <java.version>17</java.version>
-        <mybatis.boot.version>2.3.2</mybatis.boot.version>
+        <mybatis.boot.version>2.1.2</mybatis.boot.version>
+        <mybatis.plus.boot.version>3.5.2</mybatis.plus.boot.version>
         <mysql.connector.version>8.0.33</mysql.connector.version>
         <jointblock.version>1.16.0-SNAPSHOT</jointblock.version>
     </properties>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.2.1</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -38,21 +36,30 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+        <!--mybatis 依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>3.0.1</version>
+            <version>${mybatis.boot.version}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter-test</artifactId>
+            <version>${mybatis.boot.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!--mysql 依赖-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.connector.version}</version>
         </dependency>
+        <!--        &lt;!&ndash;mybatis-plus 依赖&ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.baomidou</groupId>-->
+        <!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
+        <!--            <version>${mybatis.plus.boot.version}</version>-->
+        <!--        </dependency>-->
 
         <!-- 引入Swagger3依赖 -->
         <dependency>
@@ -75,6 +82,12 @@
             <artifactId>spring-boot-actuator</artifactId>
             <version>3.0.1</version>
         </dependency>
+        <!-- 引入Swagger3依赖 -->
+        <dependency>
+            <groupId>com.bty.scm</groupId>
+            <artifactId>scm-spring-boot-mybatis-starter</artifactId>
+            <version>1.1.4-SNAPSHOT</version>
+        </dependency>
 
         <!-- 引入美团SDK依赖 -->
         <dependency>
@@ -86,45 +99,12 @@
                 ${project.basedir}/src/main/resources/lib/waimai_open_java_sdk_request-1.1.2-jar-with-dependencies.jar
             </systemPath>
         </dependency>
-
         <!-- json依赖 -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20231013</version>
+            <version>20211205</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>3.0.12</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.8.20</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.3.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-extension</artifactId>
-            <version>3.5.4</version>
-        </dependency>
-
 
     </dependencies>
 
