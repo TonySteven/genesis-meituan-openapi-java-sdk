@@ -188,7 +188,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         // 3.1 落库tcShopBillingDetailEntityList.
         // 如果tcShopBillingDetailEntityList不为空,则落库.
         if (CollectionUtils.isNotEmpty(tcShopBillingDetailEntityList)) {
-            boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveBatch(tcShopBillingDetailEntityList);
+            boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveOrUpdateBatch(tcShopBillingDetailEntityList);
             if (!tcShopBillingDetailEntityTag) {
                 throw new Exception("落库tcShopBillingDetailEntityList失败!");
             }
@@ -198,7 +198,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         if (CollectionUtils.isNotEmpty(tcShopBillingDetailItemEntityList)) {
             // 3.2 落库tcShopBillingDetailItemEntityList.
             boolean tcShopBillingDetailItemEntityListTag = iTcShopBillingDetailItemDao
-                .saveBatch(tcShopBillingDetailItemEntityList);
+                .saveOrUpdateBatch(tcShopBillingDetailItemEntityList);
             if (!tcShopBillingDetailItemEntityListTag) {
                 throw new Exception("落库tcShopBillingDetailItemEntityList失败!");
             }
@@ -208,7 +208,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         if (CollectionUtils.isNotEmpty(tcShopBillingSettleDetailEntityList)) {
             // 3.3 落库tcShopBillingSettleDetailEntityList.
             boolean tcShopBillingSettleDetailEntityListTag = iTcShopBillingSettleDetailDao
-                .saveBatch(tcShopBillingSettleDetailEntityList);
+                .saveOrUpdateBatch(tcShopBillingSettleDetailEntityList);
             if (!tcShopBillingSettleDetailEntityListTag) {
                 throw new Exception("落库tcShopBillingSettleDetailEntityList失败!");
             }
