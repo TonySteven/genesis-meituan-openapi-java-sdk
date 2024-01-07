@@ -1,6 +1,5 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailItemDao;
@@ -177,7 +176,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
     /**
      * extracted
      *
-     * @param tcShopBillingDetailEntityList       tc shop billing detail entity list
+     * @param tcShopBillingDetailEntityList       tc shop a billing detail entity list
      * @param tcShopBillingDetailItemEntityList   tc shop billing detail item entity list
      * @param tcShopBillingSettleDetailEntityList tc shop billing settle detail entity list
      * @throws Exception exception
@@ -241,19 +240,19 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         // 2. 遍历poiParamList,转换为TcShopBillingDetailEntity对象.
         for (BillListItem billListItem : billList) {
             // 初始化tcShopBillingDetailEntityId
-            String tcShopBillingDetailEntityId = IdUtil.objectId();
-            String id = ObjectUtil.cloneByStream(tcShopBillingDetailEntityId);
+            String bsId = billListItem.getBsId();
+            String id = ObjectUtil.cloneByStream(bsId);
 
             // 2.1 创建tcShopBillingDetailEntity对象.
             TcShopBillingDetailEntity tcShopBillingDetailEntity = TcShopBillingDetailEntity.builder()
                 // id
-                .id(tcShopBillingDetailEntityId)
+                .id(bsId)
                 // 集团id
                 .centerId(centerId)
                 // 天财门店id
                 .shopId(shopId)
                 // bsId
-                .bsId(billListItem.getBsId())
+                .bsId(bsId)
                 // bsCode
                 .bsCode(billListItem.getBsCode())
                 // areaCode
@@ -393,10 +392,11 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
             // 如果item不为空,则遍历item,转换为TcShopBillingDetailItemEntity对象.
             if (CollectionUtils.isNotEmpty(item)) {
                 for (BillListItemItem billListItemItem : item) {
+                    String scId = billListItemItem.getScId();
                     // 2.3.1 创建tcShopBillingDetailItemEntity对象.
                     TcShopBillingDetailItemEntity tcShopBillingDetailItemEntity = TcShopBillingDetailItemEntity.builder()
                         // id
-                        .id(IdUtil.objectId())
+                        .id(scId)
                         // 集团id
                         .centerId(centerId)
                         // 天财门店id
@@ -404,7 +404,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                         // 门店实时账单明细表id
                         .tcShopBillingDetailId(id)
                         // 服务ID
-                        .scId(billListItemItem.getScId())
+                        .scId(scId)
                         // 品项ID
                         .itemId(billListItemItem.getItemId())
                         // 品项名称
@@ -507,9 +507,10 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
             if (CollectionUtils.isNotEmpty(settleDetail)) {
                 for (SettleDetail settleDetailItem : settleDetail) {
                     // 2.5.1 创建tcShopBillingSettleDetailEntity对象.
+                    String tsId = settleDetailItem.getTsId();
                     TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity = TcShopBillingSettleDetailEntity.builder()
                         // id
-                        .id(IdUtil.objectId())
+                        .id(tsId)
                         // 集团id
                         .centerId(centerId)
                         // 天财门店id
@@ -517,7 +518,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                         // 门店实时账单明细表id
                         .tcShopBillingDetailId(id)
                         // 结算流水ID
-                        .tsId(settleDetailItem.getTsId())
+                        .tsId(tsId)
                         // 所属营业流水
                         .bsId(settleDetailItem.getBsId())
                         // 结算状态 1:正常结算;-1:表示返位结算;-2:表示预结（即结算中）
@@ -576,7 +577,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
     public static class MergeEntity {
 
         /**
-         * tc shop billing detail entity list
+         * tc shop a billing detail entity list
          */
         List<TcShopBillingDetailEntity> tcShopBillingDetailEntityList;
 
