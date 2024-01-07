@@ -1,7 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bty.scm.boot.mybatis.base.BaseDaoImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailEntity;
@@ -32,10 +31,11 @@ public class TcShopBillingDetailDaoImpl extends BaseDaoImpl<TcShopBillingDetailM
         }
 
         // 修复MybatisPlusException: cannot use this method for "getEntity",必须new一个lambdaQueryWrapper对象.
-        LambdaQueryWrapper<TcShopBillingDetailEntity> lambdaQueryWrapper = Wrappers.lambdaQuery();
-        lambdaQueryWrapper.eq(TcShopBillingDetailEntity::getCenterId, centerId);
-        lambdaQueryWrapper.eq(TcShopBillingDetailEntity::getShopId, shopId);
+        QueryWrapper<TcShopBillingDetailEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+            .eq(TcShopBillingDetailEntity::getShopId, shopId)
+            .eq(TcShopBillingDetailEntity::getCenterId, centerId);
 
-        this.remove(lambdaQueryWrapper);
+        this.remove(queryWrapper);
     }
 }

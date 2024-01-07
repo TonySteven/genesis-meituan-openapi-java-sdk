@@ -7,14 +7,14 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopIn
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
+import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.concurrent.CompletableFuture;
 
 /**

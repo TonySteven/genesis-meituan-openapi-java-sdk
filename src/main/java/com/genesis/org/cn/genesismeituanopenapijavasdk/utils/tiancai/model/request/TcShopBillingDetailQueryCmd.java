@@ -2,10 +2,10 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.requ
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**

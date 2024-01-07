@@ -9,12 +9,12 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.sankuai.meituan.waimai.opensdk.factory.APIFactory;
 import com.sankuai.meituan.waimai.opensdk.vo.PoiParam;
 import com.sankuai.meituan.waimai.opensdk.vo.SystemParam;
-import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

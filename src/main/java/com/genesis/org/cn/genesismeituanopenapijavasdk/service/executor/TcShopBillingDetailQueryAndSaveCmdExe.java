@@ -18,7 +18,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.base.BasePageInfo;
-import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 

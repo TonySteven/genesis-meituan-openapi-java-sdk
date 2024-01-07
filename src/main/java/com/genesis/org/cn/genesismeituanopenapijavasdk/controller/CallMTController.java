@@ -8,10 +8,11 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopId
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.MtShopInfoQueryAndSaveCmdExe;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.oas.annotations.EnableOpenApi;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
 
 
 /**
