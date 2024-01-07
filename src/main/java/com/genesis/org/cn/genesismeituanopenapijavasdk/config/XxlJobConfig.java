@@ -1,6 +1,5 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.config;
 
-import cn.hutool.core.util.StrUtil;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,12 +25,6 @@ public class XxlJobConfig {
     @Value("${xxl.job.executor.logPath}")
     private String logPath;
 
-    @Value("${xxl.job.executor.ip}")
-    private String ip;
-
-    @Value("${xxl.job.executor.port}")
-    private String port;
-
     // accessToken
     @Value("${xxl.job.executor.accessToken}")
     private String accessToken;
@@ -50,11 +43,6 @@ public class XxlJobConfig {
         xxlJobSpringExecutor.setLogPath(logPath);
         xxlJobSpringExecutor.setLogRetentionDays(logRetentionDays);
         xxlJobSpringExecutor.setAccessToken(accessToken);
-
-        if (StrUtil.isNotBlank(ip)) {
-            xxlJobSpringExecutor.setIp(ip);
-            xxlJobSpringExecutor.setPort(Integer.parseInt(port));
-        }
 
         return xxlJobSpringExecutor;
     }

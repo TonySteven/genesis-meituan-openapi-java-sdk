@@ -81,8 +81,6 @@ xxl:
     executor:
       appName: ${XXL_JOB_EXECUTOR_APPNAME:genesis-meituan-openapi-java-service}
       logPath: /data/applogs/xxl-job/jobhandler
-      ip: ${XXL_JOB_EXECUTOR_IP:10.0.4.13}
-      port: ${XXL_JOB_EXECUTOR_PORT:2345}
       accessToken: ${XXL_JOB_EXECUTOR_ACCESS_TOKEN:dasj2nd81jf9asjdkl5jk234}
       intentionalities: 3
     admin:
