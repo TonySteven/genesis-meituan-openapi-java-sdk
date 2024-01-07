@@ -163,6 +163,8 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!--打包时把第三方包也打进去.-->
+                    <includeSystemScope>true</includeSystemScope>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -202,7 +204,7 @@
                                     <descriptorRef>artifact</descriptorRef>
                                 </assembly>
                                 <tags>
-                                    <tag>latest</tag>
+                                    <tag>arm64-tag</tag>
                                 </tags>
                             </build>
                         </image>

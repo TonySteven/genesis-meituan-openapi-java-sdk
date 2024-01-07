@@ -8,7 +8,10 @@ ENV TZ=Asia/Shanghai
 #WORKDIR /app
 
 # 将 JAR 文件复制到容器的 /app 目录下
-COPY target/genesis-meituan-openapi-java-sdk-1.0.0.jar app.jar
+COPY target/*.jar /app.jar
+
+# 复制第三方库 JAR 文件
+#COPY target/classes/lib/waimai_open_java_sdk_request-1.1.2-jar-with-dependencies.jar lib/
 
 # 暴露应用程序将运行的端口
 EXPOSE 8080
