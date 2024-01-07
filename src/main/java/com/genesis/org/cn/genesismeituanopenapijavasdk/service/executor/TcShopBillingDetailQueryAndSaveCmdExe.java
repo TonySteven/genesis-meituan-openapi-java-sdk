@@ -1,5 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
+import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailItemDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingSettleDetailDao;
@@ -98,8 +99,8 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
      */
     @SneakyThrows
     public BaseVO execute(TcShopBillingDetailQueryCmd cmd) {
-        // 打印日志 - 开始.
-        log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() - start");
+        // 打印日志 - 开始. 打印cmd.
+        log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() - start cmd:{}", JSONUtil.toJsonStr(cmd));
         // 1. 根据天财AppId和accessId进行鉴权.
         LoginResult loginResult = LoginToServerAction.login(protocol, applicationServer, applicationPort
             , appId, accessId);
