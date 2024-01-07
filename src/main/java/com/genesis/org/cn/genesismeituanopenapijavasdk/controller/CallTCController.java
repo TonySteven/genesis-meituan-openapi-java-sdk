@@ -45,7 +45,7 @@ public class CallTCController {
      * @return {@link BaseVO}
      */
     @ApiOperation(value = "天财SaaS-调用查询所有门店详情并落库api", notes = "天财SaaS-调用查询所有门店详情并落库api")
-    @GetMapping("/save-shopInfo")
+    @GetMapping("/save-shop-info")
     public BaseVO saveShopInfo() {
         // 在执行器里面执行具体的业务逻辑.
         return tcShopInfoQueryAndSaveCmdExe.execute();
