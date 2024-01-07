@@ -1,5 +1,8 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailItemDao;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingSettleDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailItemEntity;
@@ -76,6 +79,15 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
     private ITcShopDao iTcShopDao;
 
     @Resource
+    private ITcShopBillingDetailDao iTcShopBillingDetailDao;
+
+    @Resource
+    private ITcShopBillingDetailItemDao iTcShopBillingDetailItemDao;
+
+    @Resource
+    private ITcShopBillingSettleDetailDao iTcShopBillingSettleDetailDao;
+
+    @Resource
     private TcShopBillingDetailInRealTimeQueryAndSaveCmdExe tcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 
     /**
@@ -110,6 +122,10 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         // 如果cmd中的shopId不为空,则shopIds截取cmdShopId后面的shopIds.
         if (StringUtils.isNotBlank(cmdShopId) && shopIds.contains(cmdShopId)) {
             shopIds = shopIds.subList(shopIds.indexOf(cmdShopId), shopIds.size());
+
+            // 如果入参中的shopId不为空,则需要将库中shopId为此入参的数据删除,再重新落库.
+            // 因为如果不删除,则会出现重复数据.
+            deleteByShopId(centerId, cmdShopId);
         }
 
         // 遍历shopIds,获取每个shopId的账单明细实时信息.
@@ -196,6 +212,17 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             , tcShopBillingDetailItemEntityList.size(), tcShopBillingSettleDetailEntityList.size());
         tcShopBillingDetailInRealTimeQueryAndSaveCmdExe.saveBillDetail(tcShopBillingDetailEntityList
             , tcShopBillingDetailItemEntityList, tcShopBillingSettleDetailEntityList);
+    }
+
+    // 创建deleteByShopId方法.
+    private void deleteByShopId(String centerId, String shopId) {
+        // 打印日志 - 开始.
+        log.info("TcShopBillingDetailQueryAndSaveCmdExe.deleteByShopId() - start");
+
+        // 删除 TcShopBillingDetailEntity, TcShopBillingDetailItemEntity, TcShopBillingSettleDetailEntity 此shopId的数据.
+        iTcShopBillingDetailDao.deleteTcShopBillingDetailEntityByShopId(centerId, shopId);
+        iTcShopBillingDetailItemDao.deleteTcShopBillingDetailItemEntityByShopId(centerId, shopId);
+        iTcShopBillingSettleDetailDao.deleteTcShopBillingSettleDetailEntityByShopId(centerId, shopId);
     }
 
 }
