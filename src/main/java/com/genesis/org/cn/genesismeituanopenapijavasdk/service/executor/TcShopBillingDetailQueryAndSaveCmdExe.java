@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -131,8 +130,9 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
 
         // 遍历shopIds,获取每个shopId的账单明细实时信息.
         // 2.1 获取入参
-        Date beginDate = cmd.getBeginDate();
-        Date endDate = cmd.getEndDate();
+        String beginDate = cmd.getBeginDate();
+        String endDate = cmd.getEndDate();
+        // beginDate 转成 2023-12-19 20:20:00 格式 String
         for (String shopId : shopIds) {
             // 打印日志 - 获取到的门店id.
             log.info("TcShopBillingDetailQueryAndSaveCmdExe.execute() 获取到的门店id:{}", shopId);

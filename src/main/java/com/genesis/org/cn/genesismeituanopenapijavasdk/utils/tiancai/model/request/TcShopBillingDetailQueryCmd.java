@@ -6,7 +6,6 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
  * tc shop billing detail query cmd
@@ -30,7 +29,7 @@ public class TcShopBillingDetailQueryCmd {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "开始时间不能为空")
-    private Date beginDate;
+    private String beginDate;
 
     /**
      * end date
@@ -39,6 +38,6 @@ public class TcShopBillingDetailQueryCmd {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "结束时间不能为空")
-    private Date endDate;
+    private String endDate;
 
 }

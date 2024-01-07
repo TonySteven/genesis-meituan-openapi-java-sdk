@@ -108,8 +108,8 @@ public class QueryShopInfoAction {
                 log.info("成功鉴权！token=" + result.getAccessToken());
                 // 启动指定的流程
                 // 自定义开始时间和结束时间
-                Date beginDate = DateUtil.parse("2021-12-01 00:00:00");
-                Date endDate = DateUtil.parse("2021-12-10 23:59:59");
+                String beginDate = "2021-12-01 00:00:00";
+                String endDate = "2021-12-10 23:59:59";
                 QueryBillDetailsResponse queryBillDetailsResponse = queryBillingDetails
                     (protocol, applicationServer, applicationPort, accessId, result.getAccessToken()
                         , 1, 50, "94631", beginDate, endDate);
@@ -226,14 +226,8 @@ public class QueryShopInfoAction {
     public static QueryBillDetailsResponse queryBillingDetails(String protocol
         , String applicationServer, Integer applicationPort
         , String accessId, String token, Integer pageNo, Integer pageSize, String shopId
-        , Date beginDate, Date endDate) {
+        , String beginDateStr, String endDateStr) {
 
-        // beginDate 转成 2023-12-19 20:20:00 格式 String
-        String beginDateStr = DateUtil.parse(DateUtil.format(beginDate, "yyyy-MM-dd HH:mm:ss"))
-            .toString("yyyy-MM-dd HH:mm:ss");
-        // endDate 转成 2023-12-19 20:20:00 格式 String
-        String endDateStr = DateUtil.parse(DateUtil.format(endDate, "yyyy-MM-dd HH:mm:ss"))
-            .toString("yyyy-MM-dd HH:mm:ss");
         // 参数
         String url = protocol + "://" + applicationServer + ":" + applicationPort + URL_QUERY_BILL;
         Map<String, String> loginParams = new HashMap<>();

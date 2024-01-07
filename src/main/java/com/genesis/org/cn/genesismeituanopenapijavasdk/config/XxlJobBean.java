@@ -54,8 +54,8 @@ public class XxlJobBean {
             LocalDateTime endOfDay = previousDay.withHour(23).withMinute(59).withSecond(59);
             // 转换成Date
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            cmd.setBeginDate(java.sql.Timestamp.valueOf(startOfDay.format(df)));
-            cmd.setEndDate(java.sql.Timestamp.valueOf(endOfDay.format(df)));
+            cmd.setBeginDate(startOfDay.format(df));
+            cmd.setEndDate(endOfDay.format(df));
         }
         tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd);
     }
