@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.17</version>
+        <version>3.0.12</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.genesis.org.cn</groupId>
@@ -15,8 +15,7 @@
     <description>genesis-meituan-openapi-java-sdk</description>
     <properties>
         <java.version>17</java.version>
-        <mybatis.boot.version>2.1.2</mybatis.boot.version>
-        <mybatis.plus.boot.version>3.5.2</mybatis.plus.boot.version>
+        <mybatis.boot.version>3.0.2</mybatis.boot.version>
         <mysql.connector.version>8.0.33</mysql.connector.version>
         <jointblock.version>1.16.0-SNAPSHOT</jointblock.version>
     </properties>
@@ -24,6 +23,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.2.1</version>
         </dependency>
 
         <dependency>
@@ -55,12 +55,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.connector.version}</version>
         </dependency>
-        <!--        &lt;!&ndash;mybatis-plus 依赖&ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>com.baomidou</groupId>-->
-        <!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
-        <!--            <version>${mybatis.plus.boot.version}</version>-->
-        <!--        </dependency>-->
 
         <!-- 引入Swagger3依赖 -->
         <dependency>
@@ -100,11 +94,18 @@
                 ${project.basedir}/src/main/resources/lib/waimai_open_java_sdk_request-1.1.2-jar-with-dependencies.jar
             </systemPath>
         </dependency>
+
+        <!-- mybatis-plus -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.baomidou</groupId>-->
+        <!--            <artifactId>mybatis-plus</artifactId>-->
+        <!--            <version>3.5.3.2</version>-->
+        <!--        </dependency>-->
         <!-- json依赖 -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20211205</version>
+            <version>20231013</version>
         </dependency>
 
     </dependencies>

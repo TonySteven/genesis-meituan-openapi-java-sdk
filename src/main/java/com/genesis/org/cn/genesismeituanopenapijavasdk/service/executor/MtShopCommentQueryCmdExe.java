@@ -10,12 +10,12 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.MtShopC
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.mt.api.response.model.MtShopCommentResponseData;
 import com.sankuai.meituan.waimai.opensdk.factory.APIFactory;
 import com.sankuai.meituan.waimai.opensdk.vo.SystemParam;
+import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,7 +188,7 @@ public class MtShopCommentQueryCmdExe {
             // 查询门店评论.
             // 偏移量 = i * maxStep
             int offset = i * maxStep;
-            // systemParam, String appPoiCode, String startTime, String endTime, int page-offset, int page-size, int replyStatus
+            // systemParam, String appPoiCode, String startTime, String endTime, int-page-offset, int page-size, int replyStatus
             String poiCommentSting = APIFactory.getPoiAPI().poiCommentQuery(systemParam, shopId, beginDate, endDate
                 , offset, maxStep, -1);
             // 如果 poiCommentSting =[],则不执行后面的循环.

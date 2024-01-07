@@ -32,6 +32,7 @@ public class TcShopBillingSettleDetailDaoImpl extends BaseDaoImpl<TcShopBillingS
         }
         // 修复MybatisPlusException: cannot use this method for "getEntity",必须new一个lambdaQueryWrapper对象.
         LambdaQueryWrapper<TcShopBillingSettleDetailEntity> lambdaQueryWrapper = Wrappers.lambdaQuery();
+        lambdaQueryWrapper.eq(TcShopBillingSettleDetailEntity::getCenterId, centerId);
         lambdaQueryWrapper.eq(TcShopBillingSettleDetailEntity::getShopId, shopId);
 
         this.remove(lambdaQueryWrapper);

@@ -1,9 +1,9 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * TcShopBillingDetail表数据层实现
  *
  * @author 人工智能
- * @date 2023-12-10 16:13:44
+ * &#064;date  2023-12-10 16:13:44
  */
 @Repository
 public class TcShopBillingDetailDaoImpl extends BaseDaoImpl<TcShopBillingDetailMapper, TcShopBillingDetailEntity> implements ITcShopBillingDetailDao {
@@ -33,6 +33,7 @@ public class TcShopBillingDetailDaoImpl extends BaseDaoImpl<TcShopBillingDetailM
 
         // 修复MybatisPlusException: cannot use this method for "getEntity",必须new一个lambdaQueryWrapper对象.
         LambdaQueryWrapper<TcShopBillingDetailEntity> lambdaQueryWrapper = Wrappers.lambdaQuery();
+        lambdaQueryWrapper.eq(TcShopBillingDetailEntity::getCenterId, centerId);
         lambdaQueryWrapper.eq(TcShopBillingDetailEntity::getShopId, shopId);
 
         this.remove(lambdaQueryWrapper);
