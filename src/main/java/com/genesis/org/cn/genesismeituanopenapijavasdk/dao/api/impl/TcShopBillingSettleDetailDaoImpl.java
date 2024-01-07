@@ -1,21 +1,21 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.bty.scm.boot.mybatis.base.BaseDaoImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingSettleDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingSettleDetailEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.TcShopBillingSettleDetailMapper;
-import com.github.pagehelper.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 /**
  * TcShopBillingSettleDetail表数据层实现
  *
  * @author 人工智能
- * @date 2023-12-10 16:13:45
+ * &#064;date  2023-12-10 16:13:45
  */
 @Repository
-public class TcShopBillingSettleDetailDaoImpl extends BaseDaoImpl<TcShopBillingSettleDetailMapper, TcShopBillingSettleDetailEntity> implements ITcShopBillingSettleDetailDao {
+public class TcShopBillingSettleDetailDaoImpl extends ServiceImpl<TcShopBillingSettleDetailMapper, TcShopBillingSettleDetailEntity> implements ITcShopBillingSettleDetailDao {
 
     /**
      * delete tc shop billing settle detail entity by shop id
@@ -26,15 +26,11 @@ public class TcShopBillingSettleDetailDaoImpl extends BaseDaoImpl<TcShopBillingS
      */
     @Override
     public void deleteTcShopBillingSettleDetailEntityByShopId(String centerId, String shopId) {
-        if (StringUtil.isEmpty(shopId) || StringUtil.isEmpty(centerId)) {
+        if (StringUtils.isBlank(shopId) || StringUtils.isBlank(centerId)) {
             return;
         }
-        // 修复MybatisPlusException: cannot use this method for "getEntity",必须new一个lambdaQueryWrapper对象.
-        QueryWrapper<TcShopBillingSettleDetailEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda()
+        baseMapper.delete(new QueryWrapper<TcShopBillingSettleDetailEntity>().lambda()
             .eq(TcShopBillingSettleDetailEntity::getShopId, shopId)
-            .eq(TcShopBillingSettleDetailEntity::getCenterId, centerId);
-
-        this.remove(queryWrapper);
+            .eq(TcShopBillingSettleDetailEntity::getCenterId, centerId));
     }
 }

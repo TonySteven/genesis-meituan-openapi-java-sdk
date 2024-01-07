@@ -1,6 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.impl;
 
-import com.bty.scm.boot.mybatis.base.BaseDaoImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopGroupInfoDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopGroupInfoEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.TcShopGroupInfoMapper;
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @date 2023-12-10 16:13:45
  */
 @Repository
-public class TcShopGroupInfoDaoImpl extends BaseDaoImpl<TcShopGroupInfoMapper, TcShopGroupInfoEntity> implements ITcShopGroupInfoDao {
+public class TcShopGroupInfoDaoImpl extends ServiceImpl<TcShopGroupInfoMapper, TcShopGroupInfoEntity> implements ITcShopGroupInfoDao {
 
 }

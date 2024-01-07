@@ -1,6 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.impl;
 
-import com.bty.scm.boot.mybatis.base.BaseDaoImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IMtShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.MtShopMapper;
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * &#064;date  2023-10-29 15:14:11
  */
 @Repository
-public class MtShopDaoImpl extends BaseDaoImpl<MtShopMapper, MtShopEntity> implements IMtShopDao {
+public class MtShopDaoImpl extends ServiceImpl<MtShopMapper, MtShopEntity> implements IMtShopDao {
 
 }

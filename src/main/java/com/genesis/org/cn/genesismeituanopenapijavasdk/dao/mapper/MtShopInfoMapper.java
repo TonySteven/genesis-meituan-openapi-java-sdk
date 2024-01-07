@@ -9,6 +9,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopInfoEnti
  * @author 人工智能
  * &#064;date  2023-10-30 18:41:04
  */
-public interface MtShopInfoMapper extends BaseMapper<MtShopInfoEntity>, com.bty.scm.boot.mybatis.base.BaseMapper<MtShopInfoEntity> {
+public interface MtShopInfoMapper extends BaseMapper<MtShopInfoEntity> {
 
 }

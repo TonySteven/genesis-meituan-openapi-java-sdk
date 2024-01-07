@@ -7,6 +7,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopIn
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -70,7 +70,7 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取账单明细落库api", notes = "天财SaaS-调用获取账单明细实时并落库api")
     @GetMapping("/save-billing-details")
-    public BaseVO saveBillingDetails(@RequestBody @Valid TcShopBillingDetailQueryCmd cmd) {
+    public BaseVO saveBillingDetails(@RequestBody @Validated TcShopBillingDetailQueryCmd cmd) {
         // 异步执行 tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd)
         CompletableFuture.runAsync(() -> tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd));
 

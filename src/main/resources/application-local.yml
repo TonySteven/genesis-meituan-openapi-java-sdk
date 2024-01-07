@@ -2,7 +2,7 @@
 logging:
   level:
     root: info
-    org.springframework.web: INFO
+    org.springframework.web: DEBUG
 
 # ===== 美团SaaS配置 ===== #
 meituan:

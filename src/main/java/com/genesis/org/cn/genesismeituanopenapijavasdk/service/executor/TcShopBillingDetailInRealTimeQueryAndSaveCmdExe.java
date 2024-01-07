@@ -17,9 +17,9 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.base.BasePageInfo;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -186,7 +186,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         , List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList) throws Exception {
         // 3.1 落库tcShopBillingDetailEntityList.
         // 如果tcShopBillingDetailEntityList不为空,则落库.
-        if (CollectionUtils.isNotEmpty(tcShopBillingDetailEntityList)) {
+        if (!CollectionUtils.isEmpty(tcShopBillingDetailEntityList)) {
             boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveOrUpdateBatch(tcShopBillingDetailEntityList);
             if (!tcShopBillingDetailEntityTag) {
                 throw new Exception("落库tcShopBillingDetailEntityList失败!");
@@ -194,7 +194,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         }
 
         // 如果tcShopBillingDetailItemEntityList不为空,则落库.
-        if (CollectionUtils.isNotEmpty(tcShopBillingDetailItemEntityList)) {
+        if (!CollectionUtils.isEmpty(tcShopBillingDetailItemEntityList)) {
             // 3.2 落库tcShopBillingDetailItemEntityList.
             boolean tcShopBillingDetailItemEntityListTag = iTcShopBillingDetailItemDao
                 .saveOrUpdateBatch(tcShopBillingDetailItemEntityList);
@@ -204,7 +204,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         }
 
         // 如果tcShopBillingSettleDetailEntityList不为空,则落库.
-        if (CollectionUtils.isNotEmpty(tcShopBillingSettleDetailEntityList)) {
+        if (!CollectionUtils.isEmpty(tcShopBillingSettleDetailEntityList)) {
             // 3.3 落库tcShopBillingSettleDetailEntityList.
             boolean tcShopBillingSettleDetailEntityListTag = iTcShopBillingSettleDetailDao
                 .saveOrUpdateBatch(tcShopBillingSettleDetailEntityList);
@@ -390,7 +390,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
             // 2.3 创建tcShopBillingDetailItemEntity对象.
             List<BillListItemItem> item = billListItem.getItem();
             // 如果item不为空,则遍历item,转换为TcShopBillingDetailItemEntity对象.
-            if (CollectionUtils.isNotEmpty(item)) {
+            if (!CollectionUtils.isEmpty(item)) {
                 for (BillListItemItem billListItemItem : item) {
                     String scId = billListItemItem.getScId();
                     // 2.3.1 创建tcShopBillingDetailItemEntity对象.
@@ -504,7 +504,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
             // 2.5 获取settleDetail
             List<SettleDetail> settleDetail = billListItem.getSettleDetail();
             // 如果settleDetail不为空,则遍历settleDetail,转换为TcShopBillingSettleDetailEntity对象.
-            if (CollectionUtils.isNotEmpty(settleDetail)) {
+            if (!CollectionUtils.isEmpty(settleDetail)) {
                 for (SettleDetail settleDetailItem : settleDetail) {
                     // 2.5.1 创建tcShopBillingSettleDetailEntity对象.
                     String tsId = settleDetailItem.getTsId();

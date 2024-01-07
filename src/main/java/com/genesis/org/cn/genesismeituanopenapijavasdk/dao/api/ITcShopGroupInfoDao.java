@@ -1,6 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api;
 
-import com.bty.scm.boot.mybatis.base.IBaseDao;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopGroupInfoEntity;
 
 /**
@@ -9,6 +9,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopGroupInf
  * @author 人工智能
  * @date 2023-12-10 16:13:45
  */
-public interface ITcShopGroupInfoDao extends IBaseDao<TcShopGroupInfoEntity> {
+public interface ITcShopGroupInfoDao extends IService<TcShopGroupInfoEntity> {
 
 }

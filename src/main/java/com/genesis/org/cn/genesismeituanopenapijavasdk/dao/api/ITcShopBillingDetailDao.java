@@ -1,6 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api;
 
-import com.bty.scm.boot.mybatis.base.IBaseDao;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailEntity;
 
 /**
@@ -9,7 +9,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingD
  * @author 人工智能
  * @date 2023-12-10 16:13:44
  */
-public interface ITcShopBillingDetailDao extends IBaseDao<TcShopBillingDetailEntity> {
+public interface ITcShopBillingDetailDao extends IService<TcShopBillingDetailEntity> {
 
     /**
      * delete tc shop billing detail entity by shop id

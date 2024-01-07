@@ -1,8 +1,10 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.bty.scm.boot.mybatis.base.BaseEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,13 +16,12 @@ import java.time.LocalDateTime;
  * @author 人工智能
  * &#064;date  2023-12-10 16:13:44
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName(value = "tc_shop_billing_full_off_detail")
-public class TcShopBillingFullOffDetailEntity extends BaseEntity {
+public class TcShopBillingFullOffDetailEntity {
     /**
      * id
      */

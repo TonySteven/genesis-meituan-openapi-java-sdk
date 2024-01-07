@@ -9,6 +9,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopCommentE
  * @author 人工智能
  * &#064;date  2023-10-29 15:12:23
  */
-public interface MtShopCommentMapper extends BaseMapper<MtShopCommentEntity>, com.bty.scm.boot.mybatis.base.BaseMapper<MtShopCommentEntity> {
+public interface MtShopCommentMapper extends BaseMapper<MtShopCommentEntity> {
 
 }
