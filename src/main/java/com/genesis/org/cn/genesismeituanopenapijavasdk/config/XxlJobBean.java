@@ -39,8 +39,10 @@ public class XxlJobBean {
         }
         // jobParam转ScStBillAuxiliaryOaQueryCmd
         TcShopBillingDetailQueryCmd cmd = JSONUtil.toBean(jobParam, TcShopBillingDetailQueryCmd.class);
+        // 打印cmd日志
+        log.info("tcShopBillingDetailQueryAndSaveCmdExe cmd:{}", JSONUtil.toJsonStr(cmd));
         // 校验cmd.getBeginDate()和cmd.getEndDate()是否为空,如果为空,则默认查询前一天的数据.
-        if (StringUtils.isBlank(cmd.getBeginDate().toString()) || StringUtils.isBlank(cmd.getEndDate().toString())) {
+        if (cmd.getBeginDate() == null || cmd.getEndDate() == null) {
             // 获取前一天的时间的0点和24点.
             // 获取当前时间
             LocalDateTime now = LocalDateTime.now();
