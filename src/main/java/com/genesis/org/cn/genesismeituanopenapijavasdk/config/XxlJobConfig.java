@@ -32,6 +32,10 @@ public class XxlJobConfig {
     @Value("${xxl.job.executor.port}")
     private String port;
 
+    // accessToken
+    @Value("${xxl.job.executor.accessToken}")
+    private String accessToken;
+
     @Value("${xxl.job.executor.intentionalities}")
     private int logRetentionDays;
 
@@ -45,6 +49,7 @@ public class XxlJobConfig {
         xxlJobSpringExecutor.setAppname(appname);
         xxlJobSpringExecutor.setLogPath(logPath);
         xxlJobSpringExecutor.setLogRetentionDays(logRetentionDays);
+        xxlJobSpringExecutor.setAccessToken(accessToken);
 
         if (StrUtil.isNotBlank(ip)) {
             xxlJobSpringExecutor.setIp(ip);

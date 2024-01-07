@@ -29,3 +29,17 @@ tiancai:
     accessId: ${TIANCAI_APP_ACCESS_ID:a1fca758ed104119889f46df3528d9fa}
     # centerId 餐饮集团ID
     centerId: ${TIANCAI_APP_CENTER_ID:94630}
+
+# 调度平台配置
+xxl:
+  job:
+    executor:
+      appName: ${XXL_JOB_EXECUTOR_APPNAME:genesis-meituan-openapi-java-service}
+      logPath: /data/applogs/xxl-job/jobhandler
+      ip: ${XXL_JOB_EXECUTOR_IP:10.0.4.13}
+      port: ${XXL_JOB_EXECUTOR_PORT:2222}
+      accessToken: ${XXL_JOB_EXECUTOR_ACCESS_TOKEN:dasj2nd81jf9asjdkl5jk234}
+      intentionalities: 3
+    admin:
+      # 调度中心部署地址
+      addresses: ${XXL_JOB_ADMIN_ADDRESSES:http://10.0.4.13:2222/xxl-job-admin}
