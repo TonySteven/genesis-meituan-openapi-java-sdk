@@ -42,7 +42,10 @@ public class XxlJobBean {
         // 打印cmd日志
         log.info("tcShopBillingDetailQueryAndSaveCmdExe cmd:{}", JSONUtil.toJsonStr(cmd));
         // 校验cmd.getBeginDate()和cmd.getEndDate()是否为空,如果为空,则默认查询前一天的数据.
-        if (cmd.getBeginDate() == null || cmd.getEndDate() == null) {
+        if (StringUtils.isBlank(cmd.getBeginDate()) || StringUtils.isBlank(cmd.getEndDate())) {
+            // 打印日志 进入默认查询前一天的数据
+            log.info("tcShopBillingDetailQueryAndSaveCmdExe cmd.getBeginDate() or cmd.getEndDate() is blank" +
+                ", default query previous day data.");
             // 获取前一天的时间的0点和24点.
             // 获取当前时间
             LocalDateTime now = LocalDateTime.now();
