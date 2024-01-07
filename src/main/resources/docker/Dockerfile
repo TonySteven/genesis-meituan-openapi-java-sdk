@@ -1,3 +1,13 @@
+#FROM openjdk:17-oracle
+#
+#ENV TZ=Asia/Shanghai
+#
+#COPY target/*.jar app.jar
+#
+#EXPOSE 8080
+#
+#ENTRYPOINT ["java","-jar","app.jar"]
+
 # 使用官方的 OpenJDK 基础镜像
 FROM openjdk:17-oracle
 
@@ -8,7 +18,7 @@ ENV TZ=Asia/Shanghai
 #WORKDIR /app
 
 # 将 JAR 文件复制到容器的 /app 目录下
-COPY target/genesis-meituan-openapi-java-sdk-1.0.0.jar app.jar
+COPY target/*.jar app.jar
 
 # 暴露应用程序将运行的端口
 EXPOSE 8080

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.genesis.org.cn</groupId>
     <artifactId>genesis-meituan-openapi-java-sdk</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>genesis-meituan-openapi-java-sdk</name>
     <description>genesis-meituan-openapi-java-sdk</description>
     <properties>
@@ -137,7 +137,14 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20211205</version>
+            <version>20231013</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.fabric8/docker-maven-plugin -->
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.43.4</version>
         </dependency>
 
     </dependencies>
@@ -161,6 +168,38 @@
                 <groupId>com.bty</groupId>
                 <artifactId>bty-mybatis-generator</artifactId>
                 <inherited>false</inherited>
+            </plugin>
+
+            <!-- docker maven plugin -->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.43.4</version>
+                <executions>
+                    <execution>
+                        <id>build-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>stevenl365404/genesis-meituan-openapi-java-sdk</name>
+                            <build>
+                                <dockerFileDir>${project.basedir}</dockerFileDir>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                                <tags>
+                                    <tag>latest</tag>
+                                </tags>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
             </plugin>
         </plugins>
     </build>
