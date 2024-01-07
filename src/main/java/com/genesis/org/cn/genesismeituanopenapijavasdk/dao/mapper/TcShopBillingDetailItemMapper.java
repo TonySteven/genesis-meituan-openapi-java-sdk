@@ -11,4 +11,13 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingD
  */
 public interface TcShopBillingDetailItemMapper extends BaseMapper<TcShopBillingDetailItemEntity> {
 
+    /**
+     * delete tc shop billing detail item entity by shop id
+     * 根据门店id删除门店账单明细表数据
+     *
+     * @param centerId center id
+     * @param shopId   门店id
+     */
+    void deleteTcShopBillingDetailItemEntityByShopId(String centerId, String shopId);
+
 }

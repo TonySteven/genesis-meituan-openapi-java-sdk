@@ -1,6 +1,5 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailEntity;
@@ -29,8 +28,8 @@ public class TcShopBillingDetailDaoImpl extends ServiceImpl<TcShopBillingDetailM
         if (StringUtils.isBlank(shopId) || StringUtils.isBlank(centerId)) {
             return;
         }
-        baseMapper.delete(new QueryWrapper<TcShopBillingDetailEntity>().lambda()
-            .eq(TcShopBillingDetailEntity::getShopId, shopId)
-            .eq(TcShopBillingDetailEntity::getCenterId, centerId));
+
+        // 写sql删除门店账单明细表数据
+        this.baseMapper.deleteTcShopBillingDetailEntityByShopId(centerId, shopId);
     }
 }

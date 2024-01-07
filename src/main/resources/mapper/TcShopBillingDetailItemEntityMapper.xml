@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.TcShopBillingDetailItemMapper">
+
+    <!--    deleteTcShopBillingDetailEntityByShopId 删除-->
+    <delete id="deleteTcShopBillingDetailItemEntityByShopId"
+            parameterType="com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.TcShopBillingDetailItemMapper">
+        delete
+        from tc_shop_billing_detail_item
+        where centerId = #{centerId}
+          AND shop_id = #{shopId};
+    </delete>
+
+
+</mapper>
