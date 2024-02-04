@@ -15,6 +15,12 @@ import javax.validation.constraints.NotBlank;
 public class ShopSyncCmd extends BaseCmd {
 
     /**
+     * 抖音 APP ID
+     */
+    @NotBlank(message = "抖音appId不能为空")
+    private String appId;
+
+    /**
      * 本地生活商家账户 ID
      * （account_id和poi_id，二者必填其一，若都填写，account_id优先）
      */

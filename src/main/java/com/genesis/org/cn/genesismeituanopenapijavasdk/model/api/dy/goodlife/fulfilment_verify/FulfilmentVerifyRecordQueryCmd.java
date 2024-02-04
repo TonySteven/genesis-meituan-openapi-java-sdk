@@ -17,6 +17,12 @@ import java.util.List;
 public class FulfilmentVerifyRecordQueryCmd extends BaseQueryCmd {
 
     /**
+     * 抖音 APP ID
+     */
+    @NotBlank(message = "抖音appId不能为空")
+    private String appId;
+
+    /**
      * 企业号商家总店id（验券准备接口中返回）
      */
     @NotBlank(message = "企业号商家总店id不能为空")

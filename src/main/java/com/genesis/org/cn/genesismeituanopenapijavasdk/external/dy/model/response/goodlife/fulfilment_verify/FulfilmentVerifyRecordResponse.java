@@ -44,6 +44,11 @@ public class FulfilmentVerifyRecordResponse {
     private Integer status;
 
     /**
+     * 券码
+     */
+    private String code;
+
+    /**
      * 撤销时间，单位秒，时间戳（已撤销时返回）
      */
     private Long cancel_time;

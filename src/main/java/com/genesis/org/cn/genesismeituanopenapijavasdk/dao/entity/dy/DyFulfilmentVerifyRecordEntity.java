@@ -82,6 +82,12 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
     private Integer verifyType;
 
     /**
+     * 券码
+     */
+    @TableField("code")
+    private String code;
+
+    /**
      * 核销记录的状态，1表示已核销，2表示已撤销
      */
     @TableField("status")
@@ -206,6 +212,7 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
         entity.setVerifyTime(response.getVerify_time());
         entity.setCanCancel(response.getCan_cancel() != null && response.getCan_cancel() ? 1 : 0);
         entity.setVerifyType(response.getVerify_type());
+        entity.setCode(response.getCode());
         entity.setStatus(response.getStatus());
         entity.setCancelTime(response.getCancel_time());
         if(ObjectUtils.isNotEmpty(response.getAmount())){

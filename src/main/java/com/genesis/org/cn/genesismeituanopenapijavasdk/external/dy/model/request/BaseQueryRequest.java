@@ -23,12 +23,12 @@ public class BaseQueryRequest implements Serializable {
     /**
      * 起始时间戳，单位秒，不传表示今天
      */
-    private Integer start_time;
+    private Long start_time;
 
     /**
      * 截止时间戳，单位秒
      */
-    private Integer end_time;
+    private Long end_time;
 
     public String getCursor() {
         if(cursor == null){

@@ -25,12 +25,12 @@ public class BaseQueryCmd extends BaseCmd {
     /**
      * 起始时间戳，单位秒，不传表示今天
      */
-    private Integer startTime;
+    private Long startTime;
 
     /**
      * 截止时间戳，单位秒
      */
-    private Integer endTime;
+    private Long endTime;
 
     public Integer getSize() {
         if(size == null){

@@ -5,12 +5,20 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 查询抖音门店信息请求模型
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ShopQueryCmd extends BasePageQueryRequest {
+
+    /**
+     * 抖音 APP ID
+     */
+    @NotBlank(message = "抖音appId不能为空")
+    private String appId;
 
     /**
      * 本地生活商家账户 ID

@@ -161,7 +161,7 @@ public class DyHttpUtils {
                 // 判断当前配置是否为自动刷新token
                 if(this.dyConfig.getIsAutoOauth()){
                     // 校验token是否过期
-                    if(!DyHttpStatusEnum.isTokenExpired(result.getExtra().getError_code())){
+                    if(DyHttpStatusEnum.isTokenExpired(result.getExtra().getError_code())){
                         // 判断是否还可以重试
                         if(retryCount < this.dyConfig.getMaxRetryCount()){
                             // 刷新token

@@ -1,5 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
@@ -54,5 +55,16 @@ public class CallDyController {
     @GetMapping("/syncFulfilmentVerifyRecord")
     public ApiResult<List<String>> syncFulfilmentVerifyRecord(@Validated FulfilmentVerifyRecordSyncCmd cmd) {
         return dyFulfilmentVerifyRecordSyncCmdExe.execute(cmd);
+    }
+
+    /**
+     * 抖音SaaS-同步全商户抖音验券记录信息api
+     * @param cmd 入参
+     * @return 结果
+     */
+    @ApiOperation(value = "抖音SaaS-同步全商户抖音验券记录信息api", notes = "抖音SaaS-同步全商户抖音验券记录信息api")
+    @GetMapping("/syncAllFulfilmentVerifyRecord")
+    public ApiResult<Object> syncAllFulfilmentVerifyRecord(@Validated FulfilmentVerifyRecordAllSyncCmd cmd) {
+        return dyFulfilmentVerifyRecordSyncCmdExe.executeAll(cmd);
     }
 }

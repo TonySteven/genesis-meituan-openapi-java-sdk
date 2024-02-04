@@ -2,11 +2,10 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fu
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.fulfilment_verify.FulfilmentVerifyRecordQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.BaseCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.BaseQueryCmd;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -14,19 +13,12 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FulfilmentVerifyRecordSyncCmd extends BaseCmd {
-
-    /**
-     * 抖音 APP ID
-     */
-    @NotBlank(message = "抖音appId不能为空")
-    private String appId;
+public class FulfilmentVerifyRecordAllSyncCmd extends BaseCmd {
 
     /**
      * 企业号商家总店id（验券准备接口中返回）
      */
-    @NotBlank(message = "企业号商家总店id不能为空")
-    private String accountId;
+    private List<String> accountIds;
 
     /**
      * 门店id列表，不传默认返回商家所有门店核销记录，多个值使用,拼接

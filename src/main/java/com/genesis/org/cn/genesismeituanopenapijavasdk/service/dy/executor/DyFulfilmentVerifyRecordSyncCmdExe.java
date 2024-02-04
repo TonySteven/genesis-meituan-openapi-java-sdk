@@ -9,6 +9,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.enums.StatusCodeEnums;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.exception.BusinessException;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.fulfilment_verify.FulfilmentVerifyRecordQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.fulfilment_verify.FulfilmentVerifyRecordQueryResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.context.DyConfigContextService;
@@ -23,10 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * 抖音SaaS-定时调用抖音验券历史并落库api具体逻辑.
@@ -43,6 +46,40 @@ public class DyFulfilmentVerifyRecordSyncCmdExe {
 
     @Resource
     private IDyShopService dyShopService;
+
+    public ApiResult<Object> executeAll(FulfilmentVerifyRecordAllSyncCmd cmd) {
+        log.info("[dy]开始执行全量抖音验券历史记录查询并落库api");
+
+        List<DyAccountEnums> accountList;
+        if(ObjectUtils.isEmpty(cmd.getAccountIds())){
+            // 如果传入的账户id为空，那么就查询所有账户id
+            accountList = Arrays.stream(DyAccountEnums.values()).toList();
+        }else{
+            accountList = DyAccountEnums.getByAccountIds(cmd.getAccountIds());
+        }
+
+        List<Object> result = new ArrayList<>();
+
+        // 循环同步账户id验券历史
+        for (DyAccountEnums account : accountList){
+            try {
+                FulfilmentVerifyRecordSyncCmd syncCmd = new FulfilmentVerifyRecordSyncCmd();
+                syncCmd.setAccountId(account.getAccountId());
+                syncCmd.setAppId(account.getAppId());
+                syncCmd.setPoiIds(cmd.getPoiIds());
+                syncCmd.setStartTime(cmd.getStartTime());
+                syncCmd.setEndTime(cmd.getEndTime());
+                syncCmd.setRequestId(cmd.getRequestId());
+
+                result.add(execute(syncCmd));
+            }catch (Exception e){
+                String error = String.format("[dy]账户下门店核销记录同步失败,accountId:%s,e:%s",account.getAccountId(),e.getMessage());
+                log.error("{}",error,e);
+                result.add(ApiResult.error(error));
+            }
+        }
+        return ApiResult.success(result);
+    }
 
     public ApiResult<List<String>> execute(FulfilmentVerifyRecordSyncCmd cmd) {
         log.info("开始执行抖音验券历史记录查询并落库api");
