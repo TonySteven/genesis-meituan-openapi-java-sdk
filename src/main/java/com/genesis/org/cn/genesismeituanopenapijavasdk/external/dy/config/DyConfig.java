@@ -209,7 +209,7 @@ public class DyConfig {
             if(this.getIsCacheToken()){
                 return this.getCache().get(this.getAppId());
             }else{
-                return this.getAccessToken();
+                return this.accessToken;
             }
         }catch (Exception e){
             log.warn("{}getAccessToken异常, e:{}",LOG_PREFIX,e.getMessage(),e);
@@ -259,30 +259,32 @@ public class DyConfig {
      * @param function 获取抖音授权的方法
      * @return clientToken
      */
-    public synchronized String setClientToken(Function<OauthClientTokenRequest,OauthClientTokenResponse> function) {
+    public String setClientToken(Function<OauthClientTokenRequest,OauthClientTokenResponse> function) {
         try {
-            // 获取token
-            String clientToken = getAccessToken();
-            if(StringUtils.isNotBlank(clientToken)){
-                return clientToken;
+            synchronized (this.getAppId()){
+                // 获取token
+                String clientToken = getAccessToken();
+                if(StringUtils.isNotBlank(clientToken)){
+                    return clientToken;
+                }
+
+                OauthClientTokenRequest request = new OauthClientTokenRequest();
+                request.setClient_key(this.getAppId());
+                request.setClient_secret(this.getAppSecret());
+                request.setGrant_type(this.getBaseGrantType());
+
+                OauthClientTokenResponse response = function.apply(request);
+
+                if(ObjectUtils.isEmpty(response) || StringUtils.isBlank(response.getAccess_token())){
+                    log.error("{},request:{},response:{},获取token失败，数据为空",LOG_PREFIX,request, response);
+                    throw new RuntimeException("获取token失败，数据为空");
+                }
+
+                // 保存token
+                this.setAccessToken(response.getAccess_token());
+
+                return response.getAccess_token();
             }
-
-            OauthClientTokenRequest request = new OauthClientTokenRequest();
-            request.setClient_key(this.getAppId());
-            request.setClient_secret(this.getAppSecret());
-            request.setGrant_type(this.getBaseGrantType());
-
-            OauthClientTokenResponse response = function.apply(request);
-
-            if(ObjectUtils.isEmpty(response) || StringUtils.isBlank(response.getAccess_token())){
-                log.error("{},request:{},response:{},获取token失败，数据为空",LOG_PREFIX,request, response);
-                throw new RuntimeException("获取token失败，数据为空");
-            }
-
-            // 保存token
-            this.setAccessToken(response.getAccess_token());
-
-            return response.getAccess_token();
         }catch (Exception e){
             log.error("{},e:{}",LOG_PREFIX,e.getMessage(),e);
             throw new RuntimeException(e);
