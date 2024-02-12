@@ -2,7 +2,6 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.config;
 
 import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordAllSyncCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
@@ -22,7 +21,8 @@ import java.time.format.DateTimeFormatter;
  * xxl-job bean模式
  * 根据bean name在界面配置定时任务
  *
- * @author xuzhen97
+ * @author steven
+ * &#064;date  2024/02/12
  */
 @Component
 @Slf4j
