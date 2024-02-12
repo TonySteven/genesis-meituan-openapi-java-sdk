@@ -70,16 +70,28 @@ public class DyHttpUtils {
     }
 
     /**
-     * 刷新token
+     * 获取token
      * @param url 当前访问的url
      * @return 刷新后的token
      */
-    private String refreshToken(String url) {
+    private String getToken(String url) {
         // 验证是否需要获取token 如果指定token为空或url不在白名单中，则需要获取token
         if(!whiteUrlList.contains(url) && !this.dyConfig.getWhiteUrlList().contains(url)){
             return this.dyConfig.getClientToken(this::oauthClientToken);
         }
         return null;
+    }
+
+    /**
+     * 刷新token
+     * @param url 当前访问的url
+     * @return 刷新后的token
+     */
+    private String refreshToken(String url) {
+        // 先删除token
+        this.dyConfig.removeCache();
+        // 刷新token
+        return getToken(url);
     }
 
     /**
@@ -113,7 +125,7 @@ public class DyHttpUtils {
         headers.add(AppConstant.CONTENT_TYPE,AppConstant.CONTENT_TYPE_JSON);
 
         if(StringUtils.isBlank(accessToken)){
-            accessToken = refreshToken(url);
+            accessToken = getToken(url);
         }
         if(StringUtils.isNotBlank(accessToken)){
             headers.add(DyBaseConstant.ACCESS_TOKEN,accessToken);

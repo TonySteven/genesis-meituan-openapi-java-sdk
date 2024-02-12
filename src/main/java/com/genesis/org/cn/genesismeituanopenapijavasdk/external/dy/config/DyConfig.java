@@ -188,7 +188,7 @@ public class DyConfig {
         return isCacheToken;
     }
 
-    public Boolean getAutoOauth() {
+    public Boolean getIsAutoOauth() {
         if(ObjectUtils.isEmpty(this.isAutoOauth)){
             this.isAutoOauth = true;
         }
@@ -240,6 +240,18 @@ public class DyConfig {
                 });
         }
         return cache;
+    }
+
+    /**
+     * 删除缓存
+     */
+    public void removeCache() {
+
+        if(this.getIsCacheToken()){
+            this.getCache().invalidate(this.getAppId());
+        }else{
+            this.setAccessToken(null);
+        }
     }
 
     /**
