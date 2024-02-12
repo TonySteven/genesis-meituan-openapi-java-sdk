@@ -21,7 +21,8 @@ import java.time.format.DateTimeFormatter;
  * xxl-job bean模式
  * 根据bean name在界面配置定时任务
  *
- * @author xuzhen97
+ * @author steven
+ * &#064;date  2024/02/12
  */
 @Component
 @Slf4j
