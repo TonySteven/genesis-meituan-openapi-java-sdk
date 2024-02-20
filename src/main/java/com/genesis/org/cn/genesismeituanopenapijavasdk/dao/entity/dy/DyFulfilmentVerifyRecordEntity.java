@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.fulfilment_verify.FulfilmentVerifyRecordQueryResponse;
@@ -64,10 +66,10 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
     private String certificateId;
 
     /**
-     * 核销时间， 单位秒，时间戳
+     * 核销时间
      */
     @TableField("verify_time")
-    private Long verifyTime;
+    private LocalDateTime verifyTime;
 
     /**
      * 是否可撤销
@@ -94,10 +96,10 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
     private Integer status;
 
     /**
-     * 撤销时间，单位秒，时间戳（已撤销时返回）
+     * 撤销时间（已撤销时返回）
      */
     @TableField("cancel_time")
-    private Long cancelTime;
+    private LocalDateTime cancelTime;
 
     /**
      * 次卡单次券原始金额, 单位分
@@ -166,10 +168,10 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
     private Integer marketPrice;
 
     /**
-     * 团购售卖开始时间， 单位秒，时间戳
+     * 团购售卖开始时间
      */
     @TableField("sold_start_time")
-    private Long soldStartTime;
+    private LocalDateTime soldStartTime;
 
     /**
      * 商家系统（第三方）团购id
@@ -181,13 +183,13 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
      * 创建时间
      */
     @TableField("create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
     @TableField("update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 是否删除 0-否 1-是
@@ -209,12 +211,16 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
         entity.setPoiId(poiId);
         entity.setVerifyId(response.getVerify_id());
         entity.setCertificateId(response.getCertificate_id());
-        entity.setVerifyTime(response.getVerify_time());
+        if(response.getVerify_time() != null){
+            entity.setVerifyTime(LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getVerify_time()), ZoneId.systemDefault()));
+        }
         entity.setCanCancel(response.getCan_cancel() != null && response.getCan_cancel() ? 1 : 0);
         entity.setVerifyType(response.getVerify_type());
         entity.setCode(response.getCode());
         entity.setStatus(response.getStatus());
-        entity.setCancelTime(response.getCancel_time());
+        if(response.getCancel_time() != null){
+            entity.setCancelTime(LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getCancel_time()), ZoneId.systemDefault()));
+        }
         if(ObjectUtils.isNotEmpty(response.getAmount())){
             entity.setOriginalAmount(response.getAmount().getOriginal_amount());
             entity.setPayAmount(response.getAmount().getPay_amount());
@@ -230,7 +236,9 @@ public class DyFulfilmentVerifyRecordEntity implements Serializable {
             entity.setTitle(response.getSku().getTitle());
             entity.setGrouponType(response.getSku().getGroupon_type());
             entity.setMarketPrice(response.getSku().getMarket_price());
-            entity.setSoldStartTime(response.getSku().getSold_start_time());
+            if(response.getSku().getSold_start_time() != null){
+                entity.setSoldStartTime(LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getSku().getSold_start_time()), ZoneId.systemDefault()));
+            }
             entity.setThirdSkuId(response.getSku().getThird_sku_id());
         }
         return entity;
