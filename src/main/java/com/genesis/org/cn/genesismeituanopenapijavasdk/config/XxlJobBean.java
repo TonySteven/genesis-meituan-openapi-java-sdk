@@ -2,7 +2,9 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.config;
 
 import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordAllSyncCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import com.xxl.job.core.context.XxlJobHelper;
@@ -33,6 +35,9 @@ public class XxlJobBean {
 
     @Resource
     private DyFulfilmentVerifyRecordSyncCmdExe dyFulfilmentVerifyRecordSyncCmdExe;
+
+    @Resource
+    private DyShopSyncCmdExe dySyncCmdExe;
 
     /**
      * 实时1分钟一次定时抽取
@@ -105,6 +110,24 @@ public class XxlJobBean {
             cmd.setEndTime(endOfDay.toEpochSecond(ZoneOffset.of("+8")));
         }
         dyFulfilmentVerifyRecordSyncCmdExe.executeAll(cmd);
+    }
+
+    /**
+     * 每天凌晨二点同步抖音门店信息
+     */
+    @XxlJob("syncDyShopHandler")
+    public void syncDyShopHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("dySyncCmdExe jobParam:{}", jobParam);
+        // 如果jobParam.isBlank，直接返回
+        if (StringUtils.isBlank(jobParam)) {
+            return;
+        }
+        // jobParam转ShopAllSyncCmd
+        ShopAllSyncCmd cmd = JSONUtil.toBean(jobParam, ShopAllSyncCmd.class);
+        // 打印cmd日志
+        log.info("dySyncCmdExe cmd:{}", JSONUtil.toJsonStr(cmd));
+        dySyncCmdExe.executeAll(cmd);
     }
 
 

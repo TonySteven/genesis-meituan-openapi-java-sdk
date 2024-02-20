@@ -5,6 +5,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.dy.DyShopEntit
 import com.genesis.org.cn.genesismeituanopenapijavasdk.enums.DyAccountEnums;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.shop.ShopQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.shop.ShopQueryResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.context.DyConfigContextService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,38 @@ public class DyShopSyncCmdExe {
 
     @Resource
     private IDyShopService dyShopService;
+
+    public ApiResult<Object> executeAll(ShopAllSyncCmd cmd) {
+        log.info("开始执行全量抖音门店查询并落库api");
+
+        List<DyAccountEnums> accountList;
+        if(ObjectUtils.isEmpty(cmd.getAccountIds())){
+            // 如果传入的账户id为空，那么就查询所有账户id
+            accountList = Arrays.stream(DyAccountEnums.values()).toList();
+        }else{
+            accountList = DyAccountEnums.getByAccountIds(cmd.getAccountIds());
+        }
+
+        List<Object> result = new ArrayList<>();
+
+        // 循环同步账户id门店
+        for (DyAccountEnums account : accountList){
+            try {
+                ShopSyncCmd syncCmd = new ShopSyncCmd();
+                syncCmd.setAccountId(account.getAccountId());
+                syncCmd.setAppId(account.getAppId());
+                syncCmd.setRequestId(cmd.getRequestId());
+                syncCmd.setPoiId(cmd.getPoiId());
+
+                result.add(execute(syncCmd));
+            }catch (Exception e){
+                String error = String.format("[dy]账户下门店同步失败,accountId:%s,e:%s",account.getAccountId(),e.getMessage());
+                log.error("{}",error,e);
+                result.add(ApiResult.error(error));
+            }
+        }
+        return ApiResult.success(result);
+    }
 
     public ApiResult<String> execute(ShopSyncCmd cmd) {
         log.info("开始执行抖音门店查询并落库api");
