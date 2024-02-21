@@ -3,11 +3,12 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.impl;
 import cn.hutool.core.collection.ListUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.IDyFulfilmentVerifyRecordService;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.IDyFulfilmentVerifyRecordDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.dy.DyFulfilmentVerifyRecordEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.dy.DyFulfilmentVerifyRecordMapper;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.database.service.impl.BaseServiceImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.enums.DeletedEnums;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.settle_ledger.DySettleLedgerRecordSyncCmd;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  * @since 2024-02-03
  */
 @Service
-public class DyFulfilmentVerifyRecordServiceImpl extends BaseServiceImpl<DyFulfilmentVerifyRecordMapper, DyFulfilmentVerifyRecordEntity> implements IDyFulfilmentVerifyRecordService {
+public class DyFulfilmentVerifyRecordDaoImpl extends BaseServiceImpl<DyFulfilmentVerifyRecordMapper, DyFulfilmentVerifyRecordEntity> implements IDyFulfilmentVerifyRecordDao {
 
     /**
      * 根据企业号商家总店id、门店id和核销记录id查询抖音验券历史记录
@@ -112,4 +113,47 @@ public class DyFulfilmentVerifyRecordServiceImpl extends BaseServiceImpl<DyFulfi
         });
     }
 
+
+    /**
+     * 根据企业号商家总店id、门店id和券id查询抖音验券历史记录
+     * @param accountId 企业号商家总店id
+     * @param poiId 门店id
+     * @param certificateIds 券id
+     * @return 结果
+     */
+    @Override
+    public List<DyFulfilmentVerifyRecordEntity> getListByCertificateIds(String accountId,String poiId,List<String> certificateIds){
+        LambdaQueryWrapper<DyFulfilmentVerifyRecordEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DyFulfilmentVerifyRecordEntity::getAccountId, accountId)
+            .eq(DyFulfilmentVerifyRecordEntity::getPoiId, poiId)
+            .in(ObjectUtils.isNotEmpty(certificateIds),DyFulfilmentVerifyRecordEntity::getVerifyId, certificateIds)
+            .orderByAsc(DyFulfilmentVerifyRecordEntity::getId);
+        return this.listAll(wrapper);
+    }
+
+    /**
+     * 根据企业号商家总店id、门店id和券id查询抖音验券历史券ID
+     * @param accountId 企业号商家总店id
+     * @param poiId 门店id
+     * @param cmd 请求入参
+     * @return 结果
+     */
+    @Override
+    public List<String> getCertificateIds(String accountId,String poiId, DySettleLedgerRecordSyncCmd cmd){
+        LambdaQueryWrapper<DyFulfilmentVerifyRecordEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(DyFulfilmentVerifyRecordEntity::getCertificateId)
+            .eq(DyFulfilmentVerifyRecordEntity::getAccountId, accountId)
+            .eq(DyFulfilmentVerifyRecordEntity::getPoiId, poiId)
+            .in(ObjectUtils.isNotEmpty(cmd.getCertificateIds()),DyFulfilmentVerifyRecordEntity::getVerifyId, cmd.getCertificateIds())
+            .ge(ObjectUtils.isNotEmpty(cmd.getStartTime()),DyFulfilmentVerifyRecordEntity::getVerifyTime, cmd.getStartTime())
+            .le(ObjectUtils.isNotEmpty(cmd.getEndTime()),DyFulfilmentVerifyRecordEntity::getVerifyTime, cmd.getEndTime())
+            .orderByAsc(DyFulfilmentVerifyRecordEntity::getId);
+        List<DyFulfilmentVerifyRecordEntity> list = this.listAll(wrapper);
+
+        if(ObjectUtils.isEmpty(list)){
+            return new ArrayList<>();
+        }
+
+        return list.stream().map(DyFulfilmentVerifyRecordEntity::getCertificateId).distinct().collect(Collectors.toList());
+    }
 }

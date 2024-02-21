@@ -1,5 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.fulfilment_verify;
 
+import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.sku.RecordSkuResponse;
 import lombok.Data;
 
 /**
@@ -61,7 +62,7 @@ public class FulfilmentVerifyRecordResponse {
     /**
      * 团购信息
      */
-    private FulfilmentVerifyRecordSkuResponse sku;
+    private RecordSkuResponse sku;
 
     /**
      * 核销金额信息

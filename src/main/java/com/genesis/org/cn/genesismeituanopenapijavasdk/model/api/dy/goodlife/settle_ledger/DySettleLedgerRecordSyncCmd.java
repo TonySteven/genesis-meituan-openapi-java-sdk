@@ -1,23 +1,20 @@
-package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify;
+package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.settle_ledger;
 
-import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.fulfilment_verify.FulfilmentVerifyRecordQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.BaseCmd;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 /**
- * 抖音验券历史查询请求模型
+ * 抖音分账记录历史查询请求模型
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FulfilmentVerifyRecordSyncCmd extends BaseCmd {
+public class DySettleLedgerRecordSyncCmd extends BaseCmd {
 
     /**
      * 抖音 APP ID
@@ -37,6 +34,11 @@ public class FulfilmentVerifyRecordSyncCmd extends BaseCmd {
     private List<String> poiIds;
 
     /**
+     * 券id列表
+     */
+    private List<String> certificateIds;
+
+    /**
      * 起始时间，不传表示今天
      */
 //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -44,20 +46,9 @@ public class FulfilmentVerifyRecordSyncCmd extends BaseCmd {
     private LocalDateTime startTime;
 
     /**
-     * 截止时间，单位秒
+     * 截止时间
      */
 //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
-
-    public FulfilmentVerifyRecordQueryRequest toRequest() {
-        FulfilmentVerifyRecordQueryRequest request = new FulfilmentVerifyRecordQueryRequest();
-        if(ObjectUtils.isNotEmpty(this.getStartTime())){
-            request.setStart_time(this.getStartTime().toEpochSecond(ZoneOffset.UTC));
-        }
-        if(ObjectUtils.isNotEmpty(this.getEndTime())){
-            request.setEnd_time(this.getEndTime().toEpochSecond(ZoneOffset.UTC));
-        }
-        return request;
-    }
 }

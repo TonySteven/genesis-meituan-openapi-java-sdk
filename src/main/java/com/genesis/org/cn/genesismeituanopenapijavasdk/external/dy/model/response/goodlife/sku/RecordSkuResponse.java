@@ -1,4 +1,4 @@
-package com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.fulfilment_verify;
+package com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.sku;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import lombok.Data;
  * 抖音验券记录团购信息响应模型
  */
 @Data
-public class FulfilmentVerifyRecordSkuResponse {
+public class RecordSkuResponse {
 
     /**
      * 团购SKU ID

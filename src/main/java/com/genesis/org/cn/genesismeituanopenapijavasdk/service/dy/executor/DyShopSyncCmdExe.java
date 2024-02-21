@@ -1,6 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor;
 
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.IDyShopService;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.IDyShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.dy.DyShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.enums.DyAccountEnums;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.shop.ShopQueryRequest;
@@ -30,7 +30,7 @@ public class DyShopSyncCmdExe {
     private DyConfigContextService dyConfigContextService;
 
     @Resource
-    private IDyShopService dyShopService;
+    private IDyShopDao dyShopService;
 
     public ApiResult<Object> executeAll(ShopAllSyncCmd cmd) {
         log.info("开始执行全量抖音门店查询并落库api");

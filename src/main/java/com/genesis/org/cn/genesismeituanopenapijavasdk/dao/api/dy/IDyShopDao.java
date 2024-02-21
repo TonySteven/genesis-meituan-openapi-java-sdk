@@ -14,7 +14,7 @@ import java.util.Map;
  * @author LiPei
  * @since 2024-02-03
  */
-public interface IDyShopService extends IBaseService<DyShopEntity> {
+public interface IDyShopDao extends IBaseService<DyShopEntity> {
 
     /**
      * 根据生活服务商家账户 ID查询门店列表

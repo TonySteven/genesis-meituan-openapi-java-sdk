@@ -3,6 +3,7 @@ logging:
   level:
     root: info
     org.springframework.web: DEBUG
+    com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper: debug
 
 # ===== 美团SaaS配置 ===== #
 meituan:

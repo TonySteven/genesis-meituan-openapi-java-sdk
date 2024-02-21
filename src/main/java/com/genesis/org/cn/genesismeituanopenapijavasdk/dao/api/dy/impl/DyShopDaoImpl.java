@@ -2,7 +2,7 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.IDyShopService;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.dy.IDyShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.dy.DyShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.dy.DyShopMapper;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.database.service.impl.BaseServiceImpl;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @since 2024-02-03
  */
 @Service
-public class DyShopServiceImpl extends BaseServiceImpl<DyShopMapper, DyShopEntity> implements IDyShopService {
+public class DyShopDaoImpl extends BaseServiceImpl<DyShopMapper, DyShopEntity> implements IDyShopDao {
 
     /**
      * 根据生活服务商家账户 ID查询门店列表

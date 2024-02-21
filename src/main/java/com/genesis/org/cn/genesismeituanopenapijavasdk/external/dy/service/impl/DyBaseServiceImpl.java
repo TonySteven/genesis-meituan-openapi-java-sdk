@@ -3,9 +3,11 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.service.impl
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.config.DyConfig;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.OauthClientTokenRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.fulfilment_verify.FulfilmentVerifyRecordQueryRequest;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.settle_ledger.SettleLedgerRecordQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.request.goodlife.shop.ShopQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.OauthClientTokenResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.fulfilment_verify.FulfilmentVerifyRecordQueryResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.settle_ledger.SettleLedgerRecordQueryResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.model.response.goodlife.shop.ShopQueryResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.service.DyService;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.external.dy.utils.DyHttpUtils;
@@ -88,7 +90,19 @@ public class DyBaseServiceImpl implements DyService {
      * @param request 入参
      * @return 结果
      */
+    @Override
     public FulfilmentVerifyRecordQueryResponse queryFulfilmentVerifyRecords(FulfilmentVerifyRecordQueryRequest request){
         return dyHttpUtils.get(request, FulfilmentVerifyRecordQueryResponse.class);
+    }
+
+    /**
+     * 获取抖音分账明细记录
+     *
+     * @param request 入参
+     * @return 结果
+     */
+    @Override
+    public SettleLedgerRecordQueryResponse querySettleLedgerRecords(SettleLedgerRecordQueryRequest request){
+        return dyHttpUtils.get(request, SettleLedgerRecordQueryResponse.class);
     }
 }
