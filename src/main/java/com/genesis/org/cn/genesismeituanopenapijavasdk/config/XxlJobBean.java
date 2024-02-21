@@ -81,7 +81,7 @@ public class XxlJobBean {
     }
 
     /**
-     * 每天凌晨三点同步
+     * 每天凌晨二点同步
      */
     @XxlJob("syncDyFulfilmentVerifyRecordHandler")
     public void syncDyFulfilmentVerifyRecordHandler() {
@@ -117,7 +117,7 @@ public class XxlJobBean {
     }
 
     /**
-     * 每天凌晨二点同步抖音门店信息
+     * 每天凌晨一点同步抖音门店信息
      */
     @XxlJob("syncDyShopHandler")
     public void syncDyShopHandler() {
@@ -135,7 +135,7 @@ public class XxlJobBean {
     }
 
     /**
-     * 每天凌晨四点同步
+     * 每天凌晨三点同步
      */
     @XxlJob("syncDySettleLedgerRecordHandler")
     public void syncDySettleLedgerRecordHandler() {
