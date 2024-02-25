@@ -2,7 +2,9 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IJdScmShopBillDao;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IVoucherCalsstypeDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.JdScmShopBillEntity;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.VoucherClassTypeEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.BaseFNumber;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.BaseFNumberUppercase;
@@ -19,6 +21,10 @@ import javax.annotation.Resource;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.jsoup.helper.Validate.fail;
 
@@ -35,6 +41,9 @@ public class KingdeeSavePayableOrderCmdExe {
 
     @Resource
     private IJdScmShopBillDao iJdScmShopBillDao;
+
+    @Resource
+    private IVoucherCalsstypeDao iVoucherCalsstypeDao;
 
     /**
      * execute
@@ -98,6 +107,11 @@ public class KingdeeSavePayableOrderCmdExe {
         JdScmShopBillEntity jdScmShopBillEntity = iJdScmShopBillDao.getOne(queryWrapper);
 
         // 2. 拼接参数
+        List<VoucherClassTypeEntity> voucherClassTypeEntities = iVoucherCalsstypeDao.list();
+        // 根据voucherClassTypeEntities, 获取Map<ItemBigClassCode,VoucherClassTypeEntity>对象
+        Map<String, VoucherClassTypeEntity> stringVoucherClassTypeEntityMap = voucherClassTypeEntities.stream().collect(
+            Collectors.toMap(VoucherClassTypeEntity::getItemBigClassCode, Function.identity()));
+
         // 2.1 大类
 
         // 2.2 业务时间 格式化为YYYY-MM-DD字符串
@@ -126,11 +140,21 @@ public class KingdeeSavePayableOrderCmdExe {
         String totalIncludeTaxMoney = jdScmShopBillEntity.getTotalIncludeTaxMoney()
             .setScale(2, RoundingMode.HALF_UP).toString();
 
+        // 2.9 获取billTypeCode
+        String billTypeCode = stringVoucherClassTypeEntityMap.get(jdScmShopBillEntity.getItemBigClassCode())
+            .getBilltypecode();
+        // 2.10 获取bill type
+        String billType = stringVoucherClassTypeEntityMap.get(jdScmShopBillEntity.getItemBigClassCode())
+            .getBilltype();
+        // 2.11 获取类别编码 voucher_calsstype.classCode
+        String classCode = stringVoucherClassTypeEntityMap.get(jdScmShopBillEntity.getItemBigClassCode())
+            .getClasscode();
+
 
         // 3. 返回参数
         KingdeeSavePayableOrderRequestModel model = KingdeeSavePayableOrderRequestModel.builder()
             // 单据类型编码
-            .FBillTypeID(BaseFNumberUppercase.builder().FNUMBER("YFD01_SYS").build())
+            .FBillTypeID(BaseFNumberUppercase.builder().FNUMBER(billTypeCode).build())
             .FDATE(formattedBusinessDate)
             // 到期日
             .FENDDATE_H(formattedBusinessDate)
@@ -141,7 +165,7 @@ public class KingdeeSavePayableOrderCmdExe {
             // 币别
             .FCURRENCYID(BaseFNumber.builder().FNumber("").build())
             // 业务类型
-            .FBUSINESSTYPE("TODO")
+            .FBUSINESSTYPE(billType)
             // 结算组织编码
             .FSETTLEORGID(BaseFNumber.builder().FNumber(shopCode).build())
             // 付款组织编码
@@ -153,7 +177,7 @@ public class KingdeeSavePayableOrderCmdExe {
             // 立账类型
             .FSetAccountType("业务应付")
             // 费用项目编码
-            .FCOSTID(BaseFNumber.builder().FNumber("TODO").build())
+            .FCOSTID(BaseFNumber.builder().FNumber(classCode).build())
             // 不含税金额
             .FNoTaxAmountFor_D(totalStoreMoney)
             // 税额
