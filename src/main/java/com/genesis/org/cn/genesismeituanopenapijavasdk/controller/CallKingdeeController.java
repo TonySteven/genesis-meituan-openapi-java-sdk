@@ -1,7 +1,7 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 public class CallKingdeeController {
 
     @Resource
-    TcShopInfoQueryAndSaveCmdExe tcShopInfoQueryAndSaveCmdExe;
+    KingdeeSavePayableOrderCmdExe kingdeeSavePayableOrderCmdExe;
 
 
     /**
@@ -36,7 +36,7 @@ public class CallKingdeeController {
     @GetMapping("/save-payable-order")
     public BaseVO savePayableOrder() {
         // 在执行器里面执行具体的业务逻辑.
-        return tcShopInfoQueryAndSaveCmdExe.execute();
+        return kingdeeSavePayableOrderCmdExe.execute();
     }
 
 }
