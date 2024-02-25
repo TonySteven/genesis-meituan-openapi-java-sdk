@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * JdScmShopBill表数据层实现
  *
  * @author 人工智能
- * @date 2024-02-25 16:01:47
+ * &#064;date  2024-02-25 16:01:47
  */
 @Repository
 public class JdScmShopBillDaoImpl extends ServiceImpl<JdScmShopBillMapper, JdScmShopBillEntity> implements IJdScmShopBillDao {

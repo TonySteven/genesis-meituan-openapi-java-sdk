@@ -7,7 +7,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.JdScmShopBillE
  * JdScmShopBill表数据层接口
  *
  * @author 人工智能
- * @date 2024-02-25 16:01:47
+ * &#064;date  2024-02-25 16:01:47
  */
 public interface IJdScmShopBillDao extends IService<JdScmShopBillEntity> {
 

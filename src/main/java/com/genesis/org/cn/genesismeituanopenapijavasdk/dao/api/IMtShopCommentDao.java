@@ -12,7 +12,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.MtShopCommentE
 public interface IMtShopCommentDao extends IService<MtShopCommentEntity> {
 
     /**
-     * query last one by shop id
+     * query the last one by shop id
      *
      * @return {@link String}
      */
