@@ -1,6 +1,8 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,12 +25,30 @@ import java.util.Date;
 @AllArgsConstructor
 @TableName(value = "jd_scm_shop_bill")
 public class JdScmShopBillEntity {
+    /**
+     * id
+     */
+    @TableField(value = "id")
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
 
     /**
      * 业务时间
      */
     @TableField(value = "busDate")
     private Date busDate;
+
+    /**
+     *
+     */
+    @TableField(value = "reAuditDate")
+    private String reAuditDate;
+
+    /**
+     *
+     */
+    @TableField(value = "StoreBillReState")
+    private Integer StoreBillReState;
 
     /**
      * 单号
@@ -49,7 +69,7 @@ public class JdScmShopBillEntity {
     private String ShopCode;
 
     /**
-     * 暂时没用
+     *
      */
     @TableField(value = "FAccountBookID")
     private byte[] FAccountBookID;
@@ -85,13 +105,14 @@ public class JdScmShopBillEntity {
     private String BillType;
 
     /**
-     * 单据类型2
+     *
      */
     @TableField(value = "BillType2")
     private String BillType2;
 
     /**
      * 品项大类编码
+
      */
     @TableField(value = "ItemBigClassCode")
     private String ItemBigClassCode;
@@ -103,56 +124,56 @@ public class JdScmShopBillEntity {
     private String ItemBigClassname;
 
     /**
-     * 出库金额（成本）
+     *
      */
-    @TableField(value = "OutStoreMoney")
-    private BigDecimal OutStoreMoney;
+    @TableField(value = "totalstoremoney")
+    private BigDecimal totalstoremoney;
 
     /**
-     * 入库金额（成本）
+     *
      */
-    @TableField(value = "InStoreMoney")
-    private String InStoreMoney;
+    @TableField(value = "totalTaxMoney")
+    private BigDecimal totalTaxMoney;
 
     /**
-     * 税额（成本）
+     *
      */
-    @TableField(value = "TaxMoney")
-    private String TaxMoney;
+    @TableField(value = "totalIncludeTaxMoney")
+    private BigDecimal totalIncludeTaxMoney;
 
     /**
-     * 含税金额（成本）
-     */
-    @TableField(value = "IncludeTaxMoney")
-    private String IncludeTaxMoney;
-
-    /**
-     * 是否是出库类型，0入1出
+     * 是否是出库类型
      */
     @TableField(value = "isOut")
-    private String isOut;
+    private Integer isOut;
 
     /**
-     * 是否已生成凭证
+     *
      */
     @TableField(value = "isvoucher")
     private Integer isvoucher;
 
     /**
-     * 凭证号
+     *
      */
     @TableField(value = "voucherNo")
     private byte[] voucherNo;
 
     /**
-     * 供应商账期，账期类型 0或者空:不控制 1:日结，2:5天，3:周结，4:10天，5:半月，6:月结，7:季结，8:年结
+     *
      */
     @TableField(value = "accountPeriodType")
     private String accountPeriodType;
 
     /**
-     * 错误日志
+     *
      */
     @TableField(value = "errorlog")
     private byte[] errorlog;
+
+    /**
+     *
+     */
+    @TableField(value = "timestamp")
+    private Date timestamp;
 }

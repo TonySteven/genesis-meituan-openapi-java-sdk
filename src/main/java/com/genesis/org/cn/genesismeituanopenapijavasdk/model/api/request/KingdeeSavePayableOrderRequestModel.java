@@ -1,6 +1,9 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +15,9 @@ import java.util.List;
  * &#064;date  2023/10/29
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class KingdeeSavePayableOrderRequestModel {
 
     /**
@@ -37,7 +43,7 @@ public class KingdeeSavePayableOrderRequestModel {
     /**
      * fenddateh
      */
-    private String FENDDATEH;
+    private String FENDDATE_H;
 
     /**
      * fdocumentstatus
@@ -90,6 +96,11 @@ public class KingdeeSavePayableOrderRequestModel {
     private BaseFNumber FPAYORGID;
 
     /**
+     * FCOSTID
+     */
+    private BaseFNumber FCOSTID;
+
+    /**
      * fset account type
      */
     private String FSetAccountType;
@@ -102,7 +113,7 @@ public class KingdeeSavePayableOrderRequestModel {
     /**
      * fapremark
      */
-    private String FAPRemark;
+    private String FAP_Remark;
 
     /**
      * fishook match
@@ -203,6 +214,21 @@ public class KingdeeSavePayableOrderRequestModel {
      * fis generate plan by cost item
      */
     private String FIsGeneratePlanByCostItem;
+
+    /**
+     * 不含税金额
+     */
+    private String FNoTaxAmountFor_D;
+
+    /**
+     * 税额
+     */
+    private String FTAXAMOUNTFOR_D;
+
+    /**
+     * 价税合计
+     */
+    private String FALLAMOUNTFOR_D;
 
     /**
      * fscpconfirmerid
