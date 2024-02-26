@@ -104,7 +104,8 @@ public class KingdeeSavePayableOrderCmdExe {
         QueryWrapper<JdScmShopBillEntity> queryWrapper = new QueryWrapper<>();
         // BillType In ('门店自采入库','门店统配入库','店间调入')
         queryWrapper.in("BillType", "门店自采入库", "门店统配入库", "店间调入");
-        JdScmShopBillEntity jdScmShopBillEntity = iJdScmShopBillDao.getOne(queryWrapper);
+        List<JdScmShopBillEntity> jdScmShopBillEntities = iJdScmShopBillDao.list(queryWrapper);
+        JdScmShopBillEntity jdScmShopBillEntity = jdScmShopBillEntities.get(0);
 
         // 2. 拼接参数
         List<VoucherClassTypeEntity> voucherClassTypeEntities = iVoucherCalsstypeDao.list();
