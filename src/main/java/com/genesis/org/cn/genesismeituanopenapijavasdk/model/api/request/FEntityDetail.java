@@ -1,6 +1,9 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -11,6 +14,9 @@ import java.util.List;
  * &#064;date  2023/10/29
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FEntityDetail {
 
     private int FEntryID;
@@ -72,6 +78,20 @@ public class FEntityDetail {
     private String FTAILDIFFFLAG;
     private int FDIFFAMOUNT;
     private int FDIFFALLAMOUNT;
+    /**
+     * 不含税金额
+     */
+    private String FNoTaxAmountFor_D;
+
+    /**
+     * 税额
+     */
+    private String FTAXAMOUNTFOR_D;
+
+    /**
+     * 价税合计
+     */
+    private String FALLAMOUNTFOR_D;
     private BaseFNumberUppercase FPRESETENTRYBASE1;
     private BaseFNumberUppercase FPRESETENTRYBASE2;
     private String FPRESETENTRYTEXT1;

@@ -142,12 +142,6 @@ public class JdScmShopBillEntity {
     private BigDecimal totalIncludeTaxMoney;
 
     /**
-     * 是否是出库类型
-     */
-    @TableField(value = "isOut")
-    private Integer isOut;
-
-    /**
      *
      */
     @TableField(value = "isvoucher")

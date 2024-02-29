@@ -61,6 +61,17 @@ public class KingdeeSavePayableOrderRequestModel {
     private BaseFNumber FCURRENCYID;
 
     /**
+     * fcurrencyid
+     */
+    private BaseFNumber FMAINBOOKSTDCURRID;
+
+
+    /**
+     * fexchange rate
+     */
+    private String FExchangeRate;
+
+    /**
      * fpay conditon
      */
     private BaseFNumber FPayConditon;
