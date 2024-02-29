@@ -83,7 +83,7 @@ public class KingdeeSavePayableOrderCmdExe {
             "                },\n" +
             "                \"FISPRICEEXCLUDETAX\": \"false\",\n" +
             "                \"FSourceBillType\": \"\",\n" +
-            "                \"FBUSINESSTYPE\": \"费用应付单\",\n" +
+            "                \"FBUSINESSTYPE\": \"FY\",\n" +
             "                \"FISTAX\": \"false\",\n" +
             "                \"FSETTLEORGID\": {\n" +
             "                        \"FNumber\": \"21210002\"\n" +
@@ -91,7 +91,7 @@ public class KingdeeSavePayableOrderCmdExe {
             "                \"FPAYORGID\": {\n" +
             "                        \"FNumber\": \"21210002\"\n" +
             "                },\n" +
-            "                \"FSetAccountType\": \"业务应付\",\n" +
+            "                \"FSetAccountType\": \"1\",\n" +
             "                \"FISTAXINCOST\": \"false\",\n" +
             "                \"FAP_Remark\": \"货款备注\",\n" +
             "                \"FISHookMatch\": \"false\",\n" +
@@ -138,7 +138,7 @@ public class KingdeeSavePayableOrderCmdExe {
             "                        \"FPriceQty\": 0,\n" +
             "                        \"FTaxPrice\": 0,\n" +
             "                        \"FPriceWithTax\": 0,\n" +
-            "                        \"FEntryTaxRate\": 0,\n" +
+            "                        \"FEntryTaxRate\": 13,\n" +
             "                        \"FTaxCombination\": {\n" +
             "                                \"FNumber\": \"\"\n" +
             "                        },\n" +
@@ -146,8 +146,7 @@ public class KingdeeSavePayableOrderCmdExe {
             "                        \"FSourceBillNo\": \"\",\n" +
             "                        \"FSOURCETYPE\": \"\",\n" +
             "                        \"FDISCOUNTAMOUNTFOR\": 0,\n" +
-            "                        \"FNoTaxAmountFor_D\": 50767.50,\n" +
-            "                        \"FTAXAMOUNTFOR_D\": 0.00\n" +
+            "                        \"FALLAMOUNTFOR_D\": 50767.50\n" +
             "                }]\n" +
             "        }\n" +
             "}";
