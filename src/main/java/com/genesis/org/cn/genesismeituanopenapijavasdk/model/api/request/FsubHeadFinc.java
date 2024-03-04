@@ -1,8 +1,9 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import java.util.Date;
+import lombok.NoArgsConstructor;
 
 /**
  * 金蝶生成应付单入参
@@ -11,11 +12,14 @@ import java.util.Date;
  * &#064;date  2023/10/29
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FsubHeadFinc {
 
     private int FEntryId;
 
-    private Date FACCNTTIMEJUDGETIME;
+    private String FACCNTTIMEJUDGETIME;
 
     private BaseFNumber FSettleTypeID;
 
