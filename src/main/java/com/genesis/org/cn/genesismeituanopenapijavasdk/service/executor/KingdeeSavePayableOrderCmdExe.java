@@ -274,7 +274,7 @@ public class KingdeeSavePayableOrderCmdExe {
         // BillType In ('门店自采入库','门店统配入库','店间调入')
         queryWrapper.in("BillType", "门店自采入库", "门店统配入库");
         // ShopName = '日照1店（万象汇店）'
-        // queryWrapper.eq("ShopName", "日照1店（万象汇店）");
+        queryWrapper.eq("ShopName", "青岛7店（京口路店）");
         // OtherSideCode = '4520005'
         // queryWrapper.eq("OtherSideCode", "4520005");
         return iJdScmShopBillDao.list(queryWrapper);

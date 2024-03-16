@@ -114,13 +114,13 @@ public class JdScmShopBillEntity {
      * 品项大类编码
 
      */
-    @TableField(value = "ItemBigClassCode")
+    @TableField(value = "FinancetypeCode")
     private String ItemBigClassCode;
 
     /**
      * 品项大类名称
      */
-    @TableField(value = "ItemBigClassname")
+    @TableField(value = "FinanceTypeName")
     private String ItemBigClassname;
 
     /**
