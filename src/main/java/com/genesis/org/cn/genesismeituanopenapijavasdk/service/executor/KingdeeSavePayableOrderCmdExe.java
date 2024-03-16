@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -57,17 +58,29 @@ public class KingdeeSavePayableOrderCmdExe {
         K3CloudApi client = new K3CloudApi();
 
         // 拼接入参对象.
-        KingdeeSavePayableOrderRequest kingdeeSavePayableOrderRequest = getKingdeeSavePayableOrderRequest();
-        // kingdeeSavePayableOrderRequest转jsonString.
-        String jsonData = new Gson().toJson(kingdeeSavePayableOrderRequest);
+        // 1. 获取 jdScmShopBillList
+        List<JdScmShopBillEntity> jdScmShopBillList = getJdScmShopBillList();
+        // 测试 jdScmShopBillList 只取前两个
+        jdScmShopBillList = jdScmShopBillList.subList(0, 2);
+        // 2. 获取voucherClassTypeEntities
+        List<VoucherClassTypeEntity> voucherClassTypeEntities = iVoucherCalsstypeDao.list();
 
+        // KingdeeSavePayableOrderRequest kingdeeSavePayableOrderRequest = getKingdeeSavePayableOrderRequest(
+        //     jdScmShopBillList.get(0), voucherClassTypeEntities);
+        // 3. 获取KingdeeSavePayableOrderBatchRequest 批量保存入参对象
+        KingdeeSavePayableOrderBatchRequest kingdeeSavePayableOrderBatchRequest = getKingdeeSavePayableOrderBatchRequest(
+            jdScmShopBillList, voucherClassTypeEntities);
+        // 4. 入参转jsonString.
+        String jsonData = new Gson().toJson(kingdeeSavePayableOrderBatchRequest);
+
+        // 测试成功json数据.
         // String jsonData = KingdeePayableBillSuccessConstant.PAYABLE_BILL_SUCCESS_JSON_DATA;
 
         try {
             // 业务对象标识
             String formId = "AP_Payable";
             // 调用接口
-            String resultJson = client.save(formId, jsonData);
+            String resultJson = client.batchSave(formId, jsonData);
 
             // 用于记录结果
             Gson gson = new Gson();
@@ -75,9 +88,12 @@ public class KingdeeSavePayableOrderCmdExe {
             RepoRet repoRet = gson.fromJson(resultJson, RepoRet.class);
             if (repoRet.getResult().getResponseStatus().isIsSuccess()) {
                 log.info("接口返回结果: {}", gson.toJson(repoRet.getResult()));
+
             } else {
                 fail("接口返回结果: " + gson.toJson(repoRet.getResult().getResponseStatus()));
             }
+
+            // 回调结果落库
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -91,26 +107,69 @@ public class KingdeeSavePayableOrderCmdExe {
     }
 
     /**
+     * get jd scm shop bill list
+     *
+     * @return {@link List}<{@link JdScmShopBillEntity}>
+     */
+    private List<JdScmShopBillEntity> getJdScmShopBillList() {
+        // 1. 读取数据库
+        QueryWrapper<JdScmShopBillEntity> queryWrapper = new QueryWrapper<>();
+        // BillType In ('门店自采入库','门店统配入库','店间调入')
+        queryWrapper.in("BillType", "门店自采入库", "门店统配入库");
+        // ShopName = '日照1店（万象汇店）'
+        queryWrapper.eq("ShopName", "日照1店（万象汇店）");
+        // OtherSideCode = '4520005'
+        // queryWrapper.eq("OtherSideCode", "4520005");
+        return iJdScmShopBillDao.list(queryWrapper);
+    }
+
+    /**
      * get kingdee save payable order request
      * 拼接KingdeeSavePayableOrderRequest对象方法
      *
      * @return {@link KingdeeSavePayableOrderRequest}
      */
-    private KingdeeSavePayableOrderRequest getKingdeeSavePayableOrderRequest() {
+    private KingdeeSavePayableOrderRequest getKingdeeSavePayableOrderRequest(
+        JdScmShopBillEntity jdScmShopBillEntity, List<VoucherClassTypeEntity> voucherClassTypeEntities) {
+        KingdeeSavePayableOrderRequestModel kingdeeSavePayableOrderRequestModel
+            = buildSingleModel(jdScmShopBillEntity, voucherClassTypeEntities);
+        return KingdeeSavePayableOrderRequest.builder()
+            .Model(kingdeeSavePayableOrderRequestModel)
+            .build();
+    }
 
-        // 1. 读取数据库
-        // List<JdScmShopBillEntity> JdScmShopBillEntityList = iJdScmShopBillDao.list();
-        QueryWrapper<JdScmShopBillEntity> queryWrapper = new QueryWrapper<>();
-        // BillType In ('门店自采入库','门店统配入库','店间调入')
-        queryWrapper.in("BillType", "门店自采入库", "门店统配入库");
-        List<JdScmShopBillEntity> jdScmShopBillEntities = iJdScmShopBillDao.list(queryWrapper);
-        JdScmShopBillEntity jdScmShopBillEntity = jdScmShopBillEntities.get(0);
 
+    /**
+     * get kingdee save payable order request
+     * 拼接KingdeeSavePayableOrderRequest对象方法
+     *
+     * @return {@link KingdeeSavePayableOrderRequest}
+     */
+    private KingdeeSavePayableOrderBatchRequest getKingdeeSavePayableOrderBatchRequest(
+        List<JdScmShopBillEntity> jdScmShopBillEntities, List<VoucherClassTypeEntity> voucherClassTypeEntities) {
+
+        // 1. 初始化List<KingdeeSavePayableOrderRequestModel> Model
+        List<KingdeeSavePayableOrderRequestModel> modelList = new ArrayList<>();
+
+        // 遍历jdScmShopBillEntities
+        for (JdScmShopBillEntity jdScmShopBillEntity : jdScmShopBillEntities) {
+            KingdeeSavePayableOrderRequestModel kingdeeSavePayableOrderRequestModel =
+                buildSingleModel(jdScmShopBillEntity, voucherClassTypeEntities);
+
+            // 4. 添加到modelList
+            modelList.add(kingdeeSavePayableOrderRequestModel);
+        }
+
+        return KingdeeSavePayableOrderBatchRequest.builder()
+            .Model(modelList)
+            .build();
+    }
+
+    private KingdeeSavePayableOrderRequestModel buildSingleModel(JdScmShopBillEntity jdScmShopBillEntity, List<VoucherClassTypeEntity> voucherClassTypeEntities) {
         // 2. 拼接参数
-        List<VoucherClassTypeEntity> voucherClassTypeEntities = iVoucherCalsstypeDao.list();
         // 根据voucherClassTypeEntities, 获取Map<ItemBigClassCode,VoucherClassTypeEntity>对象
-        Map<String, VoucherClassTypeEntity> stringVoucherClassTypeEntityMap = voucherClassTypeEntities.stream().collect(
-            Collectors.toMap(VoucherClassTypeEntity::getItemBigClassCode, Function.identity()));
+        Map<String, VoucherClassTypeEntity> stringVoucherClassTypeEntityMap = voucherClassTypeEntities.stream()
+            .collect(Collectors.toMap(VoucherClassTypeEntity::getItemBigClassCode, Function.identity()));
 
         // 2.1 大类
 
@@ -146,14 +205,19 @@ public class KingdeeSavePayableOrderCmdExe {
         // 2.10 获取bill type
         String billType = stringVoucherClassTypeEntityMap.get(jdScmShopBillEntity.getItemBigClassCode())
             .getBilltype();
-        // String billType = "FY";
+        // 初始化物料id
+        String materialId = "140301";
+        // 如果billType为'FY'的,则物料id传空.否则传140301
+        if ("FY".equals(billType)) {
+            materialId = " ";
+        }
         // 2.11 获取类别编码 voucher_calsstype.classCode
         String classCode = stringVoucherClassTypeEntityMap.get(jdScmShopBillEntity.getItemBigClassCode())
             .getClasscode();
 
 
         // 3. 返回参数
-        KingdeeSavePayableOrderRequestModel model = KingdeeSavePayableOrderRequestModel.builder()
+        return KingdeeSavePayableOrderRequestModel.builder()
             // 单据类型编码
             .FBillTypeID(BaseFNumberUppercase.builder().FNUMBER(billTypeCode).build())
             .FDATE(formattedBusinessDate)
@@ -191,7 +255,7 @@ public class KingdeeSavePayableOrderCmdExe {
                 // 费用项目编码
                 .FCOSTID(BaseFNumber.builder().FNumber(classCode).build())
                 // 物料id
-                .FMATERIALID(BaseFNumber.builder().FNumber("140301").build())
+                .FMATERIALID(BaseFNumber.builder().FNumber(materialId).build())
                 // 不含税金额
                 .FNoTaxAmountFor_D(totalStoreMoney)
                 // 税额
@@ -199,9 +263,6 @@ public class KingdeeSavePayableOrderCmdExe {
                 // 价税合计
                 .FALLAMOUNTFOR_D(totalIncludeTaxMoney)
                 .build()))
-            .build();
-        return KingdeeSavePayableOrderRequest.builder()
-            .Model(model)
             .build();
     }
 }
