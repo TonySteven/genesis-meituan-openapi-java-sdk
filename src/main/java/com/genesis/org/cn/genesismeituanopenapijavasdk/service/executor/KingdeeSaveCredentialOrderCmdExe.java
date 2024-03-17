@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IJdScmShopBillPzDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IKingdeeCredentialBillAuxiliaryCalledDao;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IVoucherCalsstypeDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IVoucherGroupingVoucherAccountingEntryDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.JdScmShopBillPzEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.KingdeeCredentialBillAuxiliaryCalledEntity;
@@ -18,6 +17,7 @@ import com.kingdee.bos.webapi.entity.SuccessEntity;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,9 +48,6 @@ public class KingdeeSaveCredentialOrderCmdExe {
 
     @Resource
     private IKingdeeCredentialBillAuxiliaryCalledDao iKingdeeCredentialBillAuxiliaryCalledDao;
-
-    @Resource
-    private IVoucherCalsstypeDao iVoucherCalsstypeDao;
 
     @Resource
     private IVoucherGroupingVoucherAccountingEntryDao iVoucherGroupingVoucherAccountingEntryDao;
@@ -339,10 +336,68 @@ public class KingdeeSaveCredentialOrderCmdExe {
     }
 
     /**
+     * get total store money
+     *
+     * @param jdScmShopBillPzEntity                       jd scm shop bill pz entity
+     * @param voucherGroupingVoucherAccountingEntryEntity voucher grouping voucher accounting entry entity
+     * @return {@link BigDecimal}
+     */
+    @NotNull
+    private static BigDecimal getTotalStoreMoney(JdScmShopBillPzEntity jdScmShopBillPzEntity, VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity) {
+        String amount = voucherGroupingVoucherAccountingEntryEntity.getAmount();
+        // 根据规则计算借方金额和贷方金额.
+        // [totalIncludeTaxMoney]-[totalTaxMoney] 则是根据jdScmShopBillPzEntity.getTotalIncludeTaxMoney() - jdScmShopBillPzEntity.getTotalTaxMoney()
+        // 如果没有[],直接返回totalstoremoney, totalstoremoney则是jdScmShopBillPzEntity.getTotalStoreMoney().
+        // 暂时只有这两种规则, 如果有其他规则, 需要在这里添加.
+        BigDecimal totalStoreMoney;
+        if (amount.contains("[")) {
+            BigDecimal totalIncludeTaxMoney = jdScmShopBillPzEntity.getTotalIncludeTaxMoney();
+            BigDecimal totalTaxMoney = jdScmShopBillPzEntity.getTotalTaxMoney();
+            totalStoreMoney = totalIncludeTaxMoney.subtract(totalTaxMoney);
+        } else {
+            totalStoreMoney = jdScmShopBillPzEntity.getTotalstoremoney();
+        }
+        // totalStoreMoney保留两位小数并四舍五入转换成String.
+        totalStoreMoney = totalStoreMoney.setScale(2, RoundingMode.HALF_UP);
+        return totalStoreMoney;
+    }
+
+    /**
+     * get string builder
+     *
+     * @param jdScmShopBillPzEntity                       jd scm shop bill pz entity
+     * @param voucherGroupingVoucherAccountingEntryEntity voucher grouping voucher accounting entry entity
+     * @return {@link StringBuilder}
+     */
+    @NotNull
+    private static StringBuilder getStringBuilder(JdScmShopBillPzEntity jdScmShopBillPzEntity, VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity) {
+        String abstractString = voucherGroupingVoucherAccountingEntryEntity.getAbstractString();
+        // 如果摘要规则为空,则抛出异常
+        if (abstractString == null) {
+            throw new IllegalArgumentException("摘要规则为空!");
+        }
+        // 如果摘要规则不为空,则根据摘要规则拼接摘要.
+        // 获取到的摘要规则为['shopname', 'billtype'],则根据获取到的摘要规则,拼接摘要.
+        // 遍历摘要规则, 如果是shopname, 则拼接shopname, 如果是billtype, 则拼接billtype
+        StringBuilder explanation = new StringBuilder();
+        // 前后去掉[]
+        abstractString = abstractString.replace("[", "").replace("]", "").trim();
+        String[] split = abstractString.split(",");
+        for (String s : split) {
+            if ("'shopname'".equals(s.trim())) {
+                explanation.append(jdScmShopBillPzEntity.getShopName());
+            } else if ("'billtype'".equals(s.trim())) {
+                explanation.append(jdScmShopBillPzEntity.getBillType());
+            }
+        }
+        return explanation;
+    }
+
+    /**
      * build single model
      *
-     * @param jdScmShopBillPzEntity    jd scm shop bill pz entity
-     * @param voucherClassTypeEntities voucher class type entities
+     * @param jdScmShopBillPzEntity                          jd scm shop bill pz entity
+     * @param voucherGroupingVoucherAccountingEntryEntityMap voucher grouping voucher accounting entry entity map
      * @return {@link KingdeeSaveCredentialOrderRequestModel}
      */
     private KingdeeSaveCredentialOrderRequestModel buildSingleModel(JdScmShopBillPzEntity jdScmShopBillPzEntity
@@ -354,7 +409,7 @@ public class KingdeeSaveCredentialOrderCmdExe {
         // 根据formattedBusinessDate获取年份
         String year = formattedBusinessDate.substring(0, 4);
         // year转换成Integer
-        Integer yearInt = Integer.valueOf(year);
+        int yearInt = Integer.parseInt(year);
 
         // 2.4 门店编码
         String shopCode = jdScmShopBillPzEntity.getShopCode();
@@ -372,49 +427,14 @@ public class KingdeeSaveCredentialOrderCmdExe {
         for (VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity
             : voucherGroupingVoucherAccountingEntryEntities) {
             // 获取凭证规则的摘要规则 ['shopname', 'billtype']
-            String abstractString = voucherGroupingVoucherAccountingEntryEntity.getAbstractString();
-            // 如果摘要规则为空,则抛出异常
-            if (abstractString == null) {
-                throw new IllegalArgumentException("摘要规则为空!");
-            }
-            // 如果摘要规则不为空,则根据摘要规则拼接摘要.
-            // 获取到的摘要规则为['shopname', 'billtype'],则根据获取到的摘要规则,拼接摘要.
-            // 遍历摘要规则, 如果是shopname, 则拼接shopname, 如果是billtype, 则拼接billtype
-            StringBuilder explanation = new StringBuilder();
-            // 前后去掉[]
-            abstractString = abstractString.replace("[", "").replace("]", "").trim();
-            String[] split = abstractString.split(",");
-            for (String s : split) {
-                if ("'shopname'".equals(s.trim())) {
-                    explanation.append(jdScmShopBillPzEntity.getShopName());
-                } else if ("'billtype'".equals(s.trim())) {
-                    explanation.append(jdScmShopBillPzEntity.getBillType());
-                }
-            }
+            StringBuilder explanation = getStringBuilder(jdScmShopBillPzEntity, voucherGroupingVoucherAccountingEntryEntity);
 
             // 2.5 获取科目编码, voucher_grouping_voucher_accounting_entry.subject_code
             String subjectCode = voucherGroupingVoucherAccountingEntryEntity.getSubjectCode();
 
             // 获取借方金额和贷方金额
             // 获取voucher_grouping_voucher_accounting_entry.amount规则. 例如[totalIncludeTaxMoney]-[totalTaxMoney]
-            String amount = voucherGroupingVoucherAccountingEntryEntity.getAmount();
-            // 根据规则计算借方金额和贷方金额.
-            // [totalIncludeTaxMoney]-[totalTaxMoney] 则是根据jdScmShopBillPzEntity.getTotalIncludeTaxMoney() - jdScmShopBillPzEntity.getTotalTaxMoney()
-            // 如果没有[],直接返回totalstoremoney, totalstoremoney则是jdScmShopBillPzEntity.getTotalStoreMoney().
-            // 暂时只有这两种规则, 如果有其他规则, 需要在这里添加.
-            BigDecimal totalStoreMoney = BigDecimal.ZERO;
-            if (amount.contains("[")) {
-                // String[] split = amount.split("-");
-                // String first = split[0].replace("[", "").replace("]", "");
-                // String second = split[1].replace("[", "").replace("]", "");
-                BigDecimal totalIncludeTaxMoney = jdScmShopBillPzEntity.getTotalIncludeTaxMoney();
-                BigDecimal totalTaxMoney = jdScmShopBillPzEntity.getTotalTaxMoney();
-                totalStoreMoney = totalIncludeTaxMoney.subtract(totalTaxMoney);
-            } else {
-                totalStoreMoney = jdScmShopBillPzEntity.getTotalstoremoney();
-            }
-            // totalStoreMoney保留两位小数并四舍五入转换成String.
-            totalStoreMoney = totalStoreMoney.setScale(2, RoundingMode.HALF_UP);
+            BigDecimal totalStoreMoney = getTotalStoreMoney(jdScmShopBillPzEntity, voucherGroupingVoucherAccountingEntryEntity);
 
             // 获取voucherGroupingVoucherAccountingEntryEntity.getDebit 如果1 借方金额, 如果2 贷方金额
             Integer debit = voucherGroupingVoucherAccountingEntryEntity.getDebit();
