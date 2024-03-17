@@ -16,6 +16,7 @@ import com.kingdee.bos.webapi.entity.SuccessEntity;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +61,7 @@ public class KingdeeSavePayableOrderCmdExe {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    public BaseVO execute() {
+    public BaseVO execute(KingdeePayableBillCalledCmd cmd) {
         // 打印日志 - 开始.
         log.info("KingdeeSavePayableOrderCmdExe.execute() start");
 
@@ -69,7 +70,7 @@ public class KingdeeSavePayableOrderCmdExe {
 
         // 拼接入参对象.
         // 1. 获取 jdScmShopBillList
-        List<JdScmShopBillEntity> jdScmShopBillList = getJdScmShopBillList();
+        List<JdScmShopBillEntity> jdScmShopBillList = getJdScmShopBillList(cmd);
         // 2.1 . 获取kingdee_bill_auxiliary_called已经回调成功的数据,并去除已经回调成功的数据的id
         List<KingdeeBillAuxiliaryCalledEntity> kingdeeBillAuxiliaryCalledSuccessEntities
             = getKingdeeBillAuxiliaryCalledSuccessEntities();
@@ -268,15 +269,23 @@ public class KingdeeSavePayableOrderCmdExe {
      *
      * @return {@link List}<{@link JdScmShopBillEntity}>
      */
-    private List<JdScmShopBillEntity> getJdScmShopBillList() {
+    private List<JdScmShopBillEntity> getJdScmShopBillList(KingdeePayableBillCalledCmd cmd) {
         // 1. 读取数据库
         QueryWrapper<JdScmShopBillEntity> queryWrapper = new QueryWrapper<>();
         // BillType In ('门店自采入库','门店统配入库','店间调入')
         queryWrapper.in("BillType", "门店自采入库", "门店统配入库");
-        // ShopName = '日照1店（万象汇店）'
-        queryWrapper.eq("ShopName", "青岛7店（京口路店）");
-        // OtherSideCode = '4520005'
-        // queryWrapper.eq("OtherSideCode", "4520005");
+        // 获取cmd.门店名称
+        String shopName = cmd.getShopName();
+        // 如果shopName不为空, 则根据shopName查询.否则查询全部
+        if (StringUtils.isNotBlank(shopName)) {
+            queryWrapper.eq("ShopName", shopName);
+        }
+        // 获取cmd的供应商code
+        String supplierCode = cmd.getSupplierCode();
+        // 如果supplierCode不为空, 则根据supplierCode查询.否则查询全部
+        if (StringUtils.isNotBlank(supplierCode)) {
+            queryWrapper.eq("OtherSideCode", supplierCode);
+        }
         return iJdScmShopBillDao.list(queryWrapper);
     }
 
