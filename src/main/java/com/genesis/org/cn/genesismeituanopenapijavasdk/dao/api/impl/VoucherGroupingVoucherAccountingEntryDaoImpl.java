@@ -1,6 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.impl;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IVoucherGroupingVoucherAccountingEntryDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.VoucherGroupingVoucherAccountingEntryEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.mapper.VoucherGroupingVoucherAccountingEntryMapper;
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @date 2024-03-17 16:07:10
  */
 @Repository
-public class VoucherGroupingVoucherAccountingEntryDaoImpl extends IService<VoucherGroupingVoucherAccountingEntryMapper, VoucherGroupingVoucherAccountingEntryEntity> implements IVoucherGroupingVoucherAccountingEntryDao {
+public class VoucherGroupingVoucherAccountingEntryDaoImpl extends ServiceImpl<VoucherGroupingVoucherAccountingEntryMapper, VoucherGroupingVoucherAccountingEntryEntity> implements IVoucherGroupingVoucherAccountingEntryDao {
 
 }

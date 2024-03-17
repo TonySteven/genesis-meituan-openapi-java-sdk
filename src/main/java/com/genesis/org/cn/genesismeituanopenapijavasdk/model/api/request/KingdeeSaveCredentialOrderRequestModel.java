@@ -22,7 +22,7 @@ public class KingdeeSaveCredentialOrderRequestModel {
     /**
      * fvoucherid
      */
-    private int FVOUCHERID;
+    private String FVOUCHERID;
 
 
     /**
@@ -63,7 +63,7 @@ public class KingdeeSaveCredentialOrderRequestModel {
     /**
      * fattachments
      */
-    private int FATTACHMENTS;
+    private String FATTACHMENTS;
 
     /**
      * fisadjustvoucher

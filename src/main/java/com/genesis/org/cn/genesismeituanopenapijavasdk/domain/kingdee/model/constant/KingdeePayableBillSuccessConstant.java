@@ -100,93 +100,58 @@ public class KingdeePayableBillSuccessConstant {
          }""";
     public static final String PAYABLE_BILL_SUCCESS_JSON_DATA = """
         {
-                "Model": {
-                        "FID": 0,
-                        "FBillTypeID": {
-                                "FNUMBER": "YFD02_SYS"
-                        },
-                        "FBillNo": "",
-                        "FISINIT": "false",
-                        "FDATE": "2024-01-18",
-                        "FENDDATE_H": "2024-01-18",
-                        "FDOCUMENTSTATUS": "",
-                        "FSUPPLIERID": {
-                                "FNumber": "100001"
-                        },
-                        "FCURRENCYID": {
-                                "FNumber": "PRE001"
-                        },
-                        "FPayConditon": {
-                                "FNumber": ""
-                        },
-                        "FISPRICEEXCLUDETAX": "false",
-                        "FSourceBillType": "",
-                        "FBUSINESSTYPE": "FY",
-                        "FISTAX": "false",
-                        "FSETTLEORGID": {
-                                "FNumber": "21210002"
-                        },
-                        "FPAYORGID": {
-                                "FNumber": "21210002"
-                        },
-                        "FSetAccountType": "1",
-                        "FISTAXINCOST": "false",
-                        "FAP_Remark": "货款备注",
-                        "FISHookMatch": "false",
-                        "FCancelStatus": "A",
-                        "FMatchMethodID": 0,
-                        "FBILLMATCHLOGID": 0,
-                        "FWBOPENQTY": "false",
-                        "FIsGeneratePlanByCostItem": "false",
-                        "FSCPCONFIRMDATE": "2024-01-18",
-                        "FOrderDiscountAmountFor": 0,
-                        "FsubHeadFinc": {
-                                "FEntryId": 0,
-                                "FACCNTTIMEJUDGETIME": "2024-01-18",
-                                "FSettleTypeID": {
-                                        "FNumber": ""
-                                },
-                                "FMAINBOOKSTDCURRID": {
-                                        "FNumber": "PRE001"
-                                },
-                                "FEXCHANGETYPE": {
-                                        "FNumber": "HLTX01_SYS"
-                                },
-                                "FExchangeRate": 1,
-                                "FTaxAmountFor": 0,
-                                "FNoTaxAmountFor": 0,
-                                "FISCARRIEDDATE": "false"
-                        },
-                        "FEntityDetail": [{
-                                "FEntryID": 0,
-                                "FCOSTID": {
-                                        "FNumber": "CI018"
-                                },
-                                "FMATERIALID": {
-                                        "FNumber": "140301"
-                                },
-                                "FMaterialDesc": "",
-                                "FASSETID": {
-                                        "FNUMBER": ""
-                                },
-                                "FPRICEUNITID": {
-                                        "FNumber": ""
-                                },
-                                "FPrice": 0,
-                                "FPriceQty": 0,
-                                "FTaxPrice": 0,
-                                "FPriceWithTax": 0,
-                                "FEntryTaxRate": 13,
-                                "FTaxCombination": {
-                                        "FNumber": ""
-                                },
-                                "FEntryDiscountRate": 0,
-                                "FSourceBillNo": "",
-                                "FSOURCETYPE": "",
-                                "FDISCOUNTAMOUNTFOR": 0,
-                                "FALLAMOUNTFOR_D": 50767.50
-                        }]
-                }
+            "Model": [{
+                "FAccountBookID": {
+                    "FNumber": "24732001"
+                },
+                "FDate": "2024-01-31",
+                "FYEAR": 2024,
+                "FPERIOD": 1,
+                "FVOUCHERGROUPID": {
+                    "FNumber": "PRE001"
+                },
+                "FVOUCHERGROUPNO": " ",
+                "FSourceBillKey": {
+                    "FNumber": "78050206-2fa6-40e3-b7c8-bd608146fa38"
+                },
+                "FEntity": [{
+                    "FEntryID": 0,
+                    "FEXPLANATION": "日照1店（万象汇店）门店盘盈",
+                    "FACCOUNTID": {
+                        "FNumber": "6401"
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FPrice": 0,
+                    "FQty": 0,
+                    "FAMOUNTFOR": "-2.15",
+                    "FDEBIT": "-2.15",
+                    "FEXPORTENTRYID": 0
+                }, {
+                    "FEntryID": 0,
+                    "FEXPLANATION": "日照1店（万象汇店）门店盘盈",
+                    "FACCOUNTID": {
+                        "FNumber": "1403.01"
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FPrice": 0,
+                    "FQty": 0,
+                    "FAMOUNTFOR": "-2.15",
+                    "FCREDIT": "-2.15",
+                    "FEXPORTENTRYID": 0
+                }]
+            }]
         }""";
 
     private KingdeePayableBillSuccessConstant() {

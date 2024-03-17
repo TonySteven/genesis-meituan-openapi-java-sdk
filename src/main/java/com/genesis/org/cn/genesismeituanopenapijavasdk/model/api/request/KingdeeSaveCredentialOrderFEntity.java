@@ -17,22 +17,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KingdeeSaveCredentialOrderFEntity {
 
-    private int FEntryID;
+    private String FEntryID;
     private String FEXPLANATION;
     private BaseFNumber FACCOUNTID;
-    private String FDetailID;
+    private KingdeeSaveCredentialOrderFEntityFDetailId FDetailID;
     private BaseFNumber FCURRENCYID;
     private BaseFNumber FEXCHANGERATETYPE;
-    private int FEXCHANGERATE;
+    private int FEXCHANGERATE = 1;
     private BaseFNumber FUnitId;
-    private int FPrice;
-    private int FQty;
-    private int FAMOUNTFOR;
+    private String FPrice;
+    private String FQty;
+    private String FAMOUNTFOR;
     private String FDEBIT;
     private String FCREDIT;
     private BaseFNumber FSettleTypeID;
     private String FSETTLENO;
     private String FBUSNO;
-    private int FEXPORTENTRYID;
+    private String FEXPORTENTRYID;
 
 }
