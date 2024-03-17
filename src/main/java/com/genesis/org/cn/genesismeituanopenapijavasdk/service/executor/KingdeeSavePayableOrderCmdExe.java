@@ -1,5 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IJdScmShopBillDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.IKingdeeBillAuxiliaryCalledDao;
@@ -16,7 +17,6 @@ import com.kingdee.bos.webapi.entity.SuccessEntity;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -275,16 +275,16 @@ public class KingdeeSavePayableOrderCmdExe {
         // BillType In ('门店自采入库','门店统配入库','店间调入')
         queryWrapper.in("BillType", "门店自采入库", "门店统配入库");
         // 获取cmd.门店名称
-        String shopName = cmd.getShopName();
+        List<String> shopNameList = cmd.getShopNameList();
         // 如果shopName不为空, 则根据shopName查询.否则查询全部
-        if (StringUtils.isNotBlank(shopName)) {
-            queryWrapper.eq("ShopName", shopName);
+        if (CollUtil.isNotEmpty(shopNameList)) {
+            queryWrapper.in("ShopName", shopNameList);
         }
         // 获取cmd的供应商code
-        String supplierCode = cmd.getSupplierCode();
+        List<String> supplierCodeList = cmd.getSupplierCodeList();
         // 如果supplierCode不为空, 则根据supplierCode查询.否则查询全部
-        if (StringUtils.isNotBlank(supplierCode)) {
-            queryWrapper.eq("OtherSideCode", supplierCode);
+        if (CollUtil.isNotEmpty(supplierCodeList)) {
+            queryWrapper.in("OtherSideCode", supplierCodeList);
         }
         return iJdScmShopBillDao.list(queryWrapper);
     }
