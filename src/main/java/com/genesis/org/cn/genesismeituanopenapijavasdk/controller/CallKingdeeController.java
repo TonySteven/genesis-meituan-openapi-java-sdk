@@ -1,6 +1,7 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.KingdeeCredentialBillCalledCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.KingdeePayableBillCalledCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCredentialOrderCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
@@ -53,7 +54,7 @@ public class CallKingdeeController {
      */
     @ApiOperation(value = "金蝶SaaS-调用生成凭证API", notes = "金蝶SaaS-调用生成凭证API")
     @PostMapping("/save-credential-order")
-    public BaseVO saveCredentialOrder(@RequestBody @Validated KingdeePayableBillCalledCmd cmd) {
+    public BaseVO saveCredentialOrder(@RequestBody @Validated KingdeeCredentialBillCalledCmd cmd) {
         // 在执行器里面执行具体的业务逻辑.
         return kingdeeSaveCredentialOrderCmdExe.execute(cmd);
     }
