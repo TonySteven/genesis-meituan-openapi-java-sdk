@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 品项做法类别信息
@@ -23,13 +24,13 @@ public class TcItemMethodClassesEntity implements Serializable{
      private static final long serialVersionUID = 1L;
 
     /** 类别id */
-    @TableField("id")
+    @TableId("id")
     private String id;
 
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /** 类别编号 */
@@ -123,4 +124,16 @@ public class TcItemMethodClassesEntity implements Serializable{
         return entity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcItemMethodClassesEntity that = (TcItemMethodClassesEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(centerId, that.centerId) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(pinyin, that.pinyin) && Objects.equals(pid, that.pid) && Objects.equals(delflg, that.delflg) && Objects.equals(parentId, that.parentId) && Objects.equals(isSystem, that.isSystem);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, centerId, code, name, pinyin, pid, delflg, parentId, isSystem);
+    }
 }

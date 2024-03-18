@@ -82,7 +82,7 @@ public class TcPayTypeQueryAndSaveCmdExe {
             // 3.1.2 如果数据库中不存在该信息,则新增.
             if (ObjectUtils.isEmpty(tcCategoryEntity)) {
                 saveList.add(responseEntity);
-            }else{
+            }else if(!responseEntity.equals(tcCategoryEntity)){
                 // 3.1.3 如果数据库中存在该信息,则更新.
                 updateList.add(responseEntity);
             }
@@ -114,7 +114,7 @@ public class TcPayTypeQueryAndSaveCmdExe {
 
             resultList.addAll(response.getData().getPaytype());
 
-            if(pageNo >= response.getData().getPageInfo().getTotalSize()){
+            if(pageNo >= response.getData().getPageInfo().getPageTotal()){
                 break;
             }
 

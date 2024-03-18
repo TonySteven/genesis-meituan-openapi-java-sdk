@@ -156,11 +156,11 @@ public class TcItemQueryAndSaveCmdExe {
 
         for (TcItemEntity responseEntity : tcEntityList) {
             // 3.1.1 查询数据库中是否存在该分类信息.
-            TcItemEntity tcCategoryEntity = dbMap.get(responseEntity.getItemId());
+            TcItemEntity tcEntity = dbMap.get(responseEntity.getItemId());
             // 3.1.2 如果数据库中不存在该分类信息,则新增.
-            if (ObjectUtils.isEmpty(tcCategoryEntity)) {
+            if (ObjectUtils.isEmpty(tcEntity)) {
                 saveList.add(responseEntity);
-            }else{
+            }else if(!responseEntity.equals(tcEntity)){
                 // 3.1.3 如果数据库中存在该分类信息,则更新.
                 updateList.add(responseEntity);
             }
@@ -611,7 +611,7 @@ public class TcItemQueryAndSaveCmdExe {
 
             resultList.addAll(tcDataResponse.getData().getItem());
 
-            if(tcItemQueryRequest.getPageNo() >= tcDataResponse.getData().getPageInfo().getTotalSize()){
+            if(tcItemQueryRequest.getPageNo() >= tcDataResponse.getData().getPageInfo().getPageTotal()){
                 break;
             }
 

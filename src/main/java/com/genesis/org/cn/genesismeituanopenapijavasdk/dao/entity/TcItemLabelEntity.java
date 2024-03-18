@@ -36,7 +36,7 @@ public class TcItemLabelEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /**
@@ -79,11 +79,11 @@ public class TcItemLabelEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TcItemLabelEntity that = (TcItemLabelEntity) o;
-        return Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(labelId, that.labelId);
+        return Objects.equals(id, that.id) && Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(labelId, that.labelId) && Objects.equals(labelName, that.labelName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(centerId, itemId, labelId);
+        return Objects.hash(id, centerId, itemId, labelId, labelName);
     }
 }

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -37,7 +38,7 @@ public class TcItemEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /**
@@ -353,5 +354,18 @@ public class TcItemEntity implements Serializable {
         entity.setMultiBarcodeList(TcItemMultiBarcodeEntity.toEntityListByResponse(entity,response.getMultiBarcodeList()));
         entity.setItemLabelList(TcItemLabelEntity.toEntityListByResponse(entity,response.getItemLabelList()));
         return entity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcItemEntity that = (TcItemEntity) o;
+        return Objects.equals(itemId, that.itemId) && Objects.equals(centerId, that.centerId) && Objects.equals(itemCode, that.itemCode) && Objects.equals(itemName, that.itemName) && Objects.equals(unitName, that.unitName) && Objects.equals(stdPrice, that.stdPrice) && Objects.equals(bigClassId, that.bigClassId) && Objects.equals(smallClassId, that.smallClassId) && Objects.equals(brandId, that.brandId) && Objects.equals(brandCode, that.brandCode) && Objects.equals(brandName, that.brandName) && Objects.equals(isPackage, that.isPackage) && Objects.equals(isTempItem, that.isTempItem) && Objects.equals(enableMutiSize, that.enableMutiSize) && Objects.equals(pkgType, that.pkgType) && Objects.equals(isEnable, that.isEnable) && Objects.equals(bigPicUrl, that.bigPicUrl) && Objects.equals(smallPicUrl, that.smallPicUrl) && Objects.equals(gifPicUrl, that.gifPicUrl) && Objects.equals(videoUrl, that.videoUrl) && Objects.equals(bigPic3Url, that.bigPic3Url) && Objects.equals(barcode, that.barcode) && Objects.equals(englishName, that.englishName) && Objects.equals(intro, that.intro) && Objects.equals(salesRevenueTypeid, that.salesRevenueTypeid) && Objects.equals(auxiliaryUnitId, that.auxiliaryUnitId) && Objects.equals(pungencyDegree, that.pungencyDegree) && Objects.equals(zxjType, that.zxjType) && Objects.equals(brandItemCode, that.brandItemCode) && Objects.equals(brandItemName, that.brandItemName) && Objects.equals(aidCode, that.aidCode) && Objects.equals(delflg, that.delflg);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemId, centerId, itemCode, itemName, unitName, stdPrice, bigClassId, smallClassId, brandId, brandCode, brandName, isPackage, isTempItem, enableMutiSize, pkgType, isEnable, bigPicUrl, smallPicUrl, gifPicUrl, videoUrl, bigPic3Url, barcode, englishName, intro, salesRevenueTypeid, auxiliaryUnitId, pungencyDegree, zxjType, brandItemCode, brandItemName, aidCode, delflg);
     }
 }

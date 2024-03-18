@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @TableName("tc_payway_detail")
@@ -27,7 +28,7 @@ public class TcPaywayDetailEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /** 结算方式编号 */
@@ -143,5 +144,18 @@ public class TcPaywayDetailEntity implements Serializable {
         entity.setCreateTime(response.getCreate_time());
         entity.setModifyTime(response.getModify_time());
         return entity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcPaywayDetailEntity that = (TcPaywayDetailEntity) o;
+        return Objects.equals(paywayId, that.paywayId) && Objects.equals(centerId, that.centerId) && Objects.equals(paywayCode, that.paywayCode) && Objects.equals(paywayName, that.paywayName) && Objects.equals(paywayGroupId, that.paywayGroupId) && Objects.equals(paywayTypeId, that.paywayTypeId) && Objects.equals(belongPaywayId, that.belongPaywayId) && Objects.equals(isEnable, that.isEnable) && Objects.equals(remark, that.remark) && Objects.equals(isEnableShopTimeLimit, that.isEnableShopTimeLimit) && Objects.equals(ticketValue, that.ticketValue) && Objects.equals(incomeMoney, that.incomeMoney) && Objects.equals(invoiceAmount, that.invoiceAmount) && Objects.equals(delflg, that.delflg);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(paywayId, centerId, paywayCode, paywayName, paywayGroupId, paywayTypeId, belongPaywayId, isEnable, remark, isEnableShopTimeLimit, ticketValue, incomeMoney, invoiceAmount, delflg);
     }
 }

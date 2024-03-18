@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 结算方式类型
@@ -30,7 +31,7 @@ public class TcPayTypeEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /** 结算方式类型编号 */
@@ -85,4 +86,16 @@ public class TcPayTypeEntity implements Serializable {
         return entity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcPayTypeEntity that = (TcPayTypeEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(centerId, that.centerId) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(pid, that.pid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, centerId, code, name, pid);
+    }
 }

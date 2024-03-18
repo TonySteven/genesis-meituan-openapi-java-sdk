@@ -91,11 +91,11 @@ public class TcItemMethodsQueryAndSaveCmdExe {
 
         for (TcItemMethodsEntity responseEntity : tcCategoryEntityList) {
             // 3.1.1 查询数据库中是否存在该信息.
-            TcItemMethodsEntity tcCategoryEntity = dbMap.get(responseEntity.getId());
+            TcItemMethodsEntity tcEntity = dbMap.get(responseEntity.getId());
             // 3.1.2 如果数据库中不存在该信息,则新增.
-            if (ObjectUtils.isEmpty(tcCategoryEntity)) {
+            if (ObjectUtils.isEmpty(tcEntity)) {
                 saveList.add(responseEntity);
-            }else{
+            }else if(!responseEntity.equals(tcEntity)){
                 // 3.1.3 如果数据库中存在该信息,则更新.
                 updateList.add(responseEntity);
             }
@@ -127,7 +127,7 @@ public class TcItemMethodsQueryAndSaveCmdExe {
 
             resultList.addAll(response.getData().getMethod());
 
-            if(pageNo >= response.getData().getPageInfo().getTotalSize()){
+            if(pageNo >= response.getData().getPageInfo().getPageTotal()){
                 break;
             }
 

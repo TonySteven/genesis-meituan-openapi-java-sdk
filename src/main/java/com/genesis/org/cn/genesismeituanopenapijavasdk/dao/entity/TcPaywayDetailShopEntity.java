@@ -26,6 +26,10 @@ public class TcPaywayDetailShopEntity implements Serializable{
      @Serial
      private static final long serialVersionUID = 1L;
 
+    /** id */
+    @TableId("id")
+    private String id;
+
     /** 结算方式id */
     @TableField("payway_id")
     private String paywayId;
@@ -33,7 +37,7 @@ public class TcPaywayDetailShopEntity implements Serializable{
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /** 门店id */
@@ -57,17 +61,17 @@ public class TcPaywayDetailShopEntity implements Serializable{
         if(ObjectUtils.isNotEmpty(detailResponse.getShopList())){
             List<TcPaywayDetailShopEntity> entityList = new ArrayList<>();
             for (TcPaywayDetailShopResponse response : detailResponse.getShopList()) {
-                entityList.add(toEntityByResponse(centerId,response));
+                entityList.add(toEntityByResponse(centerId,detailResponse,response));
             }
             return entityList;
         }
         return null;
     }
 
-    public static TcPaywayDetailShopEntity toEntityByResponse(String centerId,TcPaywayDetailShopResponse response)
+    public static TcPaywayDetailShopEntity toEntityByResponse(String centerId,TcPaywayDetailResponse detailResponse,TcPaywayDetailShopResponse response)
     {
         TcPaywayDetailShopEntity entity = new TcPaywayDetailShopEntity();
-        entity.setPaywayId(response.getPayway_id());
+        entity.setPaywayId(detailResponse.getPayway_id());
         entity.setCenterId(centerId);
         entity.setShopId(response.getShop_id());
         entity.setLimitBeginTime(response.getLimit_begin_time());

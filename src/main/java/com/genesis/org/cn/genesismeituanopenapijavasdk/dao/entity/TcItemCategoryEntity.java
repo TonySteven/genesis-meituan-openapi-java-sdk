@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -42,7 +43,7 @@ public class TcItemCategoryEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /**
@@ -160,5 +161,18 @@ public class TcItemCategoryEntity implements Serializable {
         tcCategoryEntity.setCreateTime(categoryResponse.getCreate_time());
         tcCategoryEntity.setModifyTime(categoryResponse.getModify_time());
         return tcCategoryEntity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcItemCategoryEntity that = (TcItemCategoryEntity) o;
+        return Objects.equals(classId, that.classId) && Objects.equals(centerId, that.centerId) && Objects.equals(classCode, that.classCode) && Objects.equals(className, that.className) && Objects.equals(delflg, that.delflg) && Objects.equals(level, that.level) && Objects.equals(parentId, that.parentId) && Objects.equals(isCreateTempItem, that.isCreateTempItem);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(classId, centerId, classCode, className, delflg, level, parentId, isCreateTempItem);
     }
 }

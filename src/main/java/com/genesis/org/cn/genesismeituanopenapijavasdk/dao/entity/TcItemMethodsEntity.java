@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 品项类别信息
@@ -31,7 +32,7 @@ public class TcItemMethodsEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /** 类别编号 */
@@ -154,4 +155,16 @@ public class TcItemMethodsEntity implements Serializable {
         return entity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcItemMethodsEntity that = (TcItemMethodsEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(centerId, that.centerId) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(pinyin, that.pinyin) && Objects.equals(sortOrder, that.sortOrder) && Objects.equals(isOnlyForItem, that.isOnlyForItem) && Objects.equals(parentId, that.parentId) && Objects.equals(parentName, that.parentName) && Objects.equals(isNeedFee, that.isNeedFee) && Objects.equals(fee, that.fee) && Objects.equals(isRelaCount, that.isRelaCount) && Objects.equals(isFeeEditable, that.isFeeEditable) && Objects.equals(delflg, that.delflg) && Objects.equals(isCreateTempItem, that.isCreateTempItem);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, centerId, code, name, pinyin, sortOrder, isOnlyForItem, parentId, parentName, isNeedFee, fee, isRelaCount, isFeeEditable, delflg, isCreateTempItem);
+    }
 }

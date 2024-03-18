@@ -36,7 +36,7 @@ public class TcItemMethodEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /**
@@ -93,11 +93,11 @@ public class TcItemMethodEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TcItemMethodEntity that = (TcItemMethodEntity) o;
-        return Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(methodId, that.methodId) && Objects.equals(methodType, that.methodType);
+        return Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(methodId, that.methodId) && Objects.equals(methodType, that.methodType) && Objects.equals(code, that.code) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(centerId, itemId, methodId, methodType);
+        return Objects.hash(centerId, itemId, methodId, methodType, code, name);
     }
 }

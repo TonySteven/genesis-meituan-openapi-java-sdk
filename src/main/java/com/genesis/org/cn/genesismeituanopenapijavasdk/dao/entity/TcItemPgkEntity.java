@@ -37,7 +37,7 @@ public class TcItemPgkEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /**
@@ -157,11 +157,11 @@ public class TcItemPgkEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TcItemPgkEntity that = (TcItemPgkEntity) o;
-        return Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(pkgId, that.pkgId) && Objects.equals(pkgType, that.pkgType);
+        return Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(itemCode, that.itemCode) && Objects.equals(itemName, that.itemName) && Objects.equals(sizeId, that.sizeId) && Objects.equals(sizeName, that.sizeName) && Objects.equals(pkgId, that.pkgId) && Objects.equals(pkgType, that.pkgType) && Objects.equals(defaultQty, that.defaultQty) && Objects.equals(stdPrice, that.stdPrice) && Objects.equals(isRaiseByQty, that.isRaiseByQty) && Objects.equals(raisePrice, that.raisePrice) && Objects.equals(limitedQty, that.limitedQty) && Objects.equals(pkgClassId, that.pkgClassId) && Objects.equals(pkgClassName, that.pkgClassName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(centerId, itemId, pkgId, pkgType);
+        return Objects.hash(centerId, itemId, itemCode, itemName, sizeId, sizeName, pkgId, pkgType, defaultQty, stdPrice, isRaiseByQty, raisePrice, limitedQty, pkgClassId, pkgClassName);
     }
 }

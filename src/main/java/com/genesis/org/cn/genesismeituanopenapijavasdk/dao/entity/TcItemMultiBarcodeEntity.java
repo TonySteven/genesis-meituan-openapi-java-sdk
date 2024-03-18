@@ -10,6 +10,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -35,7 +36,7 @@ public class TcItemMultiBarcodeEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /**
@@ -85,5 +86,18 @@ public class TcItemMultiBarcodeEntity implements Serializable {
         entity.setBarcode(response.getBarcode());
         entity.setDelflg(response.getDelflg());
         return entity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcItemMultiBarcodeEntity that = (TcItemMultiBarcodeEntity) o;
+        return Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(sizeId, that.sizeId) && Objects.equals(sizeName, that.sizeName) && Objects.equals(barcode, that.barcode) && Objects.equals(delflg, that.delflg);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(centerId, itemId, sizeId, sizeName, barcode, delflg);
     }
 }

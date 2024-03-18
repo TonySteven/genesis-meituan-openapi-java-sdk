@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -36,7 +37,7 @@ public class TcItemSizeEntity implements Serializable {
     /**
      * 集团ID
      */
-    @TableId("center_id")
+    @TableField("center_id")
     private String centerId;
 
     /**
@@ -107,5 +108,18 @@ public class TcItemSizeEntity implements Serializable {
         entity.setCostPrice(response.getCost_price());
         entity.setDelflg(response.getDelflg());
         return entity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcItemSizeEntity that = (TcItemSizeEntity) o;
+        return Objects.equals(centerId, that.centerId) && Objects.equals(itemId, that.itemId) && Objects.equals(sizeId, that.sizeId) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(isDefault, that.isDefault) && Objects.equals(stdPrice, that.stdPrice) && Objects.equals(costPrice, that.costPrice) && Objects.equals(delflg, that.delflg);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(centerId, itemId, sizeId, code, name, isDefault, stdPrice, costPrice, delflg);
     }
 }

@@ -1,6 +1,8 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPayTypeQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPaywayDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
@@ -24,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
  * &#064;date  2023/10/24
  */
 @EnableOpenApi
-@Api(tags = "调用天财接口")
+@Api(tags = "天财SaaS 相关接口")
 @RestController
 @RequestMapping("/tc/api")
 public class CallTCController {
@@ -37,6 +39,12 @@ public class CallTCController {
 
     @Resource
     TcShopBillingDetailInRealTimeQueryAndSaveCmdExe tcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
+
+    @Resource
+    TcPayTypeQueryAndSaveCmdExe tcPayTypeQueryAndSaveCmdExe;
+
+    @Resource
+    TcPaywayDetailQueryAndSaveCmdExe tcPaywayDetailQueryAndSaveCmdExe;
 
 
     /**
@@ -80,5 +88,21 @@ public class CallTCController {
             .state("success")
             .msg("异步执行中")
             .build();
+    }
+
+    /**
+     * 同步保存结算方式类型
+     */
+    @GetMapping("/save-pay-type")
+    public void savePayType(){
+        tcPayTypeQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 同步保存结算方式详情
+     */
+    @GetMapping("/save-payway-detail")
+    public void savePaywayDetail(){
+        tcPaywayDetailQueryAndSaveCmdExe.execute();
     }
 }
