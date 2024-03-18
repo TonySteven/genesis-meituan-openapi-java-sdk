@@ -1,6 +1,7 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai;
 
 import com.alibaba.fastjson.JSON;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.config.TcConfig;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.HttpPostRequestUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
@@ -64,6 +65,28 @@ public class LoginToServerAction {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static String getAccessToken(TcConfig tcConfig) throws Exception {
+        // 1. 根据天财AppId和accessId进行鉴权.
+        LoginResult loginResult = LoginToServerAction.login(tcConfig);
+        String msg = loginResult.getMsg();
+        // 如果msg不为success,则抛出异常.
+        if (!ResponseStatusEnum.SUCCESS.getValue().equals(msg)) {
+            throw new Exception("鉴权失败!");
+        }
+        // 如果msg为success,则获取accessToken.
+        return loginResult.getAccessToken();
+    }
+
+    /**
+     * login
+     *
+     * @param config config
+     * @return {@link LoginResult}
+     */
+    public static LoginResult login(TcConfig config) {
+        return login(config.getProtocol(), config.getUrl(), config.getPort(), config.getApi().getAppId(), config.getApi().getAccessId());
     }
 
     /**

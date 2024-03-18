@@ -4,12 +4,20 @@ import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.config.TcConfig;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.HttpPostRequestUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsInRealTimeResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryShopInfoResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemCategoryDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemMethodClassesDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemMethodsDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPayTypeDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPaywayDetailDataResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -42,6 +50,36 @@ public class QueryShopInfoAction {
      * url query bill info
      */
     static final String URL_QUERY_BILL = "/api/datatransfer/getserialdata";
+
+    /**
+     * url query category list
+     */
+    static final String URL_QUERY_ITEM_CATEGORY_LIST = "/api/datatransfer/getitemcategoryinfo";
+
+    /**
+     * url query item list
+     */
+    static final String URL_QUERY_ITEM_LIST = "/api/datatransfer/getitems";
+
+    /**
+     * url query method classes list
+     */
+    static final String URL_QUERY_ITEM_METHOD_CLASS_LIST = "/api/datatransfer/getitemmethodclasses";
+
+    /**
+     * url query methods list
+     */
+    static final String URL_QUERY_ITEM_METHODS_LIST = "/api/datatransfer/getitemmethods";
+
+    /**
+     * url query methods list
+     */
+    static final String URL_QUERY_PAY_TYPE_LIST = "/api/datatransfer/getpaytypeinfo";
+
+    /**
+     * url query methods list
+     */
+    static final String URL_QUERY_PAYWAY_DETAIL_LIST = "/api/datatransfer/getpaywaydetailinfo";
 
     /**
      * 服务器请求协议
@@ -256,6 +294,252 @@ public class QueryShopInfoAction {
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , QueryBillDetailsResponse.class);
+    }
+
+    /**
+     * query category list
+     *
+     * @param config            config
+     * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcItemCategoryDataResponse queryItemCategoryList(TcConfig config, String token, Integer pageNo, Integer pageSize, String shopId) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_ITEM_CATEGORY_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+        loginParams.put("pageNo", String.valueOf(pageNo));
+        loginParams.put("pageSize", String.valueOf(pageSize));
+        if(StringUtils.isNotEmpty(shopId)){
+            loginParams.put("shopId", shopId);
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求品项类别失败.
+            log.warn("请求品项类别失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        }
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcItemCategoryDataResponse.class);
+    }
+
+    /**
+     * query category list
+     *
+     * @param config            config
+     * @param token             token
+     * @param request            request
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcItemDataResponse queryItemList(TcConfig config, String token, TcItemQueryRequest request) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_ITEM_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+        loginParams.put("pageNo", String.valueOf(request.getPageNo()));
+        loginParams.put("pageSize", String.valueOf(request.getPageSize()));
+        if(StringUtils.isNotEmpty(request.getShopId())){
+            loginParams.put("shopId", request.getShopId());
+        }
+        if(StringUtils.isNotEmpty(request.getBigClassId())){
+            loginParams.put("bigClassId", request.getBigClassId());
+        }
+        if(StringUtils.isNotEmpty(request.getSmallClassId())){
+            loginParams.put("smallClassId", request.getSmallClassId());
+        }
+        if(StringUtils.isNotEmpty(request.getBrandId())){
+            loginParams.put("brandId", request.getBrandId());
+        }
+        if(StringUtils.isNotEmpty(request.getLastTime())){
+            loginParams.put("lastTime", request.getLastTime());
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求品项类别失败.
+            log.warn("请求品项失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        }
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcItemDataResponse.class);
+    }
+
+    /**
+     * query ItemMethodClasses list
+     *
+     * @param config            config
+     * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcItemMethodClassesDataResponse queryItemMethodClassesList(TcConfig config, String token, Integer pageNo, Integer pageSize, String shopId) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_ITEM_METHOD_CLASS_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+        loginParams.put("pageNo", String.valueOf(pageNo));
+        loginParams.put("pageSize", String.valueOf(pageSize));
+        if(StringUtils.isNotEmpty(shopId)){
+            loginParams.put("shopId", shopId);
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求失败.
+            log.warn("请求品项做法类别信息失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        }
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcItemMethodClassesDataResponse.class);
+    }
+
+    /**
+     * query ItemMethods list
+     *
+     * @param config            config
+     * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
+     * @param classId           class id
+     * @param shopId            shop id
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcItemMethodsDataResponse queryItemMethodsList(TcConfig config, String token, Integer pageNo, Integer pageSize, String shopId, String classId) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_ITEM_METHODS_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+        loginParams.put("pageNo", String.valueOf(pageNo));
+        loginParams.put("pageSize", String.valueOf(pageSize));
+        if(StringUtils.isNotEmpty(shopId)){
+            loginParams.put("shopId", shopId);
+        }
+        if(StringUtils.isNotEmpty(classId)){
+            loginParams.put("classId", classId);
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求失败.
+            log.warn("请求品项做法档案信息失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        }
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcItemMethodsDataResponse.class);
+    }
+
+    /**
+     * query payType list
+     *
+     * @param config            config
+     * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcPayTypeDataResponse queryPayTypeList(TcConfig config, String token, Integer pageNo, Integer pageSize) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_PAY_TYPE_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+        loginParams.put("pageNo", String.valueOf(pageNo));
+        loginParams.put("pageSize", String.valueOf(pageSize));
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求失败.
+            log.warn("请求结算方式类型失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        }
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcPayTypeDataResponse.class);
+    }
+
+    /**
+     * query ItemMethods list
+     *
+     * @param config            config
+     * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
+     * @param shopId            shop id
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcPaywayDetailDataResponse queryPaywayDetailList(TcConfig config, String token, Integer pageNo, Integer pageSize, String shopId) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_PAYWAY_DETAIL_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+        loginParams.put("pageNo", String.valueOf(pageNo));
+        loginParams.put("pageSize", String.valueOf(pageSize));
+        if(StringUtils.isNotEmpty(shopId)){
+            loginParams.put("shopId", shopId);
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
+        while (StringUtils.isBlank(responseData)) {
+            // 警告日志 - 请求失败.
+            log.warn("请求结算方式信息失败,正在重试!");
+            // 重试.
+            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
+        }
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcPaywayDetailDataResponse.class);
+    }
+
+    private static String getUrl(TcConfig config) {
+        return config.getProtocol() + "://" + config.getUrl() + ":" + config.getPort();
     }
 
     /**
