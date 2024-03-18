@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemMultiBarcodeResponse;
 import lombok.Data;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -70,6 +71,9 @@ public class TcItemMultiBarcodeEntity implements Serializable {
     private Integer delflg;
 
     public static List<TcItemMultiBarcodeEntity> toEntityListByResponse(TcItemEntity item, List<TcItemMultiBarcodeResponse> response){
+        if(ObjectUtils.isEmpty(response)){
+            return null;
+        }
         List<TcItemMultiBarcodeEntity> list = new ArrayList<>();
         for (TcItemMultiBarcodeResponse tcItemMultiBarcodeResponse : response) {
             list.add(toEntityByResponse(item,tcItemMultiBarcodeResponse));

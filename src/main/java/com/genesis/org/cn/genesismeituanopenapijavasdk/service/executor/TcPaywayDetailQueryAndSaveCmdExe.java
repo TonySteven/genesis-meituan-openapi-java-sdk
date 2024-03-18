@@ -66,7 +66,7 @@ public class TcPaywayDetailQueryAndSaveCmdExe {
 
         // 2. 调用天财接口获取所有品项做法档案信息实时信息.
         // 2.0 先同步集团信息.
-        List<TcPaywayDetailResponse> tcResponses = queryItemCategoryAll(accessToken, null);
+        List<TcPaywayDetailResponse> tcResponses = queryResponseAll(accessToken, null);
 
         // 2.2 将查询出来的品项做法档案信息去重
         List<TcPaywayDetailResponse> responseList = tcResponses.stream().distinct().toList();
@@ -202,7 +202,7 @@ public class TcPaywayDetailQueryAndSaveCmdExe {
 
     }
 
-    private List<TcPaywayDetailResponse> queryItemCategoryAll(String accessToken, String shopId){
+    private List<TcPaywayDetailResponse> queryResponseAll(String accessToken, String shopId){
         int pageNo = 1;
         int pageSize = 50;
 

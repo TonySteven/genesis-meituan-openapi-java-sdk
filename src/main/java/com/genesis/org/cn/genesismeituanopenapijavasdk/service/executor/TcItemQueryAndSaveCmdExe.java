@@ -14,10 +14,10 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemMethodEn
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemMultiBarcodeEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemPgkEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemSizeEntity;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.QueryShopInfoAction;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemResponse;
@@ -28,8 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +82,7 @@ public class TcItemQueryAndSaveCmdExe {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    public ApiResult<Object> execute() {
+    public ApiResult<Object> execute(TcItemQueryCmd cmd) {
         // 打印日志 - 开始.
         log.info("TcItemQueryAndSaveCmdExe.execute() - start");
         // 1. 根据天财AppId和accessId进行鉴权.
@@ -93,22 +91,22 @@ public class TcItemQueryAndSaveCmdExe {
         log.info("TcItemQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
         // 当前时间 - 2天作为最近同步时间
-        String lastTime = LocalDateTime.now().minusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        String lastTime = LocalDateTime.now().minusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         // 2. 调用天财接口获取所有品项类别明细实时信息.
         // 2.0 先同步集团分类信息.
-        List<TcItemResponse> tcResponses = queryItemCategoryAll(accessToken, null,lastTime);
+        List<TcItemResponse> responseList = queryResponseAll(accessToken, null,cmd);
 
-        // 2.1 获取所有店铺ids
-        List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
-        List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
-        // 遍历shopIds,获取每个shopId的账单明细实时信息.
-        for(String shopId : shopIds){
-            tcResponses.addAll(queryItemCategoryAll(accessToken, shopId,lastTime));
-        }
+//        // 2.1 获取所有店铺ids
+//        List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
+//        List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
+//        // 遍历shopIds,获取每个shopId的账单明细实时信息.
+//        for(String shopId : shopIds){
+//            tcResponses.addAll(queryResponseAll(accessToken, shopId,cmd));
+//        }
 
         // 2.2 将查询出来的品项类别去重
-        List<TcItemResponse> responseList = tcResponses.stream().distinct().toList();
+//        List<TcItemResponse> responseList = tcResponses.stream().distinct().toList();
 
         if(ObjectUtils.isEmpty(responseList)){
             return ApiResult.success("未获取到品项类别");
@@ -259,7 +257,7 @@ public class TcItemQueryAndSaveCmdExe {
 
         Map<String, List<TcItemPgkEntity>> dbEntityGroup = tcItemPgkDao.getGroupByCenterId(tcConfig.getApi().getCenterId(),itemIds);
 
-        // 要删除的品项套餐列表 key:itemId value:pkgId
+        // 要删除的品项套餐列表 key:pkgId value:itemId
         Map<String,List<String>> removeList = new HashMap<>();
 
         // 要保存的品项套餐列表
@@ -298,16 +296,16 @@ public class TcItemQueryAndSaveCmdExe {
                 // 数据库和三方都存在则对比数据
 
                 // 将数据库列表根据品项套餐id转map
-                Map<String, TcItemPgkEntity> dbEntityMap = dbEntityList.stream().collect(Collectors.toMap(TcItemPgkEntity::getPkgId, Function.identity()));
+                Map<String, TcItemPgkEntity> dbEntityMap = dbEntityList.stream().collect(Collectors.toMap(TcItemPgkEntity::getItemId, Function.identity()));
 
                 // 将三方数据根据品项套餐id转map
-                Map<String, TcItemPgkEntity> entityMap = entityList.stream().collect(Collectors.toMap(TcItemPgkEntity::getPkgId, Function.identity()));
+                Map<String, TcItemPgkEntity> entityMap = entityList.stream().collect(Collectors.toMap(TcItemPgkEntity::getItemId, Function.identity()));
 
                 // 汇总两个数据的品项套餐id并去重
-                List<String> pkgIdList = Stream.concat(dbEntityMap.keySet().stream(), entityMap.keySet().stream()).distinct().toList();
+                List<String> itemIdList = Stream.concat(dbEntityMap.keySet().stream(), entityMap.keySet().stream()).distinct().toList();
 
                 // 循环品项套餐id对比数据
-                for(String id : pkgIdList){
+                for(String id : itemIdList){
                     // 根据品项套餐id获取三方和数据库数据
                     TcItemPgkEntity entity = entityMap.get(id);
                     TcItemPgkEntity dbEntity = dbEntityMap.get(id);
@@ -590,13 +588,12 @@ public class TcItemQueryAndSaveCmdExe {
         tcItemMultiBarcodeDao.operateBatch(tcConfig.getApi().getCenterId(),saveList, updateList, removeList);
     }
 
-    private List<TcItemResponse> queryItemCategoryAll(String accessToken, String shopId,String lastTime){
+    private List<TcItemResponse> queryResponseAll(String accessToken, String shopId,TcItemQueryCmd cmd){
 
-        TcItemQueryRequest tcItemQueryRequest = new TcItemQueryRequest();
+        TcItemQueryRequest tcItemQueryRequest = cmd.toRequestByCmd();
         tcItemQueryRequest.setPageNo(1);
         tcItemQueryRequest.setPageSize(300);
         tcItemQueryRequest.setShopId(shopId);
-        tcItemQueryRequest.setLastTime(lastTime);
         tcItemQueryRequest.setCenterId(tcConfig.getApi().getCenterId());
 
 

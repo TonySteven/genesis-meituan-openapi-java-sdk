@@ -4,7 +4,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.config.TcConfig;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcItemCategoryDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemCategoryEntity;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.QueryShopInfoAction;
@@ -60,18 +59,18 @@ public class TcItemCategoryQueryAndSaveCmdExe {
 
         // 2. 调用天财接口获取所有品项类别明细实时信息.
         // 2.0 先同步集团分类信息.
-        List<TcItemCategoryResponse> tcCategoryResponses = queryItemCategoryAll(accessToken, null);
+        List<TcItemCategoryResponse> responseList = queryResponseAll(accessToken, null);
 
-        // 2.1 获取所有店铺ids
-        List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
-        List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
-        // 遍历shopIds,获取每个shopId的账单明细实时信息.
-        for(String shopId : shopIds){
-            tcCategoryResponses.addAll(queryItemCategoryAll(accessToken, shopId));
-        }
-
-        // 2.2 将查询出来的品项类别去重
-        List<TcItemCategoryResponse> responseList = tcCategoryResponses.stream().distinct().toList();
+//        // 2.1 获取所有店铺ids
+//        List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
+//        List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
+//        // 遍历shopIds,获取每个shopId的账单明细实时信息.
+//        for(String shopId : shopIds){
+//            tcResponses.addAll(queryResponseAll(accessToken, shopId));
+//        }
+//
+//        // 2.2 将查询出来的品项类别去重
+//        List<TcItemCategoryResponse> responseList = tcResponses.stream().distinct().toList();
 
         if(ObjectUtils.isEmpty(responseList)){
             return ApiResult.success("未获取到品项类别");
@@ -112,7 +111,7 @@ public class TcItemCategoryQueryAndSaveCmdExe {
         return ApiResult.success();
     }
 
-    private List<TcItemCategoryResponse> queryItemCategoryAll(String accessToken, String shopId){
+    private List<TcItemCategoryResponse> queryResponseAll(String accessToken, String shopId){
         int pageNo = 1;
         int pageSize = 50;
 

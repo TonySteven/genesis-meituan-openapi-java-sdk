@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemSizeResponse;
 import lombok.Data;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -89,6 +90,9 @@ public class TcItemSizeEntity implements Serializable {
     private Integer delflg;
 
     public static List<TcItemSizeEntity> toEntityListByResponse(TcItemEntity item, List<TcItemSizeResponse> responses){
+        if(ObjectUtils.isEmpty(responses)){
+            return null;
+        }
         List<TcItemSizeEntity> list = new ArrayList<>();
         for (TcItemSizeResponse response : responses) {
             list.add(toEntityByResponse(item,response));

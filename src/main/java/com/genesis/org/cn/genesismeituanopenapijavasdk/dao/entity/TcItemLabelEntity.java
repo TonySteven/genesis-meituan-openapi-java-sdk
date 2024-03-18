@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemLabelResponse;
 import lombok.Data;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -58,6 +59,9 @@ public class TcItemLabelEntity implements Serializable {
     private String labelName;
 
     public static List<TcItemLabelEntity> toEntityListByResponse(TcItemEntity item,List<TcItemLabelResponse> response){
+        if(ObjectUtils.isEmpty(response)){
+            return null;
+        }
         List<TcItemLabelEntity> list = new ArrayList<>();
         for (TcItemLabelResponse tcItemLabelResponse : response) {
             list.add(toEntityByResponse(item,tcItemLabelResponse));

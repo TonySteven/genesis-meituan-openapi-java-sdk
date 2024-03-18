@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemMethodResponse;
 import lombok.Data;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -70,6 +71,9 @@ public class TcItemMethodEntity implements Serializable {
     private String name;
 
     public static List<TcItemMethodEntity> toEntityListByResponse(TcItemEntity item, List<TcItemMethodResponse> response,Integer methodType){
+        if(ObjectUtils.isEmpty(response)){
+            return null;
+        }
         List<TcItemMethodEntity> list = new ArrayList<>();
         for (TcItemMethodResponse tcItemMethodResponse : response) {
             list.add(toEntityByResponse(item,tcItemMethodResponse,methodType));

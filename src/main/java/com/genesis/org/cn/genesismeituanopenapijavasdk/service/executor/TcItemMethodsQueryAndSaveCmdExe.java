@@ -4,7 +4,6 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.config.TcConfig;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcItemMethodsDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemMethodsEntity;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.QueryShopInfoAction;
@@ -60,25 +59,25 @@ public class TcItemMethodsQueryAndSaveCmdExe {
 
         // 2. 调用天财接口获取所有品项做法档案信息实时信息.
         // 2.0 先同步集团信息.
-        List<TcItemMethodsResponse> tcItemMethodClassesResponses = queryItemCategoryAll(accessToken, null,null);
+        List<TcItemMethodsResponse> responseList = queryResponseAll(accessToken, null,null);
 
-        // 2.1 获取所有店铺ids
-        List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
-        List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
-        // 遍历shopIds,获取每个shopId的账单明细实时信息.
-        for(String shopId : shopIds){
-            tcItemMethodClassesResponses.addAll(queryItemCategoryAll(accessToken, shopId,null));
-        }
-
-        // 2.2 将查询出来的品项做法档案信息去重
-        List<TcItemMethodsResponse> responseList = tcItemMethodClassesResponses.stream().distinct().toList();
+//        // 2.1 获取所有店铺ids
+//        List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
+//        List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
+//        // 遍历shopIds,获取每个shopId的账单明细实时信息.
+//        for(String shopId : shopIds){
+//            tcItemMethodClassesResponses.addAll(queryResponseAll(accessToken, shopId,null));
+//        }
+//
+//        // 2.2 将查询出来的品项做法档案信息去重
+//        List<TcItemMethodsResponse> responseList = tcResponses.stream().distinct().toList();
 
         if(ObjectUtils.isEmpty(responseList)){
             return ApiResult.success("未获取到品项做法档案信息");
         }
 
         // 2.3 将查询出来的品项做法档案信息信息转成实体类.
-        List<TcItemMethodsEntity> tcCategoryEntityList = TcItemMethodsEntity.toEntityListByResponse(tcConfig.getApi().getCenterId(),tcItemMethodClassesResponses);
+        List<TcItemMethodsEntity> tcCategoryEntityList = TcItemMethodsEntity.toEntityListByResponse(tcConfig.getApi().getCenterId(),responseList);
 
         // 3 操作数据库
         // 3.0 查询数据库中已有的信息.
@@ -112,7 +111,7 @@ public class TcItemMethodsQueryAndSaveCmdExe {
         return ApiResult.success();
     }
 
-    private List<TcItemMethodsResponse> queryItemCategoryAll(String accessToken, String shopId, String classId){
+    private List<TcItemMethodsResponse> queryResponseAll(String accessToken, String shopId, String classId){
         int pageNo = 1;
         int pageSize = 50;
 

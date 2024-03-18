@@ -28,7 +28,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("tc_category")
+@TableName("tc_item_category")
 public class TcItemCategoryEntity implements Serializable {
 
     @Serial

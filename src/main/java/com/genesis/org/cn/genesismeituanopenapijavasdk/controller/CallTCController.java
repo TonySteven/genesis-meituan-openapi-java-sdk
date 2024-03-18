@@ -1,11 +1,16 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemCategoryQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodClassesQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodsQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPayTypeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPaywayDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +44,18 @@ public class CallTCController {
 
     @Resource
     TcShopBillingDetailInRealTimeQueryAndSaveCmdExe tcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
+
+    @Resource
+    private TcItemCategoryQueryAndSaveCmdExe tcItemCategoryQueryAndSaveCmdExe;
+
+    @Resource
+    private TcItemQueryAndSaveCmdExe tcItemQueryAndSaveCmdExe;
+
+    @Resource
+    private TcItemMethodClassesQueryAndSaveCmdExe tcItemMethodClassesQueryAndSaveCmdExe;
+
+    @Resource
+    private TcItemMethodsQueryAndSaveCmdExe tcItemMethodsQueryAndSaveCmdExe;
 
     @Resource
     TcPayTypeQueryAndSaveCmdExe tcPayTypeQueryAndSaveCmdExe;
@@ -90,9 +107,49 @@ public class CallTCController {
             .build();
     }
 
+
     /**
-     * 同步保存结算方式类型
+     * 天财SaaS-调用获取品项类别信息落库api
      */
+    @ApiOperation(value = "天财SaaS-调用获取品项类别信息落库api", notes = "天财SaaS-调用获取品项类别信息落库api")
+    @GetMapping("/save-item-category")
+    public void saveItemCategory(){
+        tcItemCategoryQueryAndSaveCmdExe.execute();
+    }
+
+
+    /**
+     * 天财SaaS-调用获取品项信息落库api
+     */
+    @ApiOperation(value = "天财SaaS-调用获取品项信息落库api", notes = "天财SaaS-调用获取品项信息落库api")
+    @GetMapping("/save-item")
+    public void saveItem(@RequestBody @Validated TcItemQueryCmd cmd){
+        tcItemQueryAndSaveCmdExe.execute(cmd);
+    }
+
+    /**
+     * 天财SaaS-调用获取品项做法类别信息落库api
+     */
+    @ApiOperation(value = "天财SaaS-调用获取品项做法类别信息落库api", notes = "天财SaaS-调用获取品项做法类别信息落库api")
+    @GetMapping("/save-item-method-classes")
+    public void saveItemMethodClasses(){
+        tcItemMethodClassesQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 天财SaaS-调用获取品项做法信息落库api
+     */
+    @ApiOperation(value = "天财SaaS-调用获取品项做法信息落库api", notes = "天财SaaS-调用获取品项做法信息落库api")
+    @GetMapping("/save-item-methods")
+    public void saveItemMethods(){
+        tcItemMethodsQueryAndSaveCmdExe.execute();
+    }
+
+
+    /**
+     * 天财SaaS-调用获取结算方式类型落库api
+     */
+    @ApiOperation(value = "天财SaaS-调用获取结算方式类型落库api", notes = "天财SaaS-调用获取结算方式类型落库api")
     @GetMapping("/save-pay-type")
     public void savePayType(){
         tcPayTypeQueryAndSaveCmdExe.execute();
@@ -101,6 +158,7 @@ public class CallTCController {
     /**
      * 同步保存结算方式详情
      */
+    @ApiOperation(value = "天财SaaS-调用获取结算方式详情落库api", notes = "天财SaaS-调用获取结算方式详情落库api")
     @GetMapping("/save-payway-detail")
     public void savePaywayDetail(){
         tcPaywayDetailQueryAndSaveCmdExe.execute();

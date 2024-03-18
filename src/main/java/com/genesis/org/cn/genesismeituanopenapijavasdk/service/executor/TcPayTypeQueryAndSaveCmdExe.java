@@ -55,7 +55,7 @@ public class TcPayTypeQueryAndSaveCmdExe {
 
         // 2. 调用天财接口获取所有结算方式类型实时信息.
         // 2.0 先同步集团信息.
-        List<TcPayTypeResponse> tcResponses = queryItemCategoryAll(accessToken);
+        List<TcPayTypeResponse> tcResponses = queryResponseAll(accessToken);
 
         // 2.2 将查询出来的结算方式类型去重
         List<TcPayTypeResponse> responseList = tcResponses.stream().distinct().toList();
@@ -99,7 +99,7 @@ public class TcPayTypeQueryAndSaveCmdExe {
         return ApiResult.success();
     }
 
-    private List<TcPayTypeResponse> queryItemCategoryAll(String accessToken){
+    private List<TcPayTypeResponse> queryResponseAll(String accessToken){
         int pageNo = 1;
         int pageSize = 50;
 

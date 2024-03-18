@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemPgkResponse;
 import lombok.Data;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -71,7 +72,7 @@ public class TcItemPgkEntity implements Serializable {
     private String sizeName;
 
     /**
-     * 套餐ID
+     * 套餐ID (这里的pkgId = 套餐品项的itemId)
      */
     @TableField("pkg_id")
     private String pkgId;
@@ -125,6 +126,9 @@ public class TcItemPgkEntity implements Serializable {
     private String pkgClassName;
 
     public static List<TcItemPgkEntity> toEntityListByResponse(TcItemEntity item, List<TcItemPgkResponse> response,Integer pkgType){
+        if(ObjectUtils.isEmpty(response)){
+            return null;
+        }
         List<TcItemPgkEntity> list = new ArrayList<>();
         for (TcItemPgkResponse tcItemPgkResponse : response) {
             list.add(toEntityByResponse(item,tcItemPgkResponse,pkgType));
@@ -135,9 +139,9 @@ public class TcItemPgkEntity implements Serializable {
     public static TcItemPgkEntity toEntityByResponse(TcItemEntity item, TcItemPgkResponse response,Integer pkgType) {
         TcItemPgkEntity entity = new TcItemPgkEntity();
         entity.setCenterId(item.getCenterId());
-        entity.setItemId(item.getItemId());
-        entity.setItemCode(item.getItemCode());
-        entity.setItemName(item.getItemName());
+        entity.setItemId(response.getItem_id());
+        entity.setItemCode(response.getItem_code());
+        entity.setItemName(response.getItem_name());
         entity.setSizeId(response.getSize_id());
         entity.setSizeName(response.getSize_name());
         entity.setPkgId(response.getPkg_id());

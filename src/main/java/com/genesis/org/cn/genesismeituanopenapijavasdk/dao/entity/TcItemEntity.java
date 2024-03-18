@@ -290,6 +290,7 @@ public class TcItemEntity implements Serializable {
     /**
      * 品项标签列表
      */
+    @TableField(exist = false)
     private List<TcItemLabelEntity> itemLabelList;
 
     /**

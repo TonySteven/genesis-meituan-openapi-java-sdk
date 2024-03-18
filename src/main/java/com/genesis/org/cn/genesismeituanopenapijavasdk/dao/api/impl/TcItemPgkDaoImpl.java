@@ -36,7 +36,7 @@ public class TcItemPgkDaoImpl extends BaseServiceImpl<TcItemPgkMapper, TcItemPgk
     public List<TcItemPgkEntity> getListByCenterId(String centerId, List<String> itemIds) {
         LambdaQueryWrapper<TcItemPgkEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TcItemPgkEntity::getCenterId, centerId)
-            .in(ObjectUtils.isNotEmpty(itemIds),TcItemPgkEntity::getItemId, itemIds)
+            .in(ObjectUtils.isNotEmpty(itemIds),TcItemPgkEntity::getPkgId, itemIds)
             .orderByAsc(TcItemPgkEntity::getId);
         return this.listAll(wrapper);
     }
@@ -54,7 +54,7 @@ public class TcItemPgkDaoImpl extends BaseServiceImpl<TcItemPgkMapper, TcItemPgk
         if(ObjectUtils.isEmpty(list)){
             return Maps.newHashMap();
         }
-        return list.stream().collect(Collectors.groupingBy(TcItemPgkEntity::getItemId));
+        return list.stream().collect(Collectors.groupingBy(TcItemPgkEntity::getPkgId));
     }
 
     /**
@@ -90,8 +90,8 @@ public class TcItemPgkDaoImpl extends BaseServiceImpl<TcItemPgkMapper, TcItemPgk
         this.updateBatchNoneEntity(updateList, item -> {
             LambdaUpdateWrapper<TcItemPgkEntity> wrapper = new LambdaUpdateWrapper<>();
             wrapper.eq(TcItemPgkEntity::getCenterId, item.getCenterId())
-                .eq(TcItemPgkEntity::getItemId, item.getItemId())
-                .eq(TcItemPgkEntity::getPkgId, item.getPkgId());
+                .eq(TcItemPgkEntity::getPkgId, item.getPkgId())
+                .eq(TcItemPgkEntity::getItemId, item.getItemId());
             return wrapper;
         });
     }
@@ -106,8 +106,8 @@ public class TcItemPgkDaoImpl extends BaseServiceImpl<TcItemPgkMapper, TcItemPgk
         for (Map.Entry<String,List<String>> entry : removeList.entrySet()){
             LambdaUpdateWrapper<TcItemPgkEntity> wrapper = new LambdaUpdateWrapper<>();
             wrapper.eq(TcItemPgkEntity::getCenterId, centerId)
-                .eq(TcItemPgkEntity::getItemId, entry.getKey())
-                .in(ObjectUtils.isNotEmpty(entry.getValue()),TcItemPgkEntity::getPkgId, entry.getValue());
+                .eq(TcItemPgkEntity::getPkgId, entry.getKey())
+                .in(ObjectUtils.isNotEmpty(entry.getValue()),TcItemPgkEntity::getItemId, entry.getValue());
             this.remove(wrapper);
         }
     }
