@@ -531,7 +531,7 @@ public class TcItemQueryAndSaveCmdExe {
 
         for(TcItemEntity itemEntity : tcEntityList){
             // 获取三方品项条码列表
-            List<TcItemMultiBarcodeEntity> entityList = itemEntity.getMultiBarcodeList()
+            List<TcItemMultiBarcodeEntity> entityList = itemEntity.getMultiBarcodeList();
 
             // 获取数据库中的品项条码列表
             List<TcItemMultiBarcodeEntity> dbEntityList = dbEntityGroup.get(itemEntity.getItemId());
