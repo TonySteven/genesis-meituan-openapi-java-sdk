@@ -13,6 +13,9 @@ COPY target/*.jar /app.jar
 # 复制第三方库 JAR 文件
 #COPY target/classes/lib/waimai_open_java_sdk_request-1.1.2-jar-with-dependencies.jar lib/
 
+# 复制 .properties 文件到镜像中的工作目录
+COPY *.properties ./config/
+
 # 暴露应用程序将运行的端口
 EXPOSE 8080
 
