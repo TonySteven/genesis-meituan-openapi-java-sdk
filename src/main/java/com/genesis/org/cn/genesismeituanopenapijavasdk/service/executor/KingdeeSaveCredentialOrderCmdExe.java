@@ -283,8 +283,11 @@ public class KingdeeSaveCredentialOrderCmdExe {
     private List<JdScmShopBillPzEntity> getJdScmShopBillList(KingdeeCredentialBillCalledCmd cmd) {
         // 1. 读取数据库
         QueryWrapper<JdScmShopBillPzEntity> queryWrapper = new QueryWrapper<>();
-        // BillType In ('门店自采入库','门店统配入库','店间调入')
-        queryWrapper.in("BillType", "门店盘盈", "门店盘亏");
+        List<String> billTypeList = cmd.getBillTypeList();
+        // 如果billType不为空, 则根据billType查询.否则查询全部
+        if (CollUtil.isNotEmpty(billTypeList)) {
+            queryWrapper.in("BillType", billTypeList);
+        }
         // 获取cmd.门店名称
         List<String> shopNameList = cmd.getShopNameList();
         // 如果shopName不为空, 则根据shopName查询.否则查询全部

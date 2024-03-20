@@ -16,6 +16,12 @@ import java.util.List;
 public class KingdeeCredentialBillCalledCmd {
 
     /**
+     * 单据类型
+     */
+    @ApiModelProperty("单据类型")
+    private List<String> billTypeList;
+
+    /**
      * 门店名称
      */
     @ApiModelProperty("门店名称, 如果不传查询全部门店")
