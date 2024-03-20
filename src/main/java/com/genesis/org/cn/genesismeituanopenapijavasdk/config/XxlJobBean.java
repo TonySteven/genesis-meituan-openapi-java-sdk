@@ -4,9 +4,13 @@ import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.BaseAllCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.settle_ledger.DySettleLedgerRecordAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopAllSyncCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.KingdeeCredentialBillCalledCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.KingdeePayableBillCalledCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCredentialOrderCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import com.xxl.job.core.context.XxlJobHelper;
@@ -43,6 +47,12 @@ public class XxlJobBean {
     @Resource
     private DySettleLedgerRecordSyncCmdExe dySettleLedgerRecordSyncCmdExe;
 
+    @Resource
+    KingdeeSavePayableOrderCmdExe kingdeeSavePayableOrderCmdExe;
+
+    @Resource
+    KingdeeSaveCredentialOrderCmdExe kingdeeSaveCredentialOrderCmdExe;
+
     /**
      * 实时1分钟一次定时抽取
      */
@@ -61,8 +71,7 @@ public class XxlJobBean {
         // 校验cmd.getBeginDate()和cmd.getEndDate()是否为空,如果为空,则默认查询前一天的数据.
         if (StringUtils.isBlank(cmd.getBeginDate()) || StringUtils.isBlank(cmd.getEndDate())) {
             // 打印日志 进入默认查询前一天的数据
-            log.info("tcShopBillingDetailQueryAndSaveCmdExe cmd.getBeginDate() or cmd.getEndDate() is blank" +
-                ", default query previous day data.");
+            log.info("tcShopBillingDetailQueryAndSaveCmdExe cmd.getBeginDate() or cmd.getEndDate() is blank, default query previous day data.");
             // 获取前一天的时间的0点和24点.
             // 获取当前时间
             LocalDateTime now = LocalDateTime.now();
@@ -170,5 +179,40 @@ public class XxlJobBean {
         dySettleLedgerRecordSyncCmdExe.executeAll(cmd);
     }
 
+    /**
+     * 触发金蝶应付单调用
+     */
+    @XxlJob("callKingdeePayableOrderHandler")
+    public void callKingdeePayableOrderHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("callKingdeePayableOrderHandler jobParam:{}", jobParam);
+        // 如果jobParam.isBlank，直接返回
+        if (StringUtils.isBlank(jobParam)) {
+            return;
+        }
+        // jobParam转KingdeePayableBillCalledCmd
+        KingdeePayableBillCalledCmd cmd = JSONUtil.toBean(jobParam, KingdeePayableBillCalledCmd.class);
+        // 打印cmd日志
+        log.info("KingdeePayableBillCalledCmd cmd:{}", JSONUtil.toJsonStr(cmd));
+        kingdeeSavePayableOrderCmdExe.execute(cmd);
+    }
+
+    /**
+     * 触发金蝶生成凭证调用
+     */
+    @XxlJob("callKingdeeCredentialOrderHandler")
+    public void callKingdeeCredentialOrderHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("callKingdeeCredentialOrderHandler jobParam:{}", jobParam);
+        // 如果jobParam.isBlank，直接返回
+        if (StringUtils.isBlank(jobParam)) {
+            return;
+        }
+        // jobParam转KingdeePayableBillCalledCmd
+        KingdeeCredentialBillCalledCmd cmd = JSONUtil.toBean(jobParam, KingdeeCredentialBillCalledCmd.class);
+        // 打印cmd日志
+        log.info("KingdeeCredentialBillCalledCmd cmd:{}", JSONUtil.toJsonStr(cmd));
+        kingdeeSaveCredentialOrderCmdExe.execute(cmd);
+    }
 
 }
