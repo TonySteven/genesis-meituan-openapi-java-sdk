@@ -8,6 +8,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.config.TcConfig;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.HttpPostRequestUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryRequest;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcRecipeCardQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsInRealTimeResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsResponse;
@@ -18,6 +19,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemMethodsDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPayTypeDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPaywayDetailDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcRecipeCardDataResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -25,7 +27,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * query shop info action
@@ -82,6 +86,11 @@ public class QueryShopInfoAction {
     static final String URL_QUERY_PAYWAY_DETAIL_LIST = "/api/datatransfer/getpaywaydetailinfo";
 
     /**
+     * url query recipeCard list
+     */
+    static final String URL_QUERY_RECIPE_CARD_LIST = "/cldpoint/openservice/recipeCardInfoBatch.do";
+
+    /**
      * 服务器请求协议
      */
     @Value("${tiancai.protocol}")
@@ -92,6 +101,12 @@ public class QueryShopInfoAction {
      */
     @Value("${tiancai.url}")
     private static String applicationServer = "cysms.wuuxiang.com";
+
+    /**
+     * 服务器地址
+     */
+    @Value("${tiancai.url2}")
+    private static String applicationServer2 = "http://dthzb.sm5.fxscm.net";
 
     /**
      * 服务器端口
@@ -191,15 +206,7 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, accessId);
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求店铺实时账单失败.
-            log.warn("请求店铺信息失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , QueryShopInfoResponse.class);
@@ -235,14 +242,7 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, accessId);
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求店铺实时账单失败.
-            log.warn("请求店铺实时账单失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , QueryBillDetailsInRealTimeResponse.class);
@@ -282,14 +282,7 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, accessId);
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求店铺实时账单失败.
-            log.warn("请求店铺实时账单失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
 
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
@@ -321,14 +314,7 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求品项类别失败.
-            log.warn("请求品项类别失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcItemCategoryDataResponse.class);
@@ -370,14 +356,7 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求品项类别失败.
-            log.warn("请求品项失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcItemDataResponse.class);
@@ -408,14 +387,7 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求失败.
-            log.warn("请求品项做法类别信息失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcItemMethodClassesDataResponse.class);
@@ -451,14 +423,7 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求失败.
-            log.warn("请求品项做法档案信息失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcItemMethodsDataResponse.class);
@@ -486,14 +451,8 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求失败.
-            log.warn("请求结算方式类型失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
+
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcPayTypeDataResponse.class);
@@ -525,17 +484,96 @@ public class QueryShopInfoAction {
         Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        // responseData如果blank，说明请求失败,并一直请求,直到请求成功.
-        while (StringUtils.isBlank(responseData)) {
-            // 警告日志 - 请求失败.
-            log.warn("请求结算方式信息失败,正在重试!");
-            // 重试.
-            responseData = HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap);
-        }
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
+
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcPaywayDetailDataResponse.class);
+    }
+
+    /**
+     * query payType list
+     *
+     * @param config            config
+     * @param request             request
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcRecipeCardDataResponse queryRecipeCardList(TcConfig config, TcRecipeCardQueryRequest request) {
+
+        // 参数
+        String url = applicationServer2 + URL_QUERY_RECIPE_CARD_LIST;
+
+        Map<String, String> loginParams = new LinkedHashMap<>();
+        loginParams.put("ent", "ENTa5bv");
+        loginParams.put("username", config.getApi().getUsername());
+        loginParams.put("password", config.getApi().getPassword());
+        if(StringUtils.isNotBlank(request.getDishJkid())){
+            loginParams.put("dishJkid", request.getDishJkid());
+        }
+        if(StringUtils.isNotBlank(request.getContainsDel())) {
+            loginParams.put("containsDel", request.getContainsDel());
+        }
+        if(StringUtils.isNotBlank(request.getContainsEmptyDt())) {
+            loginParams.put("containsEmptyDt", request.getContainsEmptyDt());
+        }
+        if(StringUtils.isNotBlank(request.getContainsAllDt())) {
+            loginParams.put("containsAllDt", request.getContainsAllDt());
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader("", config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendGetWithParams(url, loginParams, headMap));
+
+        JSONObject jsonObj = new JSONObject(responseData);
+        TcRecipeCardDataResponse dataResponse = JSON.parseObject(jsonObj.toString()
+            , TcRecipeCardDataResponse.class);
+
+        if(dataResponse.getStatus() != 1){
+            throw new RuntimeException("查询菜品失败：" + dataResponse.getMessage());
+        }
+        return dataResponse;
+    }
+
+    /**
+     * httpRetry
+     * @param supplier 重试方法
+     * @return 结果
+     */
+    public static String httpRetry(Supplier<String> supplier){
+        return httpRetry(supplier,0,5);
+    }
+
+    /**
+     * httpRetry 默认重试5次
+     * @param supplier 重试方法
+     * @param count 当前重试次数
+     * @return 结果
+     */
+    public static String httpRetry(Supplier<String> supplier,int count){
+        return httpRetry(supplier,count,5);
+    }
+
+
+    /**
+     * httpRetry
+     * @param supplier 重试方法
+     * @param count 当前重试次数
+     * @param maxCount 最大重试次数
+     * @return 结果
+     */
+    public static String httpRetry(Supplier<String> supplier,int count,int maxCount){
+        String result = supplier.get();
+
+        while (StringUtils.isBlank(result) && count < maxCount) {
+            // 警告日志 - 请求失败.
+            log.warn("请求失败,正在重试!");
+            // 重试.
+            result = httpRetry(supplier, count++,maxCount);
+
+            count++;
+        }
+        return result;
     }
 
     private static String getUrl(TcConfig config) {

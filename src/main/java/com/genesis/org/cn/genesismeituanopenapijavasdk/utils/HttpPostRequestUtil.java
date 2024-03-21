@@ -6,7 +6,11 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -53,6 +57,7 @@ public class HttpPostRequestUtil {
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 
             String urlName = url + "?" + param;
+
             HttpURLConnection conn = getHttpURLConnection(urlName, "GET", headers);
 
             // 获取响应
@@ -66,6 +71,22 @@ public class HttpPostRequestUtil {
             log.severe("GET request failed: " + e.getMessage());
         }
         return result.toString();
+    }
+
+    /**
+     * send get request
+     *
+     * @param url   url
+     * @param params param
+     * @return {@link String}
+     */
+    @SneakyThrows
+    public static String sendGetWithParams(String url, Map<String,String> params, Map<String, String> headers) {
+
+        String param = params.entrySet().stream()
+                .map(entry -> entry.getKey() + "=" + entry.getValue().replace(" ", "%20"))
+                .collect(Collectors.joining("&"));
+        return sendGet(url,param,headers);
     }
 
     /**

@@ -40,7 +40,8 @@ public class TcPaywayDetailShopDaoImpl extends BaseServiceImpl<TcPaywayDetailSho
         LambdaQueryWrapper<TcPaywayDetailShopEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TcPaywayDetailShopEntity::getCenterId, centerId)
             .in(ObjectUtils.isNotEmpty(paywayIdList),TcPaywayDetailShopEntity::getPaywayId, paywayIdList)
-            .orderByAsc(TcPaywayDetailShopEntity::getPaywayId);
+            .orderByAsc(TcPaywayDetailShopEntity::getPaywayId)
+            .orderByAsc(TcPaywayDetailShopEntity::getShopId);
         return this.listAll(wrapper);
     }
 
@@ -108,7 +109,7 @@ public class TcPaywayDetailShopDaoImpl extends BaseServiceImpl<TcPaywayDetailSho
     public void removeBatch(String centerId,Map<String,List<String>> removeList){
         for (Map.Entry<String,List<String>> entry : removeList.entrySet()){
             LambdaUpdateWrapper<TcPaywayDetailShopEntity> wrapper = new LambdaUpdateWrapper<>();
-            wrapper.eq(TcPaywayDetailShopEntity::getCenterId, entry.getKey())
+            wrapper.eq(TcPaywayDetailShopEntity::getCenterId, centerId)
                 .eq(TcPaywayDetailShopEntity::getPaywayId, entry.getKey())
                 .in(ObjectUtils.isNotEmpty(entry.getValue()),TcPaywayDetailShopEntity::getShopId, entry.getValue());
             this.remove(wrapper);

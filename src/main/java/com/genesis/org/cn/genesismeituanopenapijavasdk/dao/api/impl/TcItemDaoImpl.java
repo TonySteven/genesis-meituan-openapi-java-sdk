@@ -36,6 +36,7 @@ public class TcItemDaoImpl extends BaseServiceImpl<TcItemMapper, TcItemEntity> i
     public List<TcItemEntity> getListByCenterId(String centerId, List<String> itemIds) {
         LambdaQueryWrapper<TcItemEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TcItemEntity::getCenterId, centerId)
+            .in(ObjectUtils.isNotEmpty(itemIds),TcItemEntity::getItemId, itemIds)
             .orderByAsc(TcItemEntity::getItemId);
         return this.listAll(wrapper);
     }

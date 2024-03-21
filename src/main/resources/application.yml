@@ -1,6 +1,8 @@
 spring:
   main:
     allow-circular-references: true
+  profiles:
+    active: local
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -65,6 +67,8 @@ tiancai:
   protocol: ${PROTOCOL:https}
   # o2oa 服务地址
   url: ${URL:cysms.wuuxiang.com}
+  # 自有服务器 url（目前只有成本卡在用）
+  url2: ${URL2:http://dthzb.sm5.fxscm.net}
   # o2oa 服务端口
   port: ${PORT:443}
   api:
@@ -74,6 +78,11 @@ tiancai:
     accessId: ${TIANCAI_APP_ACCESS_ID:a1fca758ed104119889f46df3528d9fa}
     # centerId 餐饮集团ID
     centerId: ${TIANCAI_APP_CENTER_ID:94630}
+    # 自有服务器账号（目前只有成本卡在用）
+    username: ${TIANCAI_APP_USERNAME:admin}
+    # 自有服务器密码
+    password: ${TIANCAI_APP_PASSWORD:123456}
+
 
 # 调度平台配置
 xxl:

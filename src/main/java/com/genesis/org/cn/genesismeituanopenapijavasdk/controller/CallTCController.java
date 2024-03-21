@@ -7,10 +7,12 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMe
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPayTypeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPaywayDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcRecipeCardQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcRecipeCardQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,6 +64,9 @@ public class CallTCController {
 
     @Resource
     TcPaywayDetailQueryAndSaveCmdExe tcPaywayDetailQueryAndSaveCmdExe;
+
+    @Resource
+    private TcRecipeCardQueryAndSaveCmdExe tcRecipeCardQueryAndSaveCmdExe;
 
 
     /**
@@ -162,5 +167,14 @@ public class CallTCController {
     @GetMapping("/save-payway-detail")
     public void savePaywayDetail(){
         tcPaywayDetailQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 获取菜品成本卡详细信息
+     */
+    @ApiOperation(value = "天财SaaS-调用获取菜品成本卡详细信息api", notes = "天财SaaS-调用获取菜品成本卡详细信息api")
+    @GetMapping("/get-recipe-card")
+    public void getRecipeCard(@RequestBody @Validated TcRecipeCardQueryCmd cmd){
+        tcRecipeCardQueryAndSaveCmdExe.execute(cmd);
     }
 }

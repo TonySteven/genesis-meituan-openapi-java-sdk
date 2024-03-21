@@ -18,6 +18,12 @@ public class TcConfig {
      * 服务器地址
      */
     private String url;
+
+    /**
+     * 特殊地址
+     */
+    private String url2;
+
     /**
      * 服务器端口
      */

@@ -17,9 +17,19 @@ public class BaseDataResponse {
     private String code;
 
     /**
+     * status
+     */
+    private Integer status;
+
+    /**
      * msg
      */
     private String msg;
+
+    /**
+     * message
+     */
+    private String message;
 
     /**
      * success

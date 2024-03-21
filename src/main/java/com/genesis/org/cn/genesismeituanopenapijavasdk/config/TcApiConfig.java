@@ -19,4 +19,14 @@ public class TcApiConfig {
      * 餐饮集团ID
      */
     private String centerId;
+
+    /**
+     * 自有服务器账号（目前只有成本卡在用）
+     */
+    private String username;
+
+    /**
+     * 自有服务器密码
+     */
+    private String password;
 }
