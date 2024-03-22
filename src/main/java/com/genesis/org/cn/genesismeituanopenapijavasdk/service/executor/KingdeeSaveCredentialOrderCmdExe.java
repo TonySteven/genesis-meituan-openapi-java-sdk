@@ -413,6 +413,10 @@ public class KingdeeSaveCredentialOrderCmdExe {
         String year = formattedBusinessDate.substring(0, 4);
         // year转换成Integer
         int yearInt = Integer.parseInt(year);
+        // 根据formattedBusinessDate获取年份获取月份
+        String month = formattedBusinessDate.substring(5, 7);
+        // month转换成Integer
+        int monthInt = Integer.parseInt(month);
 
         // 2.4 门店编码
         String shopCode = jdScmShopBillPzEntity.getShopCode();
@@ -494,7 +498,7 @@ public class KingdeeSaveCredentialOrderCmdExe {
             // 凭证字 写死PRE001
             .FVOUCHERGROUPID(BaseFNumber.builder().FNumber("PRE001").build())
             .FSourceBillKey(BaseFNumber.builder().FNumber("78050206-2fa6-40e3-b7c8-bd608146fa38").build())
-            .FPERIOD(1)
+            .FPERIOD(monthInt)
             .FVOUCHERGROUPNO(" ")
             // 实例 FEntity
             .FEntity(fEntities)
