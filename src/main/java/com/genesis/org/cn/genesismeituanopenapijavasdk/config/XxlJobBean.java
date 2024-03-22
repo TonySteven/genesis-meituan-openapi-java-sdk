@@ -9,6 +9,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.Kingdee
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCashCredentialOrderCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCredentialOrderCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
@@ -52,6 +53,9 @@ public class XxlJobBean {
 
     @Resource
     KingdeeSaveCredentialOrderCmdExe kingdeeSaveCredentialOrderCmdExe;
+
+    @Resource
+    KingdeeSaveCashCredentialOrderCmdExe kingdeeSaveCashCredentialOrderCmdExe;
 
     /**
      * 实时1分钟一次定时抽取
@@ -213,6 +217,24 @@ public class XxlJobBean {
         // 打印cmd日志
         log.info("KingdeeCredentialBillCalledCmd cmd:{}", JSONUtil.toJsonStr(cmd));
         kingdeeSaveCredentialOrderCmdExe.execute(cmd);
+    }
+
+    /**
+     * 触发金蝶生成收银凭证调用
+     */
+    @XxlJob("callKingdeeCashCredentialOrderHandler")
+    public void callKingdeeCashCredentialOrderHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("callKingdeeCashCredentialOrderHandler jobParam:{}", jobParam);
+        // 如果jobParam.isBlank，直接返回
+        if (StringUtils.isBlank(jobParam)) {
+            return;
+        }
+        // jobParam转KingdeePayableBillCalledCmd
+        KingdeeCredentialBillCalledCmd cmd = JSONUtil.toBean(jobParam, KingdeeCredentialBillCalledCmd.class);
+        // 打印cmd日志
+        log.info("KingdeeCredentialBillCalledCmd cmd:{}", JSONUtil.toJsonStr(cmd));
+        kingdeeSaveCashCredentialOrderCmdExe.execute(cmd);
     }
 
 }
