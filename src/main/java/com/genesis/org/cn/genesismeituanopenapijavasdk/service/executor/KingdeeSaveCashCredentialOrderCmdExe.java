@@ -171,6 +171,11 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
                     .noneMatch(kingdeeBillAuxiliaryCalledEntity -> kingdeeBillAuxiliaryCalledEntity.getId()
                         .equals(key)))
                 .toList();
+
+            // entryJdPosShopBillValue如果不为空,则继续执行
+            if (CollUtil.isEmpty(entryJdPosShopBillValue)) {
+                continue;
+            }
             // 查询VoucherGroupingVoucherAccountingEntryEntity List
             List<VoucherGroupingVoucherAccountingEntryEntity> voucherGroupingVoucherAccountingEntryEntities
                 = iVoucherGroupingVoucherAccountingEntryDao.list();
