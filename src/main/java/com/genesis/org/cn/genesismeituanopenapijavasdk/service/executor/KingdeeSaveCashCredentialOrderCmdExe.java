@@ -146,41 +146,46 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
         // 拼接入参对象.
         // 1. 获取 jdScmShopBillList
         List<JdPosShopBillEntity> jdScmShopBillList = getJdScmShopBillList(cmd);
-        // 2.1 . 获取kingdee_bill_auxiliary_called已经回调成功的数据,并去除已经回调成功的数据的id
-        List<KingdeePosBillAuxiliaryCalledEntity> kingdeeBillAuxiliaryCalledSuccessEntities
-            = getKingdeeBillAuxiliaryCalledSuccessEntities();
-        // jdScmShopBillList和kingdeeBillAuxiliaryCalledSuccessEntities id 取差集,就是还没有回调成功的数据.
-        jdScmShopBillList = jdScmShopBillList.stream()
-            .filter(jdPosShopBillEntity -> kingdeeBillAuxiliaryCalledSuccessEntities.stream()
-                .noneMatch(kingdeeBillAuxiliaryCalledEntity -> kingdeeBillAuxiliaryCalledEntity.getId()
-                    .equals(jdPosShopBillEntity.getId())))
-            .toList();
-        // jdScmShopBillList根据门店进行分组,并遍历调用保存应付单接口
-        Map<String, List<JdPosShopBillEntity>> collect = jdScmShopBillList.stream()
-            .collect(Collectors.groupingBy(JdPosShopBillEntity::getShopName));
-        // 查询VoucherGroupingVoucherAccountingEntryEntity List
-        List<VoucherGroupingVoucherAccountingEntryEntity> voucherGroupingVoucherAccountingEntryEntities
-            = iVoucherGroupingVoucherAccountingEntryDao.list();
-        // voucherGroupingVoucherAccountingEntryEntities 根据item_type_name进行分组
-        // 如果getItemTypeName为null,则跳过.
-        Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityMap
-            = voucherGroupingVoucherAccountingEntryEntities.stream()
-            .filter(voucherGroupingVoucherAccountingEntryEntity ->
-                voucherGroupingVoucherAccountingEntryEntity.getItemTypeName() != null)
-            .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getItemTypeName));
 
+        // jdScmShopBillList根据 BusMonth 和 shopCode 进行分组
+        Map<String, List<JdPosShopBillEntity>> jdScmShopBillListMap = jdScmShopBillList.stream()
+            .collect(Collectors.groupingBy(jdPosShopBillEntity -> jdPosShopBillEntity.getBusMonth() + jdPosShopBillEntity.getShopCode()));
 
-        for (Map.Entry<String, List<JdPosShopBillEntity>> entry : collect.entrySet()) {
+        // 遍历jdScmShopBillListMap
+        for (Map.Entry<String, List<JdPosShopBillEntity>> entry : jdScmShopBillListMap.entrySet()) {
             // 获取当前entry.getKey()的索引顺序值
-            int index = collect.keySet().stream().toList().indexOf(entry.getKey()) + 1;
+            String key = entry.getKey();
+            int index = jdScmShopBillListMap.keySet().stream().toList().indexOf(key) + 1;
             // 打印日志 总共有多少条数据 现在处理第几条数据
-            log.info("调用收银凭证-总共有{}条数据,现在处理第{}条数据", collect.size(), index);
+            log.info("调用收银凭证-总共有{}条数据,现在处理第{}条数据", jdScmShopBillListMap.size(), index);
             // 打印日志 此次处理的门店名称和门店应付单数量
-            log.info("调用收银凭证-门店名称:{},门店应付单数量:{}", entry.getKey(), entry.getValue().size());
+            log.info("调用收银凭证-门店名称:{},门店应付单数量:{}", key, entry.getValue().size());
+            List<JdPosShopBillEntity> entryJdPosShopBillValue = entry.getValue();
+
+            // 2.1 . 获取kingdee_bill_auxiliary_called已经回调成功的数据,并去除已经回调成功的数据的id
+            List<KingdeePosBillAuxiliaryCalledEntity> kingdeeBillAuxiliaryCalledSuccessEntities
+                = getKingdeeBillAuxiliaryCalledSuccessEntities();
+            // jdScmShopBillList和kingdeeBillAuxiliaryCalledSuccessEntities id 取差集,就是还没有回调成功的数据.
+            entryJdPosShopBillValue = entryJdPosShopBillValue.stream()
+                .filter(jdPosShopBillEntity -> kingdeeBillAuxiliaryCalledSuccessEntities.stream()
+                    .noneMatch(kingdeeBillAuxiliaryCalledEntity -> kingdeeBillAuxiliaryCalledEntity.getId()
+                        .equals(key)))
+                .toList();
+            // 查询VoucherGroupingVoucherAccountingEntryEntity List
+            List<VoucherGroupingVoucherAccountingEntryEntity> voucherGroupingVoucherAccountingEntryEntities
+                = iVoucherGroupingVoucherAccountingEntryDao.list();
+            // voucherGroupingVoucherAccountingEntryEntities 根据item_type_name进行分组
+            // 如果getItemTypeName为null,则跳过.
+            Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityMap
+                = voucherGroupingVoucherAccountingEntryEntities.stream()
+                .filter(voucherGroupingVoucherAccountingEntryEntity ->
+                    voucherGroupingVoucherAccountingEntryEntity.getItemTypeName() != null)
+                .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getItemTypeName));
+
 
             // 2.3 获取KingdeeSaveCredentialOrderBatchRequest 批量保存入参对象
             KingdeeSaveCredentialOrderBatchRequest kingdeeSaveCredentialOrderBatchRequest =
-                getKingdeeSaveCredentialOrderBatchRequest(entry.getValue()
+                getKingdeeSaveCredentialOrderBatchRequest(entryJdPosShopBillValue
                     , voucherGroupingVoucherAccountingEntryEntityMap);
             // 2.4 入参转jsonString.
             String jsonData = new Gson().toJson(kingdeeSaveCredentialOrderBatchRequest);
@@ -195,11 +200,12 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             // 2.8 对返回结果进行解析和校验
             RepoRet repoRet = gson.fromJson(resultJson, RepoRet.class);
             // 2.9 保存成功后，更新数据库状态
-            saveCallbackResult(entry.getValue(), repoRet);
+            saveCallbackResult(key, entryJdPosShopBillValue, repoRet);
 
             // 打印日志 - 结束. 完成处理第几条数据,还剩多少条数据
-            log.info("完成处理第{}个店,还剩{}个门店数据待处理!", index, (collect.size() - index));
+            log.info("完成处理第{}个店,还剩{}个门店数据待处理!", index, (jdScmShopBillListMap.size() - index));
         }
+
 
         // 返回参数.
         return BaseVO.builder()
@@ -216,7 +222,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
      * @param jdScmShopBillList {@link List}<{@link JdPosShopBillEntity}>
      * @param repoRet           {@link RepoRet}
      */
-    private void saveCallbackResult(List<JdPosShopBillEntity> jdScmShopBillList, RepoRet repoRet) {
+    private void saveCallbackResult(String key, List<JdPosShopBillEntity> jdScmShopBillList, RepoRet repoRet) {
 
         // 1. 如果repoRet.getResult().getResponseStatus().isIsSuccess()为true,则说明全是成功, 按照成功处理.
         if (repoRet.getResult().getResponseStatus().isIsSuccess()) {
@@ -224,7 +230,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             // 获取List<KingdeePosBillAuxiliaryCalledEntity> kingdeeCredentialBillAuxiliaryCalledEntities
             ArrayList<SuccessEntity> successEntities = repoRet.getResult().getResponseStatus().getSuccessEntitys();
             List<KingdeePosBillAuxiliaryCalledEntity> kingdeeCredentialBillAuxiliaryCalledEntities
-                = buildSuccessEntities(jdScmShopBillList, successEntities);
+                = buildSuccessEntities(key, jdScmShopBillList, successEntities);
             // 2. 批量保存
             iKingdeePosBillAuxiliaryCalledDao.saveOrUpdateBatch(kingdeeCredentialBillAuxiliaryCalledEntities);
         } else {
@@ -237,7 +243,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             if (successEntities != null && !successEntities.isEmpty()) {
                 // 调用buildSuccessEntities方法, 获取List<KingdeePosBillAuxiliaryCalledEntity> kingdeeCredentialBillAuxiliaryCalledEntities
                 List<KingdeePosBillAuxiliaryCalledEntity> kingdeeBillAuxiliaryCalledSuccessEntities
-                    = buildSuccessEntities(jdScmShopBillList, successEntities);
+                    = buildSuccessEntities(key, jdScmShopBillList, successEntities);
                 // kingdeeBillAuxiliaryCalledSuccessEntities新增到kingdeeCredentialBillAuxiliaryCalledEntities
                 kingdeeCredentialBillAuxiliaryCalledEntities.addAll(kingdeeBillAuxiliaryCalledSuccessEntities);
             }
@@ -245,7 +251,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             ArrayList<RepoError> errors = repoRet.getResult().getResponseStatus().getErrors();
             // 获取失败的回调结果
             List<KingdeePosBillAuxiliaryCalledEntity> kingdeeBillAuxiliaryCalledFailedEntities
-                = buildFailedEntities(jdScmShopBillList, errors);
+                = buildFailedEntities(key, jdScmShopBillList, errors);
             // kingdeeBillAuxiliaryCalledFailedEntities新增到kingdeeCredentialBillAuxiliaryCalledEntities
             kingdeeCredentialBillAuxiliaryCalledEntities.addAll(kingdeeBillAuxiliaryCalledFailedEntities);
 
@@ -261,7 +267,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
      * @param successEntities   success entities
      * @return {@link List}<{@link KingdeePosBillAuxiliaryCalledEntity}>
      */
-    private List<KingdeePosBillAuxiliaryCalledEntity> buildSuccessEntities(List<JdPosShopBillEntity> jdScmShopBillList
+    private List<KingdeePosBillAuxiliaryCalledEntity> buildSuccessEntities(String key, List<JdPosShopBillEntity> jdScmShopBillList
         , ArrayList<SuccessEntity> successEntities) {
         // 判断successEntities是否为空, 如果为空, 则返回空集合
         if (successEntities == null || successEntities.isEmpty()) {
@@ -284,7 +290,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
 
             // 3.4 添加到kingdeeCredentialBillAuxiliaryCalledEntities
             kingdeeCredentialBillAuxiliaryCalledEntities.add(KingdeePosBillAuxiliaryCalledEntity.builder()
-                .id(jdPosShopBillEntity.getId())
+                .id(key)
                 .companyId("dth")
                 .jdPosShopBillNo(jdPosShopBillEntity.getId())
                 .kingdeeBillId(kingdeeBillId)
@@ -310,7 +316,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
      * @param errors            errors
      * @return {@link List}<{@link KingdeePosBillAuxiliaryCalledEntity}>
      */
-    private List<KingdeePosBillAuxiliaryCalledEntity> buildFailedEntities(List<JdPosShopBillEntity> jdScmShopBillList
+    private List<KingdeePosBillAuxiliaryCalledEntity> buildFailedEntities(String key, List<JdPosShopBillEntity> jdScmShopBillList
         , ArrayList<RepoError> errors) {
         // 判断errors是否为空, 如果为空, 则返回空集合
         if (errors == null || errors.isEmpty()) {
@@ -332,7 +338,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             String errorMsg = error.getFieldName() + error.getMessage();
             // 3.4 添加到kingdeeCredentialBillAuxiliaryCalledEntities
             kingdeeCredentialBillAuxiliaryCalledEntities.add(KingdeePosBillAuxiliaryCalledEntity.builder()
-                .id(jdPosShopBillEntity.getId())
+                .id(key)
                 .companyId("dth")
                 .jdPosShopBillNo(jdPosShopBillEntity.getId())
                 .kingdeeBillErrorMsg(errorMsg)
@@ -389,13 +395,10 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
         // 1. 初始化List<KingdeeSaveCredentialOrderRequestModel> Model
         List<KingdeeSaveCredentialOrderRequestModel> modelList = new ArrayList<>();
 
-        // 遍历jdScmShopBillEntities
-        for (JdPosShopBillEntity jdPosShopBillEntity : jdScmShopBillEntities) {
-            KingdeeSaveCredentialOrderRequestModel kingdeeSaveCredentialOrderRequestModel =
-                buildSingleModel(jdPosShopBillEntity, voucherGroupingVoucherAccountingEntryEntityMap);
-            // 2. 添加到modelList
-            modelList.add(kingdeeSaveCredentialOrderRequestModel);
-        }
+        KingdeeSaveCredentialOrderRequestModel kingdeeSaveCredentialOrderRequestModel =
+            buildSingleModelByEntities(jdScmShopBillEntities, voucherGroupingVoucherAccountingEntryEntityMap);
+        // 2. 添加到modelList
+        modelList.add(kingdeeSaveCredentialOrderRequestModel);
 
         // 3. 返回KingdeeSaveCredentialOrderBatchRequest对象
         return KingdeeSaveCredentialOrderBatchRequest.builder()
@@ -406,16 +409,17 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
     /**
      * build single model
      *
-     * @param jdPosShopBillEntity                            jd scm shop bill pz entity
      * @param voucherGroupingVoucherAccountingEntryEntityMap voucher grouping voucher accounting entry entity map
+     * @param jdScmShopBillEntities                          jd scm shop bill entities
      * @return {@link KingdeeSaveCredentialOrderRequestModel}
      */
-    private KingdeeSaveCredentialOrderRequestModel buildSingleModel(JdPosShopBillEntity jdPosShopBillEntity
+    private KingdeeSaveCredentialOrderRequestModel buildSingleModelByEntities(List<JdPosShopBillEntity> jdScmShopBillEntities
         , Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityMap) {
-        // 2. 拼接参数
+
+        JdPosShopBillEntity jdPosShopBillEntityFrist = jdScmShopBillEntities.get(0);
 
         // 2.2 业务时间 格式化为YYYY-MM-DD字符串
-        String formattedBusinessDate = jdPosShopBillEntity.getBusMonth();
+        String formattedBusinessDate = jdPosShopBillEntityFrist.getBusMonth();
         // 根据formattedBusinessDate获取年份
         String year = formattedBusinessDate.substring(0, 4);
         // year转换成Integer
@@ -426,9 +430,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
         int monthInt = Integer.parseInt(month);
 
         // 2.4 门店编码
-        String shopCode = jdPosShopBillEntity.getShopCode();
-        // 获取jdPosShopBillEntity.remark
-        String remark = jdPosShopBillEntity.getRemark();
+        String shopCode = jdPosShopBillEntityFrist.getShopCode();
 
         // 摘要 = shopname+ billtype
         String billType = "应收凭证";
@@ -442,73 +444,78 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             = voucherGroupingVoucherAccountingEntryEntities.stream()
             .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getAccounts));
 
-        // 只取voucherGroupingVoucherAccountingEntryEntityByAccountsMap中的remark
-        List<VoucherGroupingVoucherAccountingEntryEntity> accountingEntryEntities
-            = voucherGroupingVoucherAccountingEntryEntityByAccountsMap.get(remark);
 
         // 初始化List<KingdeeSaveCredentialOrderFEntity> FEntities.
         List<KingdeeSaveCredentialOrderFEntity> fEntities = new ArrayList<>();
-        // 遍历voucherGroupingVoucherAccountingEntryEntities
-        for (VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity
-            : accountingEntryEntities) {
-            // 获取凭证规则的摘要规则 [bus month]堂食收入
-            StringBuilder explanation = getStringExplanation(jdPosShopBillEntity, voucherGroupingVoucherAccountingEntryEntity);
+        // 遍历 jdScmShopBillEntities
+        for (JdPosShopBillEntity jdPosShopBillEntity : jdScmShopBillEntities) {
+            // 获取jdPosShopBillEntity.remark
+            String remark = jdPosShopBillEntity.getRemark();
+            // 只取voucherGroupingVoucherAccountingEntryEntityByAccountsMap中的remark
+            List<VoucherGroupingVoucherAccountingEntryEntity> accountingEntryEntities
+                = voucherGroupingVoucherAccountingEntryEntityByAccountsMap.get(remark);
+            // 遍历voucherGroupingVoucherAccountingEntryEntities
+            for (VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity
+                : accountingEntryEntities) {
+                // 获取凭证规则的摘要规则 [bus month]堂食收入
+                StringBuilder explanation = getStringExplanation(jdPosShopBillEntity, voucherGroupingVoucherAccountingEntryEntity);
 
-            // 2.5 获取科目编码, voucher_grouping_voucher_accounting_entry.subject_code
-            String subjectCode = voucherGroupingVoucherAccountingEntryEntity.getSubjectCode();
+                // 2.5 获取科目编码, voucher_grouping_voucher_accounting_entry.subject_code
+                String subjectCode = voucherGroupingVoucherAccountingEntryEntity.getSubjectCode();
 
-            // 获取借方金额和贷方金额
-            // 获取voucher_grouping_voucher_accounting_entry.amount规则. 例如[totalIncludeTaxMoney]-[totalTaxMoney]
-            BigDecimal totalStoreMoney = getTotalStoreMoney(jdPosShopBillEntity, voucherGroupingVoucherAccountingEntryEntity);
+                // 获取借方金额和贷方金额
+                // 获取voucher_grouping_voucher_accounting_entry.amount规则. 例如[totalIncludeTaxMoney]-[totalTaxMoney]
+                BigDecimal totalStoreMoney = getTotalStoreMoney(jdPosShopBillEntity, voucherGroupingVoucherAccountingEntryEntity);
 
-            // 获取voucherGroupingVoucherAccountingEntryEntity.getDebit 如果1 借方金额, 如果2 贷方金额
-            Integer debit = voucherGroupingVoucherAccountingEntryEntity.getDebit();
+                // 获取voucherGroupingVoucherAccountingEntryEntity.getDebit 如果1 借方金额, 如果2 贷方金额
+                Integer debit = voucherGroupingVoucherAccountingEntryEntity.getDebit();
 
-            // 获取voucherGroupingVoucherAccountingEntryEntity.accounts
-            String accounts = voucherGroupingVoucherAccountingEntryEntity.getAccounts();
-            // 如果debit为1, 则借方金额为totalStoreMoney, 贷方金额为0
-            // 如果debit为2, 则借方金额为0, 贷方金额为totalStoreMoney
-            if (debit == 1) {
-                fEntities.add(KingdeeSaveCredentialOrderFEntity.builder()
-                    // 摘要
-                    .FEXPLANATION(explanation.toString())
-                    // 科目编码
-                    .FACCOUNTID(BaseFNumber.builder().FNumber(subjectCode).build())
-                    // 对方机构编码
-                    // .FDetailID()
-                    .FEXCHANGERATETYPE(BaseFNumber.builder().FNumber("HLTX01_SYS").build())
-                    // 币别
-                    .FCURRENCYID(BaseFNumber.builder().FNumber("PRE001").build())
-                    .FEXCHANGERATE(1)
-                    // 原币金额
-                    .FAMOUNTFOR(String.valueOf(totalStoreMoney))
-                    // 借方金额
-                    .FDEBIT(String.valueOf(totalStoreMoney))
-                    .FDetailID(KingdeeSaveCredentialOrderFEntityFDetailId.builder()
-                        .FDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build())
-                        .build())
-                    // 贷方金额
-                    // .FCREDIT(String.valueOf(totalStoreMoney))
-                    .build());
-            } else if (debit == 2) {
-                fEntities.add(KingdeeSaveCredentialOrderFEntity.builder()
-                    // 摘要
-                    .FEXPLANATION(explanation.toString())
-                    // 科目编码
-                    .FACCOUNTID(BaseFNumber.builder().FNumber(subjectCode).build())
-                    // 对方机构编码
-                    // .FDetailID()
-                    .FEXCHANGERATETYPE(BaseFNumber.builder().FNumber("HLTX01_SYS").build())
-                    // 币别
-                    .FCURRENCYID(BaseFNumber.builder().FNumber("PRE001").build())
-                    .FEXCHANGERATE(1)
-                    // 借方金额
-                    // .FDEBIT(String.valueOf(totalStoreMoney))
-                    // 原币金额
-                    .FAMOUNTFOR(String.valueOf(totalStoreMoney))
-                    // 贷方金额
-                    .FCREDIT(String.valueOf(totalStoreMoney))
-                    .build());
+                // 获取voucherGroupingVoucherAccountingEntryEntity.accounts
+                String accounts = voucherGroupingVoucherAccountingEntryEntity.getAccounts();
+                // 如果debit为1, 则借方金额为totalStoreMoney, 贷方金额为0
+                // 如果debit为2, 则借方金额为0, 贷方金额为totalStoreMoney
+                if (debit == 1) {
+                    fEntities.add(KingdeeSaveCredentialOrderFEntity.builder()
+                        // 摘要
+                        .FEXPLANATION(explanation.toString())
+                        // 科目编码
+                        .FACCOUNTID(BaseFNumber.builder().FNumber(subjectCode).build())
+                        // 对方机构编码
+                        // .FDetailID()
+                        .FEXCHANGERATETYPE(BaseFNumber.builder().FNumber("HLTX01_SYS").build())
+                        // 币别
+                        .FCURRENCYID(BaseFNumber.builder().FNumber("PRE001").build())
+                        .FEXCHANGERATE(1)
+                        // 原币金额
+                        .FAMOUNTFOR(String.valueOf(totalStoreMoney))
+                        // 借方金额
+                        .FDEBIT(String.valueOf(totalStoreMoney))
+                        .FDetailID(KingdeeSaveCredentialOrderFEntityFDetailId.builder()
+                            .FDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build())
+                            .build())
+                        // 贷方金额
+                        // .FCREDIT(String.valueOf(totalStoreMoney))
+                        .build());
+                } else if (debit == 2) {
+                    fEntities.add(KingdeeSaveCredentialOrderFEntity.builder()
+                        // 摘要
+                        .FEXPLANATION(explanation.toString())
+                        // 科目编码
+                        .FACCOUNTID(BaseFNumber.builder().FNumber(subjectCode).build())
+                        // 对方机构编码
+                        // .FDetailID()
+                        .FEXCHANGERATETYPE(BaseFNumber.builder().FNumber("HLTX01_SYS").build())
+                        // 币别
+                        .FCURRENCYID(BaseFNumber.builder().FNumber("PRE001").build())
+                        .FEXCHANGERATE(1)
+                        // 借方金额
+                        // .FDEBIT(String.valueOf(totalStoreMoney))
+                        // 原币金额
+                        .FAMOUNTFOR(String.valueOf(totalStoreMoney))
+                        // 贷方金额
+                        .FCREDIT(String.valueOf(totalStoreMoney))
+                        .build());
+                }
             }
         }
 
