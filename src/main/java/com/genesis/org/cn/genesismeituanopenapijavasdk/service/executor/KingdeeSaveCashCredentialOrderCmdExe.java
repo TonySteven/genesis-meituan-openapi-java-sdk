@@ -147,7 +147,8 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
         // 1. 获取 jdScmShopBillList
         List<JdPosShopBillEntity> jdScmShopBillList = getJdScmShopBillList(cmd);
 
-        // jdScmShopBillList根据 BusMonth 和 shopCode 进行分组
+        // jdScmShopBillList根据 BusMonth 和 shopCode 进行分组.
+        // 同一家店铺和同一个月份的数据, 当做一条数据处理.
         Map<String, List<JdPosShopBillEntity>> jdScmShopBillListMap = jdScmShopBillList.stream()
             .collect(Collectors.groupingBy(jdPosShopBillEntity -> jdPosShopBillEntity.getBusMonth() + jdPosShopBillEntity.getShopCode()));
 
