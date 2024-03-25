@@ -11,11 +11,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcBaseD
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCashCredentialOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCredentialOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.*;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -117,8 +113,7 @@ public class XxlJobBean {
         // 校验cmd.getBeginDate()和cmd.getEndDate()是否为空,如果为空,则默认查询前一天的数据.
         if (ObjectUtils.isEmpty(cmd.getStartTime()) || ObjectUtils.isEmpty(cmd.getEndTime())) {
             // 打印日志 进入默认查询前一天的数据
-            log.info("dyDyFulfilmentVerifyRecordSyncCmdExe cmd.getStartTime() or cmd.getEndTime() is blank" +
-                ", default query previous day data.");
+            log.info("dyDyFulfilmentVerifyRecordSyncCmdExe cmd.getStartTime() or cmd.getEndTime() is blank, default query previous day data.");
             // 获取前一天的时间的0点和24点.
             // 获取当前时间
             LocalDateTime now = LocalDateTime.now();
