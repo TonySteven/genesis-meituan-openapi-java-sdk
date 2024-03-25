@@ -64,6 +64,10 @@ public class TcPaywayDetailQueryAndSaveCmdExe {
         // 打印日志 - 鉴权成功.
         log.info("TcPaywayDetailQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
+        return syncData(accessToken);
+    }
+
+    public ApiResult<Object> syncData(String accessToken) {
         // 2. 调用天财接口获取所有品项做法档案信息实时信息.
         // 2.0 先同步集团信息.
         List<TcPaywayDetailResponse> tcResponses = queryResponseAll(accessToken, null);
@@ -92,7 +96,6 @@ public class TcPaywayDetailQueryAndSaveCmdExe {
 
         // 保存结算方式门店限制列表
         savePaywayDetailShop(responseList, shopEntityGroup);
-
 
 
         // 打印日志 - 结束.

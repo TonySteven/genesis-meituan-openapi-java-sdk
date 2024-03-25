@@ -14,10 +14,10 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemMethodEn
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemMultiBarcodeEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemPgkEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemSizeEntity;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcItemQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.QueryShopInfoAction;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemResponse;
@@ -90,12 +90,17 @@ public class TcItemQueryAndSaveCmdExe {
         // 打印日志 - 鉴权成功.
         log.info("TcItemQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
+        return syncData(cmd, accessToken);
+
+    }
+
+    public ApiResult<Object> syncData(TcItemQueryCmd cmd, String accessToken) {
         // 当前时间 - 2天作为最近同步时间
 //        String lastTime = LocalDateTime.now().minusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         // 2. 调用天财接口获取所有品项类别明细实时信息.
         // 2.0 先同步集团分类信息.
-        List<TcItemResponse> responseList = queryResponseAll(accessToken, null,cmd);
+        List<TcItemResponse> responseList = queryResponseAll(accessToken, null, cmd);
 
 //        // 2.1 获取所有店铺ids
 //        List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
@@ -143,7 +148,6 @@ public class TcItemQueryAndSaveCmdExe {
         log.info("TcItemQueryAndSaveCmdExe.execute() - end");
         log.info("TcItemQueryAndSaveCmdExe.execute() 完成落库, 对应的落库数量表1:{}", tcEntityList.size());
         return ApiResult.success();
-
     }
 
     private void saveItem(List<TcItemEntity> tcEntityList, Map<String, TcItemEntity> dbMap) {

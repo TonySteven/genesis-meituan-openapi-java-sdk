@@ -11,10 +11,9 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcItemEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcRecipeCardDetailsEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcRecipeCardDetailsShopEntity;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcRecipeCardEntity;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcRecipeCardQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.QueryShopInfoAction;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcRecipeCardQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcRecipeCardQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcRecipeCardDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcRecipeCardResponse;
@@ -66,14 +65,14 @@ public class TcRecipeCardQueryAndSaveCmdExe {
     @Transactional(rollbackFor = Exception.class)
     public ApiResult<Object> execute(TcRecipeCardQueryCmd cmd) {
         // 打印日志 - 开始.
-        log.info("TcPayTypeQueryAndSaveCmdExe.execute() - start");
-        // 1. 根据天财AppId和accessId进行鉴权.
-        String accessToken = LoginToServerAction.getAccessToken(tcConfig);
-        // 打印日志 - 鉴权成功.
-        log.info("TcPayTypeQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
+        log.info("TcRecipeCardQueryAndSaveCmdExe.execute() - start");
 
+        return syncData(cmd);
+    }
+
+    public ApiResult<Object> syncData(TcRecipeCardQueryCmd cmd) {
         // 2.1 获取所有店铺ids
-        List<TcItemEntity> tcItemEntities =  tcItemDao.getListByCenterId(tcConfig.getApi().getCenterId(),cmd.getDishJkidList());
+        List<TcItemEntity> tcItemEntities =  tcItemDao.getListByCenterId(tcConfig.getApi().getCenterId(), cmd.getDishJkidList());
         List<String> itemIds = tcItemEntities.stream().map(TcItemEntity::getItemId).toList();
 
 
@@ -97,6 +96,10 @@ public class TcRecipeCardQueryAndSaveCmdExe {
 
         // 保存成本卡详情
         saveCardDetails(cartList, itemIds);
+
+        // 打印日志 - 结束.
+        log.info("TcRecipeCardQueryAndSaveCmdExe.execute() - end");
+        log.info("TcRecipeCardQueryAndSaveCmdExe.execute() 完成落库, 对应的落库数量表1:{}", cartList.size());
 
         return ApiResult.success();
     }

@@ -1,4 +1,4 @@
-package com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request;
+package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
 import lombok.Data;
 

@@ -57,6 +57,10 @@ public class TcItemMethodClassesQueryAndSaveCmdExe {
         // 打印日志 - 鉴权成功.
         log.info("TcItemMethodClassesQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
+        return syncData(accessToken);
+    }
+
+    public ApiResult<Object> syncData(String accessToken) {
         // 2. 调用天财接口获取所有品项类别明细实时信息.
         // 2.0 先同步集团分类信息.
         List<TcItemMethodClassesResponse> responseList = queryResponseAll(accessToken, null);

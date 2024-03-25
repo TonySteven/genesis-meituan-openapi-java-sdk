@@ -57,6 +57,15 @@ public class TcItemCategoryQueryAndSaveCmdExe {
         // 打印日志 - 鉴权成功.
         log.info("TcItemCategoryQueryAndSaveCmdExe.execute() 鉴权成功, accessToken:{}", accessToken);
 
+        return syncData(accessToken);
+    }
+
+    /**
+     * 同步数据
+     * @param accessToken accessToken
+     * @return 结果
+     */
+    public ApiResult<Object> syncData(String accessToken) {
         // 2. 调用天财接口获取所有品项类别明细实时信息.
         // 2.0 先同步集团分类信息.
         List<TcItemCategoryResponse> responseList = queryResponseAll(accessToken, null);
@@ -110,6 +119,7 @@ public class TcItemCategoryQueryAndSaveCmdExe {
 
         return ApiResult.success();
     }
+
 
     private List<TcItemCategoryResponse> queryResponseAll(String accessToken, String shopId){
         int pageNo = 1;

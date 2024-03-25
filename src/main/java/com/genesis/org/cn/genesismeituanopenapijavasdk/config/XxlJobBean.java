@@ -1,12 +1,15 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.config;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.BaseAllCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.settle_ledger.DySettleLedgerRecordAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopAllSyncCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcBaseDataQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import com.xxl.job.core.context.XxlJobHelper;
@@ -42,6 +45,9 @@ public class XxlJobBean {
 
     @Resource
     private DySettleLedgerRecordSyncCmdExe dySettleLedgerRecordSyncCmdExe;
+
+    @Resource
+    private TcBaseDataQueryAndSaveCmdExe tcBaseDataQueryAndSaveCmdExe;
 
     /**
      * 实时1分钟一次定时抽取
@@ -168,6 +174,39 @@ public class XxlJobBean {
             cmd.setEndTime(endOfDay);
         }
         dySettleLedgerRecordSyncCmdExe.executeAll(cmd);
+    }
+
+    /**
+     * 每天凌晨一点同步天才基础档案信息
+     */
+    @XxlJob("syncTcBaseDataHandler")
+    public void syncTcBaseDataHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("syncTcBaseDataHandler jobParam:{}", jobParam);
+        // 如果jobParam.isBlank，直接返回
+        if (StringUtils.isBlank(jobParam)) {
+            return;
+        }
+        // jobParam转DySettleLedgerRecordAllSyncCmd
+        TcBaseDataQryCmd cmd = JSONUtil.toBean(jobParam, TcBaseDataQryCmd.class);
+        // 打印cmd日志
+        log.info("syncTcBaseDataHandler cmd:{}", JSONUtil.toJsonStr(cmd));
+        // 校验cmd.getItemQueryCmd().getLastTime()是否为空,如果为空,则默认查询前两天的数据.
+        if (ObjectUtils.isEmpty(cmd.getItemQueryCmd().getLastTime())) {
+            // 打印日志 进入默认查询前一天的数据
+            log.info("syncTcBaseDataHandler cmd.getItemQueryCmd().getLastTime() is blank" +
+                ", default query previous day data.");
+            // 获取前一天的时间的0点和24点.
+            // 获取当前时间
+            LocalDateTime now = LocalDateTime.now();
+            // 获取前一天的时间
+            LocalDateTime previousDay = now.minusDays(2);
+            // 获取前两天的0点 因为前一天的分账状态不一定是终态，往前推迟一天
+            LocalDateTime startOfDay = previousDay.minusDays(1).withHour(0).withMinute(0).withSecond(0);
+
+            cmd.getItemQueryCmd().setLastTime(startOfDay.format(DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN)));
+        }
+        tcBaseDataQueryAndSaveCmdExe.execute(cmd);
     }
 
 
