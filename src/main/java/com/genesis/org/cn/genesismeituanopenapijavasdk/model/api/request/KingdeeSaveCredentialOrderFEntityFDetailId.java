@@ -17,18 +17,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KingdeeSaveCredentialOrderFEntityFDetailId {
 
-    private BaseFNumber FDETAILID_FFLEX9;
-    private BaseFNumber FDETAILID_FFLEX4;
-    private BaseFNumber FDETAILID_FFLEX5;
-    private BaseFNumber FDETAILID_FFLEX6;
-    private BaseFNumber FDETAILID_FFLEX7;
-    private BaseFNumber FDETAILID_FFLEX8;
-    private BaseFNumber FDETAILID_FFLEX10;
-    private BaseFNumber FDETAILID_FFLEX11;
-    private BaseFNumber FDETAILID_FFLEX15;
-    private BaseFNumber FDETAILID_FFLEX12;
-    private BaseFNumber FDETAILID_FFLEX13;
-    private BaseFNumber FDETAILID_FFLEX14;
-    private BaseFNumber FDETAILID_FFLEX16;
+    private BaseFNumber FDETAILID__FFLEX9;
+    private BaseFNumber FDETAILID__FFLEX4;
+    private BaseFNumber FDETAILID__FFLEX5;
+    private BaseFNumber FDETAILID__FFLEX6;
+    private BaseFNumber FDETAILID__FFLEX7;
+    private BaseFNumber FDETAILID__FFLEX8;
+    private BaseFNumber FDETAILID__FFLEX10;
+    private BaseFNumber FDETAILID__FFLEX11;
+    private BaseFNumber FDETAILID__FFLEX15;
+    private BaseFNumber FDETAILID__FFLEX12;
+    private BaseFNumber FDETAILID__FFLEX13;
+    private BaseFNumber FDETAILID__FFLEX14;
+    private BaseFNumber FDETAILID__FFLEX16;
 
 }
