@@ -148,6 +148,25 @@
                 ${project.basedir}/src/main/resources/lib/waimai_open_java_sdk_request-1.1.2-jar-with-dependencies.jar
             </systemPath>
         </dependency>
+
+        <!-- 引入金蝶SDK依赖 -->
+        <dependency>
+            <groupId>com.kingdee</groupId>
+            <artifactId>kingdee-openapi-java-sdk</artifactId>
+            <version>8.0.6</version>
+            <scope>system</scope>
+            <systemPath>
+                ${project.basedir}/src/main/resources/lib/k3cloud-webapi-sdk8.0.6.jar
+            </systemPath>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
         <!-- json依赖 -->
         <dependency>
             <groupId>org.json</groupId>
