@@ -182,7 +182,7 @@ public class TcPaywayDetailQueryAndSaveCmdExe {
 
                     if(ObjectUtils.isNotEmpty(shopEntity) && ObjectUtils.isEmpty(dbShopEntity)){
                         // 如果数据库中不存在该信息,则新增.
-                        saveList.add(dbShopEntity);
+                        saveList.add(shopEntity);
                     }else if(ObjectUtils.isNotEmpty(shopEntity) && ObjectUtils.isNotEmpty(dbShopEntity)){
                         // 如果数据库中存并且三方也存在在该信息,则更新.
                         if(!shopEntity.equals(dbShopEntity)){

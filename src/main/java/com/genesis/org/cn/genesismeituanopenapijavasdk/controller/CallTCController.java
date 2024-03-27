@@ -1,8 +1,11 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.controller;
 
+import cn.hutool.core.date.DatePattern;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcBaseDataQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcItemQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcRecipeCardQueryCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemCategoryQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodClassesQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodsQueryAndSaveCmdExe;
@@ -16,6 +19,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopIn
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -67,6 +73,9 @@ public class CallTCController {
 
     @Resource
     private TcRecipeCardQueryAndSaveCmdExe tcRecipeCardQueryAndSaveCmdExe;
+
+    @Resource
+    private TcBaseDataQueryAndSaveCmdExe tcBaseDataQueryAndSaveCmdExe;
 
 
     /**
@@ -176,5 +185,22 @@ public class CallTCController {
     @GetMapping("/get-recipe-card")
     public void getRecipeCard(@RequestBody @Validated TcRecipeCardQueryCmd cmd){
         tcRecipeCardQueryAndSaveCmdExe.execute(cmd);
+    }
+
+    @ApiOperation(value = "天财SaaS-调用获取基础数据api", notes = "天财SaaS-调用获取基础数据api")
+    @GetMapping("/get-base-data")
+    public void getBaseData(@RequestBody @Validated TcBaseDataQryCmd cmd){
+        if (ObjectUtils.isEmpty(cmd.getItemQueryCmd().getLastTime())) {
+            // 获取前一天的时间的0点和24点.
+            // 获取当前时间
+            LocalDateTime now = LocalDateTime.now();
+            // 获取前一天的时间
+            LocalDateTime previousDay = now.minusDays(2);
+            // 获取前两天的0点 因为前一天的分账状态不一定是终态，往前推迟一天
+            LocalDateTime startOfDay = previousDay.minusDays(1).withHour(0).withMinute(0).withSecond(0);
+
+            cmd.getItemQueryCmd().setLastTime(startOfDay.format(DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN)));
+        }
+        tcBaseDataQueryAndSaveCmdExe.execute(cmd);
     }
 }
