@@ -17,6 +17,7 @@ import com.kingdee.bos.webapi.entity.SuccessEntity;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -387,7 +388,9 @@ public class KingdeeSaveCredentialOrderCmdExe {
         abstractString = abstractString.replace("[", "").replace("]", "").trim();
         String[] split = abstractString.split(",");
         for (String s : split) {
-            if ("'shopname'".equals(s.trim())) {
+            if ("'busmonth'".equals(s.trim())) {
+                explanation.append(jdScmShopBillPzEntity.getBusMonth());
+            } else if ("'shopname'".equals(s.trim())) {
                 explanation.append(jdScmShopBillPzEntity.getShopName());
             } else if ("'billtype'".equals(s.trim())) {
                 explanation.append(jdScmShopBillPzEntity.getBillType());
@@ -413,6 +416,10 @@ public class KingdeeSaveCredentialOrderCmdExe {
         String year = formattedBusinessDate.substring(0, 4);
         // year转换成Integer
         int yearInt = Integer.parseInt(year);
+        // 根据formattedBusinessDate获取年份获取月份
+        String month = formattedBusinessDate.substring(5, 7);
+        // month转换成Integer
+        int monthInt = Integer.parseInt(month);
 
         // 2.4 门店编码
         String shopCode = jdScmShopBillPzEntity.getShopCode();
@@ -439,6 +446,14 @@ public class KingdeeSaveCredentialOrderCmdExe {
             // 获取voucher_grouping_voucher_accounting_entry.amount规则. 例如[totalIncludeTaxMoney]-[totalTaxMoney]
             BigDecimal totalStoreMoney = getTotalStoreMoney(jdScmShopBillPzEntity, voucherGroupingVoucherAccountingEntryEntity);
 
+            // 获取voucherGroupingVoucherAccountingEntryEntity.accounts
+            String accounts = voucherGroupingVoucherAccountingEntryEntity.getAccounts();
+
+            // 如果accounts不为空,并且为OtherSideCode,则取jdScmShopBillPzEntity.OtherSideCode值.
+            if (StringUtils.isNotBlank(accounts) && "OtherSideCode".equals(accounts)) {
+                accounts = jdScmShopBillPzEntity.getOtherSideCode();
+            }
+
             // 获取voucherGroupingVoucherAccountingEntryEntity.getDebit 如果1 借方金额, 如果2 贷方金额
             Integer debit = voucherGroupingVoucherAccountingEntryEntity.getDebit();
             // 如果debit为1, 则借方金额为totalStoreMoney, 贷方金额为0
@@ -459,6 +474,9 @@ public class KingdeeSaveCredentialOrderCmdExe {
                     .FAMOUNTFOR(String.valueOf(totalStoreMoney))
                     // 借方金额
                     .FDEBIT(String.valueOf(totalStoreMoney))
+                    .FDetailID(KingdeeSaveCredentialOrderFEntityFDetailId.builder()
+                        .FDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build())
+                        .build())
                     // 贷方金额
                     // .FCREDIT(String.valueOf(totalStoreMoney))
                     .build());
@@ -480,6 +498,9 @@ public class KingdeeSaveCredentialOrderCmdExe {
                     .FAMOUNTFOR(String.valueOf(totalStoreMoney))
                     // 贷方金额
                     .FCREDIT(String.valueOf(totalStoreMoney))
+                    .FDetailID(KingdeeSaveCredentialOrderFEntityFDetailId.builder()
+                        .FDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build())
+                        .build())
                     .build());
             }
         }
@@ -494,7 +515,7 @@ public class KingdeeSaveCredentialOrderCmdExe {
             // 凭证字 写死PRE001
             .FVOUCHERGROUPID(BaseFNumber.builder().FNumber("PRE001").build())
             .FSourceBillKey(BaseFNumber.builder().FNumber("78050206-2fa6-40e3-b7c8-bd608146fa38").build())
-            .FPERIOD(1)
+            .FPERIOD(monthInt)
             .FVOUCHERGROUPNO(" ")
             // 实例 FEntity
             .FEntity(fEntities)

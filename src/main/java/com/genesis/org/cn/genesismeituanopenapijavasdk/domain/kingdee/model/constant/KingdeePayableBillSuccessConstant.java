@@ -98,6 +98,132 @@ public class KingdeePayableBillSuccessConstant {
                  }]
              }
          }""";
+    public static final String CASH_CREDENTIAL_BILL_SUCCESS_JSON_DATA = """
+        {
+            "Model": [{
+                "FAccountBookID": {
+                    "FNumber": "24732001"
+                },
+                "FDate": "2024-01-31 00:00:00",
+                "FBUSDATE": "2024-01-31 00:00:00",
+                "FYEAR": 2024,
+                "FPERIOD": 1,
+                "FVOUCHERGROUPID": {
+                    "FNumber": "PRE001"
+                },
+                "FVOUCHERGROUPNO": "13",
+                "FSourceBillKey": {
+                    "FNumber": "78050206-2fa6-40e3-b7c8-bd608146fa38"
+                },
+                "FEntity": [{
+                        "FEXPLANATION": "营业收入",
+                        "FACCOUNTID": {
+                            "FNumber": "1122"
+                        },
+                        "FDetailID": {
+                            "FDETAILID__FFLEX6": {
+                                "FNumber": "CUST0005"
+                            }
+                        },
+                        "FCURRENCYID": {
+                            "FNumber": "PRE001"
+                        },
+                        "FEXCHANGERATETYPE": {
+                            "FNumber": "HLTX01_SYS"
+                        },
+                        "FEXCHANGERATE": 1.0,
+                        "FAMOUNTFOR": 200.0,
+                        "FDEBIT": 200.0
+                    },
+                    {
+                        "FEXPLANATION": "营业收入",
+                        "FACCOUNTID": {
+                            "FNumber": "6001.01"
+                        },
+                        "FCURRENCYID": {
+                            "FNumber": "PRE001"
+                        },
+                        "FEXCHANGERATETYPE": {
+                            "FNumber": "HLTX01_SYS"
+                        },
+                        "FEXCHANGERATE": 1.0,
+                        "FAMOUNTFOR": 200.0,
+                        "FCREDIT": 200.0
+                    },
+                    {
+                        "FEXPLANATION": "营业收入",
+                        "FACCOUNTID": {
+                            "FNumber": "1122"
+                        },
+                        "FDetailID": {
+                            "FDETAILID__FFLEX6": {
+                                "FNumber": "CUST0004"
+                            }
+                        },
+                        "FCURRENCYID": {
+                            "FNumber": "PRE001"
+                        },
+                        "FEXCHANGERATETYPE": {
+                            "FNumber": "HLTX01_SYS"
+                        },
+                        "FEXCHANGERATE": 1.0,
+                        "FAMOUNTFOR": 300.0,
+                        "FDEBIT": 300.0
+                    },
+                    {
+                        "FEXPLANATION": "营业收入",
+                        "FACCOUNTID": {
+                            "FNumber": "6001.02"
+                        },
+                        "FCURRENCYID": {
+                            "FNumber": "PRE001"
+                        },
+                        "FEXCHANGERATETYPE": {
+                            "FNumber": "HLTX01_SYS"
+                        },
+                        "FEXCHANGERATE": 1.0,
+                        "FAMOUNTFOR": 300.0,
+                        "FCREDIT": 300.0
+                    },
+                    {
+                        "FACCOUNTID": {
+                            "FNumber": "1122"
+                        },
+                        "FDetailID": {
+                            "FDETAILID__FFLEX6": {
+                                "FNumber": "CUST0003"
+                            }
+                        },
+                        "FCURRENCYID": {
+                            "FNumber": "PRE001"
+                        },
+                        "FEXCHANGERATETYPE": {
+                            "FNumber": "HLTX01_SYS"
+                        },
+                        "FEXCHANGERATE": 1.0,
+                        "FAMOUNTFOR": 400.0,
+                        "FDEBIT": 400.0
+                    },
+                    {
+                        "FEXPLANATION": "营业收入",
+                        "FACCOUNTID": {
+                            "FNumber": "6001.03"
+                        },
+                        "FCURRENCYID": {
+                            "FNumber": "PRE001"
+                        },
+                        "FEXCHANGERATETYPE": {
+                            "FNumber": "HLTX01_SYS"
+                        },
+                        "FEXCHANGERATE": 1.0,
+                        "FAMOUNTFOR": 400.0,
+                        "FCREDIT": 400.0
+                    }
+                ]
+            }]
+        }
+        """;
+
     public static final String PAYABLE_BILL_SUCCESS_JSON_DATA = """
         {
             "Model": [{
