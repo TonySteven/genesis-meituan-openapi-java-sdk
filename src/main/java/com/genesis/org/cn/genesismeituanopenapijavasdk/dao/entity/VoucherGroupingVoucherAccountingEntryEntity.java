@@ -64,7 +64,7 @@ public class VoucherGroupingVoucherAccountingEntryEntity {
     private String dLmnid;
 
     /**
-     * 过滤条件
+     * 过滤条件 | 改成分组条件
      */
     @TableField(value = "filtration")
     private String filtration;
