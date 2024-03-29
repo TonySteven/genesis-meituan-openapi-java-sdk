@@ -106,7 +106,7 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         String msg = loginResult.getMsg();
         // 如果msg不为success,则抛出异常.
         if (!ResponseStatusEnum.SUCCESS.getValue().equals(msg)) {
-            throw new Exception("鉴权失败!");
+            throw new IllegalArgumentException("鉴权失败!");
         }
         // 如果msg为success,则获取accessToken.
         String accessToken = loginResult.getAccessToken();
@@ -117,15 +117,23 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         // 2.0 获取所有店铺ids
         List<TcShopEntity> tcShopEntityList = iTcShopDao.list();
         List<String> shopIds = tcShopEntityList.stream().map(TcShopEntity::getShopId).toList();
-        // 获取cmd中的shopIds
-        String cmdShopId = cmd.getShopId();
-        // 如果cmd中的shopId不为空,则shopIds截取cmdShopId后面的shopIds.
-        if (StringUtils.isNotBlank(cmdShopId) && shopIds.contains(cmdShopId)) {
-            shopIds = shopIds.subList(shopIds.indexOf(cmdShopId), shopIds.size());
 
-            // 如果入参中的shopId不为空,则需要将库中shopId为此入参的数据删除,再重新落库.
-            // 因为如果不删除,则会出现重复数据.
-            deleteByShopId(centerId, cmdShopId);
+        // 获取cmd.getShopIdList
+        List<String> shopIdList = cmd.getShopIdList();
+        // 如果shopIdList不为空,则只查询shopIdList中的shopId. (优先级高于shopId)
+        if (!CollectionUtils.isEmpty(shopIdList)) {
+            shopIds = shopIdList;
+        } else {
+            // 获取cmd中的shopIds
+            String cmdShopId = cmd.getShopId();
+            // 如果cmd中的shopId不为空,则shopIds截取cmdShopId后面的shopIds.
+            if (StringUtils.isNotBlank(cmdShopId) && shopIds.contains(cmdShopId)) {
+                shopIds = shopIds.subList(shopIds.indexOf(cmdShopId), shopIds.size());
+
+                // 如果入参中的shopId不为空,则需要将库中shopId为此入参的数据删除,再重新落库.
+                // 因为如果不删除,则会出现重复数据.
+                deleteByShopId(centerId, cmdShopId);
+            }
         }
 
         // 遍历shopIds,获取每个shopId的账单明细实时信息.
@@ -168,7 +176,7 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                             , accessToken, i, pageSize, shopId, beginDate, endDate);
                     // 如果success为false,则抛出异常.
                     if (!ResponseStatusEnum.SUCCESS.getInfo().equals(queryBillDetailsResponse2.getMsg())) {
-                        throw new Exception("获取所有门店实时账单信息失败!");
+                        throw new IllegalArgumentException("获取所有门店实时账单信息失败!");
                     }
                     // 如果success为true,则获取门店实时账单.
                     List<BillListItem> billList1 = queryBillDetailsResponse2.getData().getBillList();

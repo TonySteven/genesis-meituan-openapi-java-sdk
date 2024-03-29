@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * tc shop billing detail query cmd
@@ -19,8 +20,14 @@ public class TcShopBillingDetailQueryCmd {
     /**
      * shop id
      */
-    @ApiModelProperty(name = "门店id", notes = "如果不传则查询所有门店,从头开始")
+    @ApiModelProperty(name = "门店id", notes = "如果不传则查询所有门店,从头开始,传了则从传入的门店开始查询,不传则查询所有门店,从头开始")
     private String shopId;
+
+    /**
+     * shop id List
+     */
+    @ApiModelProperty(name = "门店idList", notes = "如果不传则查询所有门店,如果传了则查询传入的门店,不传则查询所有门店")
+    private List<String> shopIdList;
 
     /**
      * begin date
