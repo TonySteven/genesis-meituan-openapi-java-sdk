@@ -446,9 +446,9 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             throw new IllegalArgumentException("没有找到对应的凭证规则!");
         }
         // voucherGroupingVoucherAccountingEntryEntities根据accounts进行分组.
-        Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityByAccountsMap
+        Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityByFiltrationMap
             = voucherGroupingVoucherAccountingEntryEntities.stream()
-            .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getAccounts));
+            .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getFiltration));
 
 
         // 初始化List<KingdeeSaveCredentialOrderFEntity> FEntities.
@@ -459,7 +459,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             String remark = jdPosShopBillEntity.getRemark();
             // 只取voucherGroupingVoucherAccountingEntryEntityByAccountsMap中的remark
             List<VoucherGroupingVoucherAccountingEntryEntity> accountingEntryEntities
-                = voucherGroupingVoucherAccountingEntryEntityByAccountsMap.get(remark);
+                = voucherGroupingVoucherAccountingEntryEntityByFiltrationMap.get(remark);
             // 遍历voucherGroupingVoucherAccountingEntryEntities
             for (VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity
                 : accountingEntryEntities) {
