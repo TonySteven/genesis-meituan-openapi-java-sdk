@@ -484,6 +484,9 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
                 // 获取voucherGroupingVoucherAccountingEntryEntity.accounts
                 String accounts = voucherGroupingVoucherAccountingEntryEntity.getAccounts();
 
+                // 获取voucherGroupingVoucherAccountingEntryEntity.accountsIndex
+                String accountsIndex = voucherGroupingVoucherAccountingEntryEntity.getAccountsIndex();
+
                 // 如果accounts不包含逗号,则FDetailID单个拼装,否则则多个拼装.
                 if (debit == 1) {
                     fEntities.add(KingdeeSaveCredentialOrderFEntity.builder()
@@ -501,7 +504,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
                         .FAMOUNTFOR(String.valueOf(totalStoreMoney))
                         // 借方金额
                         .FDEBIT(String.valueOf(totalStoreMoney))
-                        .FDetailID(buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(accounts))
+                        .FDetailID(buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(accounts, accountsIndex))
                         // 贷方金额
                         // .FCREDIT(String.valueOf(totalStoreMoney))
                         .build());
@@ -555,32 +558,116 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
      * @return {@link KingdeeSaveCredentialOrderFEntityFDetailId}
      */
     private KingdeeSaveCredentialOrderFEntityFDetailId buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(
-        String accounts) {
+        String accounts, String accountsIndex) {
 
         KingdeeSaveCredentialOrderFEntityFDetailId kingdeeSaveCredentialOrderFEntityFDetailId
             = new KingdeeSaveCredentialOrderFEntityFDetailId();
 
         // 1. 如果accounts包含逗号,则FDetailID多个拼装
-        if (!accounts.contains(",")) {
-            kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build());
-            return kingdeeSaveCredentialOrderFEntityFDetailId;
+        if (!accounts.contains(",") && !accountsIndex.contains(",")) {
+            return getKingdeeSaveCredentialOrderFEntityFDetailIdByIndex(
+                kingdeeSaveCredentialOrderFEntityFDetailId, accounts, accountsIndex);
         }
         // 2. 根据逗号分割accounts
         String[] split = accounts.split(",");
-        // 3. 遍历split, 并开始根据FDETAILID__FFLEX14 以后进行拼装.
+        // 3. 遍历split, 调用getKingdeeSaveCredentialOrderFEntityFDetailIdByIndex方法
         for (int i = 0; i < split.length; i++) {
-            // 4. 如果i为0, 则拼装FDetailID__FFLEX14
-            if (i == 0) {
-                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX14(BaseFNumber.builder().FNumber(split[i]).build());
+            String s = split[i];
+            String[] splitAccountsIndex = accountsIndex.split(",");
+            String accountsIndexSingle = splitAccountsIndex[i];
+            // 调用getKingdeeSaveCredentialOrderFEntityFDetailIdByIndex方法
+            getKingdeeSaveCredentialOrderFEntityFDetailIdByIndex(
+                kingdeeSaveCredentialOrderFEntityFDetailId, s, accountsIndexSingle);
+        }
+        return kingdeeSaveCredentialOrderFEntityFDetailId;
+    }
+
+    /**
+     * get kingdee save credential order fentity fdetail id by index
+     *
+     * @param kingdeeSaveCredentialOrderFEntityFDetailId kingdee save credential order fentity fdetail id
+     * @param accounts                                   accounts
+     * @param accountsIndex                              accounts index
+     * @return {@link KingdeeSaveCredentialOrderFEntityFDetailId}
+     */
+    private KingdeeSaveCredentialOrderFEntityFDetailId getKingdeeSaveCredentialOrderFEntityFDetailIdByIndex(
+        KingdeeSaveCredentialOrderFEntityFDetailId kingdeeSaveCredentialOrderFEntityFDetailId
+        , String accounts, String accountsIndex) {
+
+        // 没有逗号, 则FDetailID单个拼装
+        if (!accountsIndex.contains(",")) {
+            return getKingdeeSaveCredentialOrderFEntityFDetailId(kingdeeSaveCredentialOrderFEntityFDetailId
+                , accounts, accountsIndex);
+        } else {
+            // 否则FDetailID多个拼装
+            // 根据逗号分割accountsIndex
+            String[] split = accountsIndex.split(",");
+            // 遍历split, 调用getKingdeeSaveCredentialOrderFEntityFDetailId方法
+            for (String s : split) {
+                // 调用getKingdeeSaveCredentialOrderFEntityFDetailId方法
+                getKingdeeSaveCredentialOrderFEntityFDetailId(
+                    kingdeeSaveCredentialOrderFEntityFDetailId, accounts, s);
             }
-            // 5. 如果i为1, 则拼装FDetailID__FFLEX7
-            if (i == 1) {
-                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX15(BaseFNumber.builder().FNumber(split[i]).build());
-            }
-            // 6. 如果i为2, 则拼装FDetailID__FFLEX8
-            if (i == 2) {
-                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX16(BaseFNumber.builder().FNumber(split[i]).build());
-            }
+
+        }
+        return kingdeeSaveCredentialOrderFEntityFDetailId;
+    }
+
+    /**
+     * get kingdee save credential order fentity fdetail id
+     *
+     * @param kingdeeSaveCredentialOrderFEntityFDetailId kingdee save credential order fentity fdetail id
+     * @param accounts                                   accounts
+     * @param accountsIndex                              accounts index
+     * @return {@link KingdeeSaveCredentialOrderFEntityFDetailId}
+     */
+    private KingdeeSaveCredentialOrderFEntityFDetailId getKingdeeSaveCredentialOrderFEntityFDetailId(
+        KingdeeSaveCredentialOrderFEntityFDetailId kingdeeSaveCredentialOrderFEntityFDetailId
+        , String accounts, String accountsIndex) {
+        // accountsIndex 转 int
+        int accountsIndexInt = Integer.parseInt(accountsIndex);
+        // 如果accountsIndexInt为4, 则拼装FDetailID__FFLEX1开始拼接,拼接到16. 用switch case语句.
+        switch (accountsIndexInt) {
+            case 4:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX4(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 5:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX5(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 7:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX7(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 8:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX8(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 9:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX9(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 10:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX10(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 11:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX11(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 12:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX12(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 13:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX13(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 14:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX14(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 15:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX15(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 16:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX16(BaseFNumber.builder().FNumber(accounts).build());
+                break;
+            case 6:
+            default:
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build());
+                break;
         }
         return kingdeeSaveCredentialOrderFEntityFDetailId;
     }

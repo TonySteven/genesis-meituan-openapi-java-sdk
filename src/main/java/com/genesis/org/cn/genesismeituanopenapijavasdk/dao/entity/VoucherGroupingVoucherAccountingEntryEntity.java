@@ -94,6 +94,12 @@ public class VoucherGroupingVoucherAccountingEntryEntity {
     private String accounts;
 
     /**
+     * 核算维度索引值
+     */
+    @TableField(value = "accounts_id")
+    private String accountsIndex;
+
+    /**
      * 取值金额
      */
     @TableField(value = "amount")
