@@ -102,10 +102,10 @@ public class KingdeePayableBillSuccessConstant {
         {
             "Model": [{
                 "FAccountBookID": {
-                    "FNumber": "24732001"
+                    "FNumber": "24520004"
                 },
-                "FDate": "2024-01-31 00:00:00",
-                "FBUSDATE": "2024-01-31 00:00:00",
+                "FDate": "2024-01",
+                "FBUSDATE": "2024-01",
                 "FYEAR": 2024,
                 "FPERIOD": 1,
                 "FVOUCHERGROUPID": {
@@ -116,110 +116,141 @@ public class KingdeePayableBillSuccessConstant {
                     "FNumber": "78050206-2fa6-40e3-b7c8-bd608146fa38"
                 },
                 "FEntity": [{
-                        "FEXPLANATION": "营业收入",
-                        "FACCOUNTID": {
-                            "FNumber": "1122"
-                        },
-                        "FDetailID": {
-                            "FDETAILID__FFLEX6": {
-                                "FNumber": "CUST0005"
-                            }
-                        },
-                        "FCURRENCYID": {
-                            "FNumber": "PRE001"
-                        },
-                        "FEXCHANGERATETYPE": {
-                            "FNumber": "HLTX01_SYS"
-                        },
-                        "FEXCHANGERATE": 1.0,
-                        "FAMOUNTFOR": 200.0,
-                        "FDEBIT": 200.0
+                    "FEXPLANATION": "2024-01堂食收入",
+                    "FACCOUNTID": {
+                        "FNumber": "1122"
                     },
-                    {
-                        "FEXPLANATION": "营业收入",
-                        "FACCOUNTID": {
-                            "FNumber": "6001.01"
-                        },
-                        "FCURRENCYID": {
-                            "FNumber": "PRE001"
-                        },
-                        "FEXCHANGERATETYPE": {
-                            "FNumber": "HLTX01_SYS"
-                        },
-                        "FEXCHANGERATE": 1.0,
-                        "FAMOUNTFOR": 200.0,
-                        "FCREDIT": 200.0
+                    "FDetailID": {
+                        "FDETAILID__FFLEX6": {
+                            "FNumber": "CUST0005"
+                        }
                     },
-                    {
-                        "FEXPLANATION": "营业收入",
-                        "FACCOUNTID": {
-                            "FNumber": "1122"
-                        },
-                        "FDetailID": {
-                            "FDETAILID__FFLEX6": {
-                                "FNumber": "CUST0004"
-                            }
-                        },
-                        "FCURRENCYID": {
-                            "FNumber": "PRE001"
-                        },
-                        "FEXCHANGERATETYPE": {
-                            "FNumber": "HLTX01_SYS"
-                        },
-                        "FEXCHANGERATE": 1.0,
-                        "FAMOUNTFOR": 300.0,
-                        "FDEBIT": 300.0
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
                     },
-                    {
-                        "FEXPLANATION": "营业收入",
-                        "FACCOUNTID": {
-                            "FNumber": "6001.02"
-                        },
-                        "FCURRENCYID": {
-                            "FNumber": "PRE001"
-                        },
-                        "FEXCHANGERATETYPE": {
-                            "FNumber": "HLTX01_SYS"
-                        },
-                        "FEXCHANGERATE": 1.0,
-                        "FAMOUNTFOR": 300.0,
-                        "FCREDIT": 300.0
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
                     },
-                    {
-                        "FACCOUNTID": {
-                            "FNumber": "1122"
-                        },
-                        "FDetailID": {
-                            "FDETAILID__FFLEX6": {
-                                "FNumber": "CUST0003"
-                            }
-                        },
-                        "FCURRENCYID": {
-                            "FNumber": "PRE001"
-                        },
-                        "FEXCHANGERATETYPE": {
-                            "FNumber": "HLTX01_SYS"
-                        },
-                        "FEXCHANGERATE": 1.0,
-                        "FAMOUNTFOR": 400.0,
-                        "FDEBIT": 400.0
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "92720.72",
+                    "FDEBIT": "92720.72"
+                }, {
+                    "FEXPLANATION": "2024-01堂食收入",
+                    "FACCOUNTID": {
+                        "FNumber": "6001.01"
                     },
-                    {
-                        "FEXPLANATION": "营业收入",
-                        "FACCOUNTID": {
-                            "FNumber": "6001.03"
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "92720.72",
+                    "FCREDIT": "92720.72"
+                }, {
+                    "FEXPLANATION": "2024-01美团点评收入",
+                    "FACCOUNTID": {
+                        "FNumber": "1122"
+                    },
+                    "FDetailID": {
+                        "FDETAILID__FFLEX6": {
+                            "FNumber": "CUST0001"
+                        }
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "158193.60",
+                    "FDEBIT": "158193.60"
+                }, {
+                    "FEXPLANATION": "2024-01美团点评收入",
+                    "FACCOUNTID": {
+                        "FNumber": "6001.02"
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "158193.60",
+                    "FCREDIT": "158193.60"
+                }, {
+                    "FEXPLANATION": "2024-01抖音收入",
+                    "FACCOUNTID": {
+                        "FNumber": "1122"
+                    },
+                    "FDetailID": {
+                        "FDETAILID__FFLEX6": {
+                            "FNumber": "CUST0004"
+                        }
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "10551.50",
+                    "FDEBIT": "10551.50"
+                }, {
+                    "FEXPLANATION": "2024-01抖音收入",
+                    "FACCOUNTID": {
+                        "FNumber": "6001.03"
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "10551.50",
+                    "FCREDIT": "10551.50"
+                }, {
+                    "FEXPLANATION": "2024-01人民币收入",
+                    "FACCOUNTID": {
+                        "FNumber": "1002"
+                    },
+                    "FDetailID": {
+                        "FDETAILID__FFLEX15": {
+                            "FNumber": "123"
                         },
-                        "FCURRENCYID": {
-                            "FNumber": "PRE001"
-                        },
-                        "FEXCHANGERATETYPE": {
-                            "FNumber": "HLTX01_SYS"
-                        },
-                        "FEXCHANGERATE": 1.0,
-                        "FAMOUNTFOR": 400.0,
-                        "FCREDIT": 400.0
-                    }
-                ]
+                        "FDETAILID__FFLEX14": {
+                            "FNumber": "002"
+                        }
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "402.00",
+                    "FDEBIT": "402.00"
+                }, {
+                    "FEXPLANATION": "2024-01人民币收入",
+                    "FACCOUNTID": {
+                        "FNumber": "6001.01"
+                    },
+                    "FCURRENCYID": {
+                        "FNumber": "PRE001"
+                    },
+                    "FEXCHANGERATETYPE": {
+                        "FNumber": "HLTX01_SYS"
+                    },
+                    "FEXCHANGERATE": 1,
+                    "FAMOUNTFOR": "402.00",
+                    "FCREDIT": "402.00"
+                }]
             }]
         }
         """;

@@ -445,10 +445,10 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
         if (voucherGroupingVoucherAccountingEntryEntities == null || voucherGroupingVoucherAccountingEntryEntities.isEmpty()) {
             throw new IllegalArgumentException("没有找到对应的凭证规则!");
         }
-        // voucherGroupingVoucherAccountingEntryEntities根据accounts进行分组.
-        Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityByFiltrationMap
+        // voucherGroupingVoucherAccountingEntryEntities根据Accounts进行分组.
+        Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityByAccountsMap
             = voucherGroupingVoucherAccountingEntryEntities.stream()
-            .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getFiltration));
+            .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getAccounts));
 
 
         // 初始化List<KingdeeSaveCredentialOrderFEntity> FEntities.
@@ -459,7 +459,12 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             String remark = jdPosShopBillEntity.getRemark();
             // 只取voucherGroupingVoucherAccountingEntryEntityByAccountsMap中的remark
             List<VoucherGroupingVoucherAccountingEntryEntity> accountingEntryEntities
-                = voucherGroupingVoucherAccountingEntryEntityByFiltrationMap.get(remark);
+                = voucherGroupingVoucherAccountingEntryEntityByAccountsMap.get(remark);
+
+            // 如果accountingEntryEntities为空,则跳过
+            if (accountingEntryEntities == null || accountingEntryEntities.isEmpty()) {
+                continue;
+            }
             // 遍历voucherGroupingVoucherAccountingEntryEntities
             for (VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity
                 : accountingEntryEntities) {
@@ -478,8 +483,8 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
 
                 // 获取voucherGroupingVoucherAccountingEntryEntity.accounts
                 String accounts = voucherGroupingVoucherAccountingEntryEntity.getAccounts();
-                // 如果debit为1, 则借方金额为totalStoreMoney, 贷方金额为0
-                // 如果debit为2, 则借方金额为0, 贷方金额为totalStoreMoney
+
+                // 如果accounts不包含逗号,则FDetailID单个拼装,否则则多个拼装.
                 if (debit == 1) {
                     fEntities.add(KingdeeSaveCredentialOrderFEntity.builder()
                         // 摘要
@@ -496,9 +501,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
                         .FAMOUNTFOR(String.valueOf(totalStoreMoney))
                         // 借方金额
                         .FDEBIT(String.valueOf(totalStoreMoney))
-                        .FDetailID(KingdeeSaveCredentialOrderFEntityFDetailId.builder()
-                            .FDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build())
-                            .build())
+                        .FDetailID(buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(accounts))
                         // 贷方金额
                         // .FCREDIT(String.valueOf(totalStoreMoney))
                         .build());
@@ -522,6 +525,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
                         .FCREDIT(String.valueOf(totalStoreMoney))
                         .build());
                 }
+
             }
         }
 
@@ -541,6 +545,44 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
             // 实例 FEntity
             .FEntity(fEntities)
             .build();
+    }
+
+
+    /**
+     * build kingdee save credential order fentity fdetail id by accounts
+     *
+     * @param accounts accounts
+     * @return {@link KingdeeSaveCredentialOrderFEntityFDetailId}
+     */
+    private KingdeeSaveCredentialOrderFEntityFDetailId buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(
+        String accounts) {
+
+        KingdeeSaveCredentialOrderFEntityFDetailId kingdeeSaveCredentialOrderFEntityFDetailId
+            = new KingdeeSaveCredentialOrderFEntityFDetailId();
+
+        // 1. 如果accounts包含逗号,则FDetailID多个拼装
+        if (!accounts.contains(",")) {
+            kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build());
+            return kingdeeSaveCredentialOrderFEntityFDetailId;
+        }
+        // 2. 根据逗号分割accounts
+        String[] split = accounts.split(",");
+        // 3. 遍历split, 并开始根据FDETAILID__FFLEX14 以后进行拼装.
+        for (int i = 0; i < split.length; i++) {
+            // 4. 如果i为0, 则拼装FDetailID__FFLEX14
+            if (i == 0) {
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX14(BaseFNumber.builder().FNumber(split[i]).build());
+            }
+            // 5. 如果i为1, 则拼装FDetailID__FFLEX7
+            if (i == 1) {
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX15(BaseFNumber.builder().FNumber(split[i]).build());
+            }
+            // 6. 如果i为2, 则拼装FDetailID__FFLEX8
+            if (i == 2) {
+                kingdeeSaveCredentialOrderFEntityFDetailId.setFDETAILID__FFLEX16(BaseFNumber.builder().FNumber(split[i]).build());
+            }
+        }
+        return kingdeeSaveCredentialOrderFEntityFDetailId;
     }
 
 }
