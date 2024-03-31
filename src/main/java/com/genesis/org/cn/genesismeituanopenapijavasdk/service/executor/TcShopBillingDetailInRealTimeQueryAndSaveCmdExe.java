@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
+
+    // 初始化system 静态变量
+    private static final String SYSTEM = "system";
 
     /**
      * 服务器请求协议
@@ -100,7 +104,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
         String msg = loginResult.getMsg();
         // 如果msg不为success,则抛出异常.
         if (!ResponseStatusEnum.SUCCESS.getValue().equals(msg)) {
-            throw new Exception("鉴权失败!");
+            throw new IllegalArgumentException("鉴权失败!");
         }
         // 如果msg为success,则获取accessToken.
         String accessToken = loginResult.getAccessToken();
@@ -139,7 +143,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                             , accessToken, centerId, i, pageSize, shopId);
                     // 如果success为false,则抛出异常.
                     if (!ResponseStatusEnum.SUCCESS.getInfo().equals(queryBillDetailsInRealTimeResponse2.getMsg())) {
-                        throw new Exception("获取所有门店实时账单信息失败!");
+                        throw new IllegalArgumentException("获取所有门店实时账单信息失败!");
                     }
                     // 如果success为true,则获取门店实时账单.
                     ShopBillItem shopBillItem2 = queryBillDetailsInRealTimeResponse2.getData().getShopBillList().get(0);
@@ -179,17 +183,16 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
      * @param tcShopBillingDetailEntityList       tc shop a billing detail entity list
      * @param tcShopBillingDetailItemEntityList   tc shop billing detail item entity list
      * @param tcShopBillingSettleDetailEntityList tc shop billing settle detail entity list
-     * @throws Exception exception
      */
     public void saveBillDetail(List<TcShopBillingDetailEntity> tcShopBillingDetailEntityList
         , List<TcShopBillingDetailItemEntity> tcShopBillingDetailItemEntityList
-        , List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList) throws Exception {
+        , List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList) {
         // 3.1 落库tcShopBillingDetailEntityList.
         // 如果tcShopBillingDetailEntityList不为空,则落库.
         if (!CollectionUtils.isEmpty(tcShopBillingDetailEntityList)) {
             boolean tcShopBillingDetailEntityTag = iTcShopBillingDetailDao.saveOrUpdateBatch(tcShopBillingDetailEntityList);
             if (!tcShopBillingDetailEntityTag) {
-                throw new Exception("落库tcShopBillingDetailEntityList失败!");
+                throw new IllegalArgumentException("落库tcShopBillingDetailEntityList失败!");
             }
         }
 
@@ -199,7 +202,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
             boolean tcShopBillingDetailItemEntityListTag = iTcShopBillingDetailItemDao
                 .saveOrUpdateBatch(tcShopBillingDetailItemEntityList);
             if (!tcShopBillingDetailItemEntityListTag) {
-                throw new Exception("落库tcShopBillingDetailItemEntityList失败!");
+                throw new IllegalArgumentException("落库tcShopBillingDetailItemEntityList失败!");
             }
         }
 
@@ -209,7 +212,7 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
             boolean tcShopBillingSettleDetailEntityListTag = iTcShopBillingSettleDetailDao
                 .saveOrUpdateBatch(tcShopBillingSettleDetailEntityList);
             if (!tcShopBillingSettleDetailEntityListTag) {
-                throw new Exception("落库tcShopBillingSettleDetailEntityList失败!");
+                throw new IllegalArgumentException("落库tcShopBillingSettleDetailEntityList失败!");
             }
         }
 
@@ -374,18 +377,17 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                 // 外卖送餐时间
                 .deliveryTime(billListItem.getDeliveryTime())
                 // 创建人
-                .createBy("system")
+                .createBy(SYSTEM)
                 // 创建时间
                 .createTime(LocalDateTime.now())
                 // 更新人
-                .updateBy("system")
+                .updateBy(SYSTEM)
                 // 更新时间
                 .updateTime(LocalDateTime.now())
                 .build();
 
             // 2.2 新增到返回值中.
             tcShopBillingDetailEntityList.add(tcShopBillingDetailEntity);
-
 
             // 2.3 创建tcShopBillingDetailItemEntity对象.
             List<BillListItemItem> item = billListItem.getItem();
@@ -488,11 +490,11 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                         // 毛利部门名称
                         .profitDeptName(billListItemItem.getDeptName())
                         // 创建人
-                        .createBy("system")
+                        .createBy(SYSTEM)
                         // 创建时间
                         .createTime(LocalDateTime.now())
                         // 更新人
-                        .updateBy("system")
+                        .updateBy(SYSTEM)
                         // 更新时间
                         .updateTime(LocalDateTime.now())
                         .build();
@@ -508,9 +510,12 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                 for (SettleDetail settleDetailItem : settleDetail) {
                     // 2.5.1 创建tcShopBillingSettleDetailEntity对象.
                     String tsId = settleDetailItem.getTsId();
-                    // tcShopBillingSettleDetailEntity.id = bsId+PaywayId
-                    String tcShopBillingSettleDetailEntityId = ObjectUtil.cloneByStream(bsId + settleDetailItem.getPaywayId());
-                    TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity = TcShopBillingSettleDetailEntity.builder()
+                    // tcShopBillingSettleDetailEntity.id = bsId+PaywayId+payMoney
+                    String tcShopBillingSettleDetailEntityId = ObjectUtil.cloneByStream(bsId
+                        + settleDetailItem.getPaywayId()
+                        + settleDetailItem.getPayMoney().setScale(2, RoundingMode.HALF_UP));
+                    TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity = TcShopBillingSettleDetailEntity
+                        .builder()
                         // id
                         .id(tcShopBillingSettleDetailEntityId)
                         // 集团id
@@ -544,11 +549,11 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                         // 删除标记
                         .delflg(settleDetailItem.getDelflg())
                         // 创建人
-                        .createBy("system")
+                        .createBy(SYSTEM)
                         // 创建时间
                         .createTime(LocalDateTime.now())
                         // 更新人
-                        .updateBy("system")
+                        .updateBy(SYSTEM)
                         // 更新时间
                         .updateTime(LocalDateTime.now())
                         .build();
