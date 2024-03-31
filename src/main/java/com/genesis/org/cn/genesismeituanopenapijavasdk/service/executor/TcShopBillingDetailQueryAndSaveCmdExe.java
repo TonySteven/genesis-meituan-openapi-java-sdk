@@ -1,5 +1,6 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailItemDao;
@@ -27,8 +28,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * tc shop billing detail query and save cmd exe
@@ -214,8 +219,16 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList = mergeEntity
             .getTcShopBillingSettleDetailEntityList();
 
+        // 获取 tcShopBillingSettleDetailEntityList.ids
+        List<String> ids = tcShopBillingSettleDetailEntityList.stream()
+            .map(TcShopBillingSettleDetailEntity::getId).toList();
+        // 通过ids获取TcShopBillingSettleDetailEntity
+        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListExist
+            = iTcShopBillingSettleDetailDao.listByIds(ids);
+
+
         // 2024/03/31 tcShopBillingSettleDetailEntityList 数据处理, 如果TcShopBillingSettleDetailEntity.id重复,则累加金额并合并成一条数据.
-        handelTcShopBillingSettleDetailEntityList(tcShopBillingSettleDetailEntityList);
+        handelTcShopBillingSettleDetailEntityList(tcShopBillingSettleDetailEntityList, tcShopBillingSettleDetailEntityListExist);
 
         // 3. 落库.
         // 打印日志 哪家门店的账单明细正在落库. 对应的落库数量
@@ -248,34 +261,99 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
      * @param tcShopBillingSettleDetailEntityList tc shop billing settle detail entity list
      */
     private void handelTcShopBillingSettleDetailEntityList(
+        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList,
+        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListExist) {
+        // 检测tcShopBillingSettleDetailEntityList和tcShopBillingSettleDetailEntityListExist id是否有重复集合.
+        // 如果本次落库的数据有重复的需要优先处理.
+        filterTcShopBillingSettleDetailEntityListFirst(tcShopBillingSettleDetailEntityList);
+
+        // 1. 获取tcShopBillingSettleDetailEntityList的id集合.
+        List<String> ids = tcShopBillingSettleDetailEntityList.stream()
+            .map(TcShopBillingSettleDetailEntity::getId).toList();
+        // 2. 获取tcShopBillingSettleDetailEntityListExist的id集合.
+        List<String> idsExist = tcShopBillingSettleDetailEntityListExist.stream()
+            .map(TcShopBillingSettleDetailEntity::getId).toList();
+        // 如果idsExist不为空并且ids和idsExist有交集,则需要合并数据. 如果没有则直接返回tcShopBillingSettleDetailEntityList.
+        if (CollUtil.isNotEmpty(idsExist) && CollectionUtils.containsAny(ids, idsExist)) {
+            // 思路: 1. 先删除交集数据. 2. 合并数据并聚合为一条. 3. 添加数据.
+            // 获取交集,并根据交集id, 删除tcShopBillingSettleDetailEntityList中的数据.
+            List<String> intersection = ids.stream().filter(idsExist::contains).toList();
+            // 删除tcShopBillingSettleDetailEntityList中的数据.
+            tcShopBillingSettleDetailEntityList.removeIf(tcShopBillingSettleDetailEntity
+                -> intersection.contains(tcShopBillingSettleDetailEntity.getId()));
+
+            // 初始化tcShopBillingSettleDetailEntityListNeedAdd
+            List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNeedAdd
+                = new ArrayList<>();
+            // 合并tcShopBillingSettleDetailEntityList和tcShopBillingSettleDetailEntityListExist并根据id分组并累加金额.
+            Map<String, List<TcShopBillingSettleDetailEntity>> map = Stream.of(tcShopBillingSettleDetailEntityList
+                    , tcShopBillingSettleDetailEntityListExist)
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(TcShopBillingSettleDetailEntity::getId));
+            // 遍历map,根据id分组,并累加金额.
+            addAmount(map, tcShopBillingSettleDetailEntityListNeedAdd);
+            // 将tcShopBillingSettleDetailEntityListNeedAdd添加到tcShopBillingSettleDetailEntityList中.
+            tcShopBillingSettleDetailEntityList.addAll(tcShopBillingSettleDetailEntityListNeedAdd);
+        }
+    }
+
+    /**
+     * filter tc shop billing settle detail entity list
+     *
+     * @param tcShopBillingSettleDetailEntityList tc shop billing settle detail entity list
+     */
+    private void filterTcShopBillingSettleDetailEntityListFirst(
         List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList) {
-        // 2024/03/31 tcShopBillingSettleDetailEntityList 数据处理
-        // 如果TcShopBillingSettleDetailEntity.id重复, 则累加金额并合并成一条数据.
-        // 1. 创建一个新的List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNew
-        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNew = new ArrayList<>();
-        // 2. 遍历tcShopBillingSettleDetailEntityList
-        for (TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity : tcShopBillingSettleDetailEntityList) {
-            // 3. 判断tcShopBillingSettleDetailEntityListNew中是否有相同的id
-            boolean isExist = false;
-            for (TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntityNew
-                : tcShopBillingSettleDetailEntityListNew) {
-                if (tcShopBillingSettleDetailEntity.getId().equals(tcShopBillingSettleDetailEntityNew.getId())) {
-                    // tcShopBillingSettleDetailEntityNew.getPayMoney() + tcShopBillingSettleDetailEntity.getPayMoney()
-                    // 4. 如果有相同的id,则累加金额
-                    tcShopBillingSettleDetailEntityNew.setPayMoney(
-                        tcShopBillingSettleDetailEntityNew.getPayMoney()
-                            .add(tcShopBillingSettleDetailEntity.getPayMoney())
-                    );
-                    isExist = true;
-                    break;
-                }
-            }
-            // 5. 如果没有相同的id,则添加到tcShopBillingSettleDetailEntityListNew
-            if (!isExist) {
-                tcShopBillingSettleDetailEntityListNew.add(tcShopBillingSettleDetailEntity);
+        // tcShopBillingSettleDetailEntityList根据id进行分组
+        Map<String, List<TcShopBillingSettleDetailEntity>> map = tcShopBillingSettleDetailEntityList.stream()
+            .collect(Collectors.groupingBy(TcShopBillingSettleDetailEntity::getId));
+        // 思路: 1. 先删除分组数量大于一数据. 2. 合并数据并聚合为一条. 3. 添加数据到tcShopBillingSettleDetailEntityList.
+        // 初始化tcShopBillingSettleDetailEntityListNeedAdd
+        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNeedAdd
+            = new ArrayList<>();
+        // 遍历map,根据id分组,并累加金额.
+        addAmount(map, tcShopBillingSettleDetailEntityListNeedAdd);
+
+        // 先删除分组数量大于一数据.
+        tcShopBillingSettleDetailEntityList.removeIf(tcShopBillingSettleDetailEntity
+            -> map.get(tcShopBillingSettleDetailEntity.getId()).size() > 1);
+        // 将tcShopBillingSettleDetailEntityListNeedAdd添加到tcShopBillingSettleDetailEntityList中.
+        tcShopBillingSettleDetailEntityList.addAll(tcShopBillingSettleDetailEntityListNeedAdd);
+    }
+
+    /**
+     * add amount
+     *
+     * @param map                                        map
+     * @param tcShopBillingSettleDetailEntityListNeedAdd tc shop billing settle detail entity list need to add
+     */
+    private void addAmount(Map<String, List<TcShopBillingSettleDetailEntity>> map
+        , List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNeedAdd) {
+        for (Map.Entry<String, List<TcShopBillingSettleDetailEntity>> entry : map.entrySet()) {
+            // 获取entry的value.
+            List<TcShopBillingSettleDetailEntity> value = entry.getValue();
+            // 如果value.size() > 1,则需要合并数据. 三个就全部合并金额.
+            if (value.size() > 1) {
+                // 获取 totalPayMoney
+                BigDecimal totalPayMoney = value.stream()
+                    .map(TcShopBillingSettleDetailEntity::getPayMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
+                // 获取 totalIncomeMoney
+                BigDecimal totalIncomeMoney = value.stream()
+                    .map(TcShopBillingSettleDetailEntity::getIncomeMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
+                // 获取 totalNotIncomeMoney
+                BigDecimal totalNotIncomeMoney = value.stream()
+                    .map(TcShopBillingSettleDetailEntity::getNotIncomeMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                // 获取第一个元素,并设置金额累加.
+                TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity = value.get(0);
+                tcShopBillingSettleDetailEntity.setPayMoney(totalPayMoney);
+                tcShopBillingSettleDetailEntity.setIncomeMoney(totalIncomeMoney);
+                tcShopBillingSettleDetailEntity.setNotIncomeMoney(totalNotIncomeMoney);
+                // 添加到tcShopBillingSettleDetailEntityListNeedAdd中.
+                tcShopBillingSettleDetailEntityListNeedAdd.add(tcShopBillingSettleDetailEntity);
             }
         }
-
     }
+
 
 }

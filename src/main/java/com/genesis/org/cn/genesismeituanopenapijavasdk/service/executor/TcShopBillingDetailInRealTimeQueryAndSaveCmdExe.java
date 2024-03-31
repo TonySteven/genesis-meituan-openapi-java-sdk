@@ -509,11 +509,12 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                 for (SettleDetail settleDetailItem : settleDetail) {
                     // 2.5.1 创建tcShopBillingSettleDetailEntity对象.
                     String tsId = settleDetailItem.getTsId();
-                    // tcShopBillingSettleDetailEntity.id = bsId+PaywayId+payMoney + modifyTime
+                    // tcShopBillingSettleDetailEntity.id = bsId+PaywayId+payMoney + modifyTime + settleState + delflg
                     String tcShopBillingSettleDetailEntityId = ObjectUtil.cloneByStream(bsId + "_" + tsId + "_" +
                         settleDetailItem.getPaywayCode() + "_" +
                         settleDetailItem.getModifyTime() + "_" +
-                        settleDetailItem.getSettleState()
+                        settleDetailItem.getSettleState() + "_" +
+                        settleDetailItem.getDelflg()
                     );
                     TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity = TcShopBillingSettleDetailEntity
                         .builder()
