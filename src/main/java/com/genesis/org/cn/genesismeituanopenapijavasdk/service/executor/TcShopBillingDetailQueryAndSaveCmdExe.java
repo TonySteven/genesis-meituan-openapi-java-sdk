@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -200,7 +201,7 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
      * @param shopId   shop id
      * @param billList bill list
      */
-    private void saveBillDetail(String shopId, List<BillListItem> billList) throws Exception {
+    private void saveBillDetail(String shopId, List<BillListItem> billList) {
 
         // 1. 根据billList获取所有账单明细实时信息.
         TcShopBillingDetailInRealTimeQueryAndSaveCmdExe.MergeEntity mergeEntity
@@ -212,6 +213,9 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             .getTcShopBillingDetailItemEntityList();
         List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList = mergeEntity
             .getTcShopBillingSettleDetailEntityList();
+
+        // 2024/03/31 tcShopBillingSettleDetailEntityList 数据处理, 如果TcShopBillingSettleDetailEntity.id重复,则累加金额并合并成一条数据.
+        handelTcShopBillingSettleDetailEntityList(tcShopBillingSettleDetailEntityList);
 
         // 3. 落库.
         // 打印日志 哪家门店的账单明细正在落库. 对应的落库数量
@@ -235,6 +239,43 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
 
         // 打印日志 删除成功.
         log.info("TcShopBillingDetailQueryAndSaveCmdExe.deleteByShopId() - 门店: {} success", shopId);
+    }
+
+
+    /**
+     * handel tc shop billing settle detail entity list
+     *
+     * @param tcShopBillingSettleDetailEntityList tc shop billing settle detail entity list
+     */
+    private void handelTcShopBillingSettleDetailEntityList(
+        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList) {
+        // 2024/03/31 tcShopBillingSettleDetailEntityList 数据处理
+        // 如果TcShopBillingSettleDetailEntity.id重复, 则累加金额并合并成一条数据.
+        // 1. 创建一个新的List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNew
+        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNew = new ArrayList<>();
+        // 2. 遍历tcShopBillingSettleDetailEntityList
+        for (TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity : tcShopBillingSettleDetailEntityList) {
+            // 3. 判断tcShopBillingSettleDetailEntityListNew中是否有相同的id
+            boolean isExist = false;
+            for (TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntityNew
+                : tcShopBillingSettleDetailEntityListNew) {
+                if (tcShopBillingSettleDetailEntity.getId().equals(tcShopBillingSettleDetailEntityNew.getId())) {
+                    // tcShopBillingSettleDetailEntityNew.getPayMoney() + tcShopBillingSettleDetailEntity.getPayMoney()
+                    // 4. 如果有相同的id,则累加金额
+                    tcShopBillingSettleDetailEntityNew.setPayMoney(
+                        tcShopBillingSettleDetailEntityNew.getPayMoney()
+                            .add(tcShopBillingSettleDetailEntity.getPayMoney())
+                    );
+                    isExist = true;
+                    break;
+                }
+            }
+            // 5. 如果没有相同的id,则添加到tcShopBillingSettleDetailEntityListNew
+            if (!isExist) {
+                tcShopBillingSettleDetailEntityListNew.add(tcShopBillingSettleDetailEntity);
+            }
+        }
+
     }
 
 }

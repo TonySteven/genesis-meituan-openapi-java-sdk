@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -510,10 +509,12 @@ public class TcShopBillingDetailInRealTimeQueryAndSaveCmdExe {
                 for (SettleDetail settleDetailItem : settleDetail) {
                     // 2.5.1 创建tcShopBillingSettleDetailEntity对象.
                     String tsId = settleDetailItem.getTsId();
-                    // tcShopBillingSettleDetailEntity.id = bsId+PaywayId+payMoney
-                    String tcShopBillingSettleDetailEntityId = ObjectUtil.cloneByStream(bsId
-                        + settleDetailItem.getPaywayId()
-                        + settleDetailItem.getPayMoney().setScale(2, RoundingMode.HALF_UP));
+                    // tcShopBillingSettleDetailEntity.id = bsId+PaywayId+payMoney + modifyTime
+                    String tcShopBillingSettleDetailEntityId = ObjectUtil.cloneByStream(bsId + "_" + tsId + "_" +
+                        settleDetailItem.getPaywayCode() + "_" +
+                        settleDetailItem.getModifyTime() + "_" +
+                        settleDetailItem.getSettleState()
+                    );
                     TcShopBillingSettleDetailEntity tcShopBillingSettleDetailEntity = TcShopBillingSettleDetailEntity
                         .builder()
                         // id
