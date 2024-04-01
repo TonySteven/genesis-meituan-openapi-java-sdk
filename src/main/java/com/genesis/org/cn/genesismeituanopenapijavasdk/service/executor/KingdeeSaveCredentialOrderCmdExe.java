@@ -53,6 +53,9 @@ public class KingdeeSaveCredentialOrderCmdExe {
     @Resource
     private IVoucherGroupingVoucherAccountingEntryDao iVoucherGroupingVoucherAccountingEntryDao;
 
+    @Resource
+    private KingdeeSaveCashCredentialOrderCmdExe kingdeeSaveCashCredentialOrderCmdExe;
+
 
     /**
      * execute
@@ -449,6 +452,9 @@ public class KingdeeSaveCredentialOrderCmdExe {
             // 获取voucherGroupingVoucherAccountingEntryEntity.accounts
             String accounts = voucherGroupingVoucherAccountingEntryEntity.getAccounts();
 
+            // 获取voucherGroupingVoucherAccountingEntryEntity.accountsIndex
+            String accountsIndex = voucherGroupingVoucherAccountingEntryEntity.getAccountsIndex();
+
             // 如果accounts不为空,并且为OtherSideCode,则取jdScmShopBillPzEntity.OtherSideCode值.
             if (StringUtils.isNotBlank(accounts) && "OtherSideCode".equals(accounts)) {
                 accounts = jdScmShopBillPzEntity.getOtherSideCode();
@@ -474,9 +480,8 @@ public class KingdeeSaveCredentialOrderCmdExe {
                     .FAMOUNTFOR(String.valueOf(totalStoreMoney))
                     // 借方金额
                     .FDEBIT(String.valueOf(totalStoreMoney))
-                    .FDetailID(KingdeeSaveCredentialOrderFEntityFDetailId.builder()
-                        .FDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build())
-                        .build())
+                    .FDetailID(kingdeeSaveCashCredentialOrderCmdExe
+                        .buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(accounts, accountsIndex))
                     // 贷方金额
                     // .FCREDIT(String.valueOf(totalStoreMoney))
                     .build());

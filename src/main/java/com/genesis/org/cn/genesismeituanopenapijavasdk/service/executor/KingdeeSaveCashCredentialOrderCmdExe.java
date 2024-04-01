@@ -557,7 +557,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
      * @param accounts accounts
      * @return {@link KingdeeSaveCredentialOrderFEntityFDetailId}
      */
-    private KingdeeSaveCredentialOrderFEntityFDetailId buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(
+    public KingdeeSaveCredentialOrderFEntityFDetailId buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(
         String accounts, String accountsIndex) {
 
         KingdeeSaveCredentialOrderFEntityFDetailId kingdeeSaveCredentialOrderFEntityFDetailId
