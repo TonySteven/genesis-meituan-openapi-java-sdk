@@ -454,6 +454,10 @@ public class KingdeeSaveCredentialOrderCmdExe {
 
             // 获取voucherGroupingVoucherAccountingEntryEntity.accountsIndex
             String accountsIndex = voucherGroupingVoucherAccountingEntryEntity.getAccountsIndex();
+            // 如果accountsIndex为null,则accountsIndex为空.
+            if (accountsIndex == null) {
+                accountsIndex = "";
+            }
 
             // 如果accounts不为空,并且为OtherSideCode,则取jdScmShopBillPzEntity.OtherSideCode值.
             if (StringUtils.isNotBlank(accounts) && "OtherSideCode".equals(accounts)) {
@@ -503,9 +507,8 @@ public class KingdeeSaveCredentialOrderCmdExe {
                     .FAMOUNTFOR(String.valueOf(totalStoreMoney))
                     // 贷方金额
                     .FCREDIT(String.valueOf(totalStoreMoney))
-                    .FDetailID(KingdeeSaveCredentialOrderFEntityFDetailId.builder()
-                        .FDETAILID__FFLEX6(BaseFNumber.builder().FNumber(accounts).build())
-                        .build())
+                    .FDetailID(kingdeeSaveCashCredentialOrderCmdExe
+                        .buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(accounts, accountsIndex))
                     .build());
             }
         }
