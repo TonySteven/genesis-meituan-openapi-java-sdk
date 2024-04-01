@@ -1,6 +1,5 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailItemDao;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * tc shop billing detail query and save cmd exe
@@ -219,16 +217,8 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList = mergeEntity
             .getTcShopBillingSettleDetailEntityList();
 
-        // 获取 tcShopBillingSettleDetailEntityList.ids
-        List<String> ids = tcShopBillingSettleDetailEntityList.stream()
-            .map(TcShopBillingSettleDetailEntity::getId).toList();
-        // 通过ids获取TcShopBillingSettleDetailEntity
-        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListExist
-            = iTcShopBillingSettleDetailDao.listByIds(ids);
-
-
         // 2024/03/31 tcShopBillingSettleDetailEntityList 数据处理, 如果TcShopBillingSettleDetailEntity.id重复,则累加金额并合并成一条数据.
-        handelTcShopBillingSettleDetailEntityList(tcShopBillingSettleDetailEntityList, tcShopBillingSettleDetailEntityListExist);
+        filterTcShopBillingSettleDetailEntityListFirst(tcShopBillingSettleDetailEntityList);
 
         // 3. 落库.
         // 打印日志 哪家门店的账单明细正在落库. 对应的落库数量
@@ -255,47 +245,6 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
     }
 
 
-    /**
-     * handel tc shop billing settle detail entity list
-     *
-     * @param tcShopBillingSettleDetailEntityList tc shop billing settle detail entity list
-     */
-    private void handelTcShopBillingSettleDetailEntityList(
-        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityList,
-        List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListExist) {
-        // 检测tcShopBillingSettleDetailEntityList和tcShopBillingSettleDetailEntityListExist id是否有重复集合.
-        // 如果本次落库的数据有重复的需要优先处理.
-        filterTcShopBillingSettleDetailEntityListFirst(tcShopBillingSettleDetailEntityList);
-
-        // 1. 获取tcShopBillingSettleDetailEntityList的id集合.
-        List<String> ids = tcShopBillingSettleDetailEntityList.stream()
-            .map(TcShopBillingSettleDetailEntity::getId).toList();
-        // 2. 获取tcShopBillingSettleDetailEntityListExist的id集合.
-        List<String> idsExist = tcShopBillingSettleDetailEntityListExist.stream()
-            .map(TcShopBillingSettleDetailEntity::getId).toList();
-        // 如果idsExist不为空并且ids和idsExist有交集,则需要合并数据. 如果没有则直接返回tcShopBillingSettleDetailEntityList.
-        if (CollUtil.isNotEmpty(idsExist) && CollectionUtils.containsAny(ids, idsExist)) {
-            // 思路: 1. 先删除交集数据. 2. 合并数据并聚合为一条. 3. 添加数据.
-            // 获取交集,并根据交集id, 删除tcShopBillingSettleDetailEntityList中的数据.
-            List<String> intersection = ids.stream().filter(idsExist::contains).toList();
-            // 删除tcShopBillingSettleDetailEntityList中的数据.
-            tcShopBillingSettleDetailEntityList.removeIf(tcShopBillingSettleDetailEntity
-                -> intersection.contains(tcShopBillingSettleDetailEntity.getId()));
-
-            // 初始化tcShopBillingSettleDetailEntityListNeedAdd
-            List<TcShopBillingSettleDetailEntity> tcShopBillingSettleDetailEntityListNeedAdd
-                = new ArrayList<>();
-            // 合并tcShopBillingSettleDetailEntityList和tcShopBillingSettleDetailEntityListExist并根据id分组并累加金额.
-            Map<String, List<TcShopBillingSettleDetailEntity>> map = Stream.of(tcShopBillingSettleDetailEntityList
-                    , tcShopBillingSettleDetailEntityListExist)
-                .flatMap(List::stream)
-                .collect(Collectors.groupingBy(TcShopBillingSettleDetailEntity::getId));
-            // 遍历map,根据id分组,并累加金额.
-            addAmount(map, tcShopBillingSettleDetailEntityListNeedAdd);
-            // 将tcShopBillingSettleDetailEntityListNeedAdd添加到tcShopBillingSettleDetailEntityList中.
-            tcShopBillingSettleDetailEntityList.addAll(tcShopBillingSettleDetailEntityListNeedAdd);
-        }
-    }
 
     /**
      * filter tc shop billing settle detail entity list
