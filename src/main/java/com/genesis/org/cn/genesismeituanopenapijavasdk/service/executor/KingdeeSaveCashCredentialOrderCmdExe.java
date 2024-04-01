@@ -524,6 +524,7 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
                         // .FDEBIT(String.valueOf(totalStoreMoney))
                         // 原币金额
                         .FAMOUNTFOR(String.valueOf(totalStoreMoney))
+                        .FDetailID(buildKingdeeSaveCredentialOrderFEntityFDetailIdByAccounts(accounts, accountsIndex))
                         // 贷方金额
                         .FCREDIT(String.valueOf(totalStoreMoney))
                         .build());
@@ -562,6 +563,11 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
 
         KingdeeSaveCredentialOrderFEntityFDetailId kingdeeSaveCredentialOrderFEntityFDetailId
             = new KingdeeSaveCredentialOrderFEntityFDetailId();
+
+        // 如果accounts为blank,则直接返回kingdeeSaveCredentialOrderFEntityFDetailId
+        if (StringUtils.isBlank(accounts)) {
+            return kingdeeSaveCredentialOrderFEntityFDetailId;
+        }
 
         // 1. 如果accounts包含逗号,则FDetailID多个拼装
         if (!accounts.contains(",") && !accountsIndex.contains(",")) {
