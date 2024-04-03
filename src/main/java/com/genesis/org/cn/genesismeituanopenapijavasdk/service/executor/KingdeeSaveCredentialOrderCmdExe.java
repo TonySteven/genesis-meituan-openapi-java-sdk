@@ -391,14 +391,12 @@ public class KingdeeSaveCredentialOrderCmdExe {
         abstractString = abstractString.replace("[", "").replace("]", "").trim();
         String[] split = abstractString.split(",");
         for (String s : split) {
-            if ("'busmonth'".equals(s.trim())) {
-                explanation.append(jdScmShopBillPzEntity.getBusMonth());
-            } else if ("'shopname'".equals(s.trim())) {
-                explanation.append(jdScmShopBillPzEntity.getShopName());
-            } else if ("'billtype'".equals(s.trim())) {
-                explanation.append(jdScmShopBillPzEntity.getBillType());
-            } else if ("'OtherSideName'".equals(s.trim())) {
-                explanation.append(jdScmShopBillPzEntity.getOtherSideName());
+            switch (s.trim()) {
+                case "'busmonth'" -> explanation.append(jdScmShopBillPzEntity.getBusMonth());
+                case "'shopname'" -> explanation.append(jdScmShopBillPzEntity.getShopName());
+                case "'billtype'" -> explanation.append(jdScmShopBillPzEntity.getBillType());
+                case "'OtherSideName'" -> explanation.append(jdScmShopBillPzEntity.getOtherSideName());
+                default -> throw new IllegalArgumentException("摘要规则不正确!");
             }
         }
         return explanation;
