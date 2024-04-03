@@ -377,7 +377,7 @@ public class KingdeeSaveCredentialOrderCmdExe {
      * @return {@link StringBuilder}
      */
     @NotNull
-    private static StringBuilder getStringBuilder(JdScmShopBillPzEntity jdScmShopBillPzEntity, VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity) {
+    private static StringBuilder getExplanationString(JdScmShopBillPzEntity jdScmShopBillPzEntity, VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity) {
         String abstractString = voucherGroupingVoucherAccountingEntryEntity.getAbstractString();
         // 如果摘要规则为空,则抛出异常
         if (abstractString == null) {
@@ -397,6 +397,8 @@ public class KingdeeSaveCredentialOrderCmdExe {
                 explanation.append(jdScmShopBillPzEntity.getShopName());
             } else if ("'billtype'".equals(s.trim())) {
                 explanation.append(jdScmShopBillPzEntity.getBillType());
+            } else if ("'OtherSideName'".equals(s.trim())) {
+                explanation.append(jdScmShopBillPzEntity.getOtherSideName());
             }
         }
         return explanation;
@@ -440,7 +442,7 @@ public class KingdeeSaveCredentialOrderCmdExe {
         for (VoucherGroupingVoucherAccountingEntryEntity voucherGroupingVoucherAccountingEntryEntity
             : voucherGroupingVoucherAccountingEntryEntities) {
             // 获取凭证规则的摘要规则 ['shopname', 'billtype']
-            StringBuilder explanation = getStringBuilder(jdScmShopBillPzEntity, voucherGroupingVoucherAccountingEntryEntity);
+            StringBuilder explanation = getExplanationString(jdScmShopBillPzEntity, voucherGroupingVoucherAccountingEntryEntity);
 
             // 2.5 获取科目编码, voucher_grouping_voucher_accounting_entry.subject_code
             String subjectCode = voucherGroupingVoucherAccountingEntryEntity.getSubjectCode();
