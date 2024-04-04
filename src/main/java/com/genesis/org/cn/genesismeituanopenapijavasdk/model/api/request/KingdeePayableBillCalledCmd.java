@@ -16,6 +16,12 @@ import java.util.List;
 public class KingdeePayableBillCalledCmd {
 
     /**
+     * 门店名称List
+     */
+    @ApiModelProperty("门店名称List, 如果不传查询程序配置的门店")
+    private List<String> billTypeList;
+
+    /**
      * 门店名称
      */
     @ApiModelProperty("门店名称, 如果不传查询全部门店")
