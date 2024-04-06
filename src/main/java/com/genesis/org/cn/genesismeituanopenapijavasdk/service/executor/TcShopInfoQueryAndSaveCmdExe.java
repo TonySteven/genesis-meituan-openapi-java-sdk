@@ -1,6 +1,5 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopDao;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopGroupInfoDao;
@@ -252,9 +251,11 @@ public class TcShopInfoQueryAndSaveCmdExe {
                 // 遍历groupList, 创建TcShopGroupInfoEntity对象.
                 for (GroupList groupListInfo : groupList) {
                     // 2.2 创建TcShopGroupInfoEntity对象.
+                    // shopInfoEntityId = centerId + shopId
+                    String shopGroupInfoEntityId = centerId + shopId;
                     TcShopGroupInfoEntity tcShopGroupInfoEntity = TcShopGroupInfoEntity.builder()
                         // id cachedUidGenerator
-                        .id(IdUtil.objectId())
+                        .id(shopGroupInfoEntityId)
                         // 集团id
                         .centerId(centerId)
                         // 门店id
