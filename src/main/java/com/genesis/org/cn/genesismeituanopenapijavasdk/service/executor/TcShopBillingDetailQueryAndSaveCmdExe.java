@@ -161,7 +161,18 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
 
             // 2.2 获取账单明细列表.
             QueryBillDetailsDataResponse data = queryBillDetailsResponse.getData();
-            // 如果data为空,则重新获取.
+            // 如果data为空,则重新获取, 重试三次后再跳过.
+            if (data == null) {
+                for (int i = 0; i < 3; i++) {
+                    queryBillDetailsResponse = QueryShopInfoAction
+                        .queryBillingDetails(protocol, applicationServer, applicationPort, accessId
+                            , accessToken, pageNo, pageSize, shopId, beginDate, endDate);
+                    data = queryBillDetailsResponse.getData();
+                    if (data != null) {
+                        break;
+                    }
+                }
+            }
             if (data == null) {
                 continue;
             }
