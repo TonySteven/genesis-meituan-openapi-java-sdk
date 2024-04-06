@@ -161,6 +161,10 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
 
             // 2.2 获取账单明细列表.
             QueryBillDetailsDataResponse data = queryBillDetailsResponse.getData();
+            // 如果data为空,则重新获取.
+            if (data == null) {
+                continue;
+            }
             List<BillListItem> billList = data.getBillList();
             // 如果billList为空,则跳过.
             if (CollectionUtils.isEmpty(billList)) {
