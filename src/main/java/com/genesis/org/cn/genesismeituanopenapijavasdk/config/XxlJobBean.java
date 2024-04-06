@@ -36,6 +36,9 @@ import java.time.format.DateTimeFormatter;
 public class XxlJobBean {
 
     @Resource
+    TcShopInfoQueryAndSaveCmdExe tcShopInfoQueryAndSaveCmdExe;
+
+    @Resource
     private TcShopBillingDetailQueryAndSaveCmdExe tcShopBillingDetailQueryAndSaveCmdExe;
 
     @Resource
@@ -60,10 +63,20 @@ public class XxlJobBean {
     KingdeeSaveCashCredentialOrderCmdExe kingdeeSaveCashCredentialOrderCmdExe;
 
     /**
-     * 实时1分钟一次定时抽取
+     * 天财定时拉取门店信息任务.
+     */
+    @XxlJob("syncTcShopDataHandler")
+    public void syncTcShopDataHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("syncTcShopDataHandler jobParam:{}", jobParam);
+        tcShopInfoQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 天财定时拉取POS单据任务.
      */
     @XxlJob("syncTcShopBillDetailHandler")
-    public void syncOABillStatusHandler() {
+    public void syncTcShopBillDetailHandler() {
         String jobParam = XxlJobHelper.getJobParam();
         log.info("tcShopBillingDetailQueryAndSaveCmdExe jobParam:{}", jobParam);
         // 如果jobParam.isBlank，直接返回
