@@ -141,12 +141,12 @@ public class TcShopInfoQueryAndSaveCmdExe {
         List<TcShopGroupInfoEntity> tcShopGroupInfoEntityList = mergeEntity.getTcShopGroupInfoEntityList();
 
         // 4. 落库.
-        boolean saveBatchTcShopEntity = iTcShopDao.saveBatch(tcShopEntityList);
+        boolean saveBatchTcShopEntity = iTcShopDao.saveOrUpdateBatch(tcShopEntityList);
         // 如果saveOrUpdateBatch为false, 则抛出异常.
         if (!saveBatchTcShopEntity) {
             throw new Exception("落库失败!");
         }
-        boolean saveBatchTcShopGroupInfoEntity = iTcShopGroupInfoDao.saveBatch(tcShopGroupInfoEntityList);
+        boolean saveBatchTcShopGroupInfoEntity = iTcShopGroupInfoDao.saveOrUpdateBatch(tcShopGroupInfoEntityList);
         // 如果saveBatchTcShopGroupInfoEntity为false, 则抛出异常.
         if (!saveBatchTcShopGroupInfoEntity) {
             throw new Exception("落库失败!");
@@ -177,7 +177,8 @@ public class TcShopInfoQueryAndSaveCmdExe {
         for (QueryShopInfoDataResponseShopList shopListInfo : shopList) {
             // 初始化shopId
             String shopId = shopListInfo.getShopId();
-            String shopInfoEntityId = IdUtil.objectId();
+            // shopInfoEntityId = centerId + shopId
+            String shopInfoEntityId = centerId + shopId;
             String id = ObjectUtil.cloneByStream(shopInfoEntityId);
 
             // 2.1 创建TcShopEntity对象.
