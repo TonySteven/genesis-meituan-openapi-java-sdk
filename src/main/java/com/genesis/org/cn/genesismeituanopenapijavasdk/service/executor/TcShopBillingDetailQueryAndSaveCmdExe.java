@@ -193,12 +193,26 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                     QueryBillDetailsResponse queryBillDetailsResponse2 = QueryShopInfoAction
                         .queryBillingDetails(protocol, applicationServer, applicationPort, accessId
                             , accessToken, i, pageSize, shopId, beginDate, endDate);
-                    // 如果success为false,则抛出异常.
+                    // 如果success为false,则重试三次.
                     if (!ResponseStatusEnum.SUCCESS.getInfo().equals(queryBillDetailsResponse2.getMsg())) {
-                        throw new IllegalArgumentException("获取所有门店实时账单信息失败!");
+                        for (int j = 0; j < 3; j++) {
+                            queryBillDetailsResponse2 = QueryShopInfoAction
+                                .queryBillingDetails(protocol, applicationServer, applicationPort, accessId
+                                    , accessToken, i, pageSize, shopId, beginDate, endDate);
+                            if (ResponseStatusEnum.SUCCESS.getInfo().equals(queryBillDetailsResponse2.getMsg())) {
+                                break;
+                            }
+                        }
                     }
-                    // 如果success为true,则获取门店实时账单.
-                    List<BillListItem> billList1 = queryBillDetailsResponse2.getData().getBillList();
+                    QueryBillDetailsDataResponse data1 = queryBillDetailsResponse2.getData();
+                    if (data1 == null) {
+                        continue;
+                    }
+                    List<BillListItem> billList1 = data1.getBillList();
+                    // 如果billList为空,则跳过.
+                    if (CollectionUtils.isEmpty(billList1)) {
+                        continue;
+                    }
                     // 因为将billList1添加到billList中,数据量很大, 所有改为查一次落库一次.
                     saveBillDetail(shopId, billList1);
                 }
