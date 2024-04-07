@@ -63,6 +63,9 @@ public class TcShopErrorBillingQueryAndSaveCmdExe {
                 cmd.setEndDate(String.valueOf(endDate));
 
                 tcShopBillingDetailQueryAndSaveCmdExe.execute(cmd);
+
+                // 如果执行完了,则把此记录删除
+                iTcShopBillingErrorInfoDao.removeById(tcShopBillingErrorInfoEntity.getId());
             });
         }
 
