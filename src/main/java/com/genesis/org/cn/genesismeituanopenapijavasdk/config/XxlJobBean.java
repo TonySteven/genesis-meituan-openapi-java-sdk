@@ -38,6 +38,10 @@ public class XxlJobBean {
     @Resource
     TcShopInfoQueryAndSaveCmdExe tcShopInfoQueryAndSaveCmdExe;
 
+
+    @Resource
+    TcShopErrorBillingQueryAndSaveCmdExe tcShopErrorBillingQueryAndSaveCmdExe;
+
     @Resource
     private TcShopBillingDetailQueryAndSaveCmdExe tcShopBillingDetailQueryAndSaveCmdExe;
 
@@ -70,6 +74,16 @@ public class XxlJobBean {
         String jobParam = XxlJobHelper.getJobParam();
         log.info("syncTcShopDataHandler jobParam:{}", jobParam);
         tcShopInfoQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 天财定时拉取门店信息任务.
+     */
+    @XxlJob("autoFixTcShopErrorBillHandler")
+    public void autoFixTcShopErrorBillHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("autoFixTcShopErrorBillHandler jobParam:{}", jobParam);
+        tcShopErrorBillingQueryAndSaveCmdExe.execute();
     }
 
     /**

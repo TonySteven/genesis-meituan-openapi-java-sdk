@@ -10,5 +10,4 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingE
  * @date 2024-04-07 09:55:27
  */
 public interface ITcShopBillingErrorInfoDao extends IService<TcShopBillingErrorInfoEntity> {
-
 }

@@ -1,14 +1,10 @@
 package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailDao;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingDetailItemDao;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopBillingSettleDetailDao;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.ITcShopDao;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailEntity;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingDetailItemEntity;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopBillingSettleDetailEntity;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.TcShopEntity;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.*;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.*;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.LoginToServerAction;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.QueryShopInfoAction;
@@ -92,6 +88,9 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
     private ITcShopBillingSettleDetailDao iTcShopBillingSettleDetailDao;
 
     @Resource
+    private ITcShopBillingErrorInfoDao iTcShopBillingErrorInfoDao;
+
+    @Resource
     private TcShopBillingDetailInRealTimeQueryAndSaveCmdExe tcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 
     /**
@@ -153,7 +152,7 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                 , (shopIds.indexOf(shopId) + 1));
             // 初始化分页参数.
             Integer pageNo = 1;
-            Integer pageSize = 50;
+            Integer pageSize = 100;
             // 2.1 获取所有门店实时账单信息.
             QueryBillDetailsResponse queryBillDetailsResponse = QueryShopInfoAction
                 .queryBillingDetails(protocol, applicationServer, applicationPort, accessId
@@ -174,6 +173,9 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                 }
             }
             if (data == null) {
+                // 如果获取data为空,跳过之前,记录错误信息.
+                iTcShopBillingErrorInfoDao.save(
+                    createTcShopBillingErrorInfoEntity(centerId, shopId, beginDate, endDate));
                 continue;
             }
             List<BillListItem> billList = data.getBillList();
@@ -206,6 +208,9 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                     }
                     QueryBillDetailsDataResponse data1 = queryBillDetailsResponse2.getData();
                     if (data1 == null) {
+                        // 如果获取data为空,跳过之前,记录错误信息.
+                        iTcShopBillingErrorInfoDao.save(
+                            createTcShopBillingErrorInfoEntity(centerId, shopId, beginDate, endDate));
                         continue;
                     }
                     List<BillListItem> billList1 = data1.getBillList();
@@ -333,5 +338,29 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
         }
     }
 
+    /**
+     * create tc shop billing error info entity
+     *
+     * @param centerId  center id
+     * @param shopId    shop id
+     * @param beginTime begin time
+     * @param endTime   end time
+     * @return {@link TcShopBillingErrorInfoEntity}
+     */
+    private TcShopBillingErrorInfoEntity createTcShopBillingErrorInfoEntity(String centerId, String shopId
+        , String beginTime, String endTime) {
+        // 创建 TcShopBillingErrorInfoEntity
+        return TcShopBillingErrorInfoEntity.builder()
+            .id(IdUtil.objectId())
+            .centerId(centerId)
+            .shopId(shopId)
+            .errorMsg("此门店日期期间获取实时账单信息失败!")
+            .beginDate(DateUtil.parse(beginTime, "yyyy-MM-dd HH:mm:ss"))
+            .endDate(DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss"))
+            .createBy("system")
+            .updateBy("system")
+            .remarks("system")
+            .build();
+    }
 
 }
