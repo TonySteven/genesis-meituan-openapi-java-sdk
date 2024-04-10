@@ -11,6 +11,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemCa
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodClassesQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodsQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemUnitQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPayTypeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPaywayDetailQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcRecipeCardQueryAndSaveCmdExe;
@@ -93,6 +94,9 @@ public class CallTCController {
 
     @Resource
     private TcScmDjmxQueryAndSaveCmdExe tcScmDjmxQueryAndSaveCmdExe;
+
+    @Resource
+    private TcItemUnitQueryAndSaveCmdExe tcItemUnitQueryAndSaveCmdExe;
 
 
     /**
@@ -265,6 +269,15 @@ public class CallTCController {
     @GetMapping("/get-scm-djmx")
     public void getScmPx(@RequestBody TcScmDjmxCmd cmd) {
         tcScmDjmxQueryAndSaveCmdExe.execute(cmd);
+    }
+
+    /**
+     * 天财SaaS-调用查询品项单位实时并落库api
+     */
+    @ApiOperation(value = "天财SaaS-调用查询品项单位实时并落库api", notes = "天财SaaS-调用查询品项单位实时并落库api")
+    @GetMapping("/get-item-unit")
+    public void getItemUnit() {
+        tcItemUnitQueryAndSaveCmdExe.execute();
     }
 
 }

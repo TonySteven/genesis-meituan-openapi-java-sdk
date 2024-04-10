@@ -16,6 +16,10 @@ public enum TcSyncTypeEnums {
      */
     ITEM_CLASS("ITEM_CLASS", "品项类别"),
     /**
+     * 品项单位
+     */
+    ITEM_UNIT("ITEM_UNIT", "品项单位"),
+    /**
      * 做法档案
      */
     METHODS("METHODS", "做法档案"),

@@ -51,6 +51,9 @@ public class TcBaseDataQueryAndSaveCmdExe {
     @Resource
     private TcScmGysQueryAndSaveCmdExe tcScmGysQueryAndSaveCmdExe;
 
+    @Resource
+    private TcItemUnitQueryAndSaveCmdExe tcItemUnitQueryAndSaveCmdExe;
+
     @SneakyThrows
     public ApiResult<Object> execute(TcBaseDataQryCmd cmd)
     {
@@ -87,6 +90,9 @@ public class TcBaseDataQueryAndSaveCmdExe {
         }
         if(cmd.getSyncType() == null || cmd.getSyncType().equals(TcSyncTypeEnums.SCM_GYS)){
             tcScmGysQueryAndSaveCmdExe.syncData();
+        }
+        if(cmd.getSyncType() == null || cmd.getSyncType().equals(TcSyncTypeEnums.ITEM_UNIT)){
+            tcItemUnitQueryAndSaveCmdExe.syncData(accessToken);
         }
         // 打印日志 - 结束.
         log.info("TcBaseDataQueryAndSaveCmdExe.execute() - end");

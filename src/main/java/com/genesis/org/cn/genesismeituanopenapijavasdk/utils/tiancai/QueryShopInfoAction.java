@@ -18,6 +18,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemMethodClassesDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemMethodsDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcItemUnitDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPayTypeDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPaywayDetailDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcRecipeCardDataResponse;
@@ -78,6 +79,11 @@ public class QueryShopInfoAction {
      * url query methods list
      */
     static final String URL_QUERY_ITEM_METHODS_LIST = "/api/datatransfer/getitemmethods";
+
+    /**
+     * url query unit list
+     */
+    static final String URL_QUERY_ITEM_UNIT_LIST = "/api/datatransfer/getItemUnitData";
 
     /**
      * url query methods list
@@ -451,6 +457,38 @@ public class QueryShopInfoAction {
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcItemMethodsDataResponse.class);
+    }
+
+    /**
+     * query ItemUnit list
+     *
+     * @param config            config
+     * @param token             token
+     * @param pageNo            page no
+     * @param pageSize          page size
+     * @param shopId            shop id
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcItemUnitDataResponse queryItemUnitList(TcConfig config, String token, Integer pageNo, Integer pageSize, String shopId) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_ITEM_UNIT_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+//        loginParams.put("pageNo", String.valueOf(pageNo));
+//        loginParams.put("pageSize", String.valueOf(pageSize));
+        if(StringUtils.isNotEmpty(shopId)){
+            loginParams.put("shopId", shopId);
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcItemUnitDataResponse.class);
     }
 
     /**
