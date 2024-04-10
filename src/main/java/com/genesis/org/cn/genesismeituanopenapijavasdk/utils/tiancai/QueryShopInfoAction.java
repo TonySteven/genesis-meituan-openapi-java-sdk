@@ -9,6 +9,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.HttpPostRequestUtil
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums.ResponseStatusEnum;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcRecipeCardQueryRequest;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcScmDjmxRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsInRealTimeResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsResponse;
@@ -20,6 +21,9 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPayTypeDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcPaywayDetailDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcRecipeCardDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcScmDjmxDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcScmGysDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcScmPxDataResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -89,6 +93,26 @@ public class QueryShopInfoAction {
      * url query recipeCard list
      */
     static final String URL_QUERY_RECIPE_CARD_LIST = "/cldpoint/openservice/recipeCardInfoBatch.do";
+
+    /**
+     * url query scm px list
+     */
+    static final String URL_QUERY_SCM_PX_LIST = "/cldpoint/getItemNew.do";
+
+    /**
+     * url query scm px list
+     */
+    static final String URL_QUERY_SCM_GYS_LIST = "/cldpoint/getSupplierMore.do";
+
+    /**
+     * url query scm djmx delete list
+     */
+    static final String URL_QUERY_SCM_DJMX_DELETE_LIST = "/cldpoint/getDeleteBillList.do";
+
+    /**
+     * url query scm djmx list
+     */
+    static final String URL_QUERY_SCM_DJMX_LIST = "/cldpoint/getDsstorebill.do";
 
     /**
      * 服务器请求协议
@@ -492,7 +516,7 @@ public class QueryShopInfoAction {
     }
 
     /**
-     * query payType list
+     * query RecipeCard
      *
      * @param config            config
      * @param request             request
@@ -530,9 +554,122 @@ public class QueryShopInfoAction {
             , TcRecipeCardDataResponse.class);
 
         if(dataResponse.getStatus() != 1){
-            throw new RuntimeException("查询菜品失败：" + dataResponse.getMessage());
+            throw new RuntimeException("查询成本卡失败：" + dataResponse.getMessage());
         }
         return dataResponse;
+    }
+
+    /**
+     * query scm px
+     *
+     * @param config            config
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcScmPxDataResponse queryScmPxList(TcConfig config) {
+
+        // 参数
+        String url = applicationServer2 + URL_QUERY_SCM_PX_LIST;
+
+        Map<String, String> loginParams = initScmParams(config);
+
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader("", config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendGetWithParams(url, loginParams, headMap));
+
+        JSONObject jsonObj = new JSONObject(responseData);
+        TcScmPxDataResponse dataResponse = JSON.parseObject(jsonObj.toString()
+            , TcScmPxDataResponse.class);
+
+        if(!"200".equals(dataResponse.getCode())){
+            throw new RuntimeException("查询品项失败：" + dataResponse.getMessage());
+        }
+        return dataResponse;
+    }
+
+    /**
+     * query scm px
+     *
+     * @param config            config
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcScmDjmxDataResponse queryScmDjmxList(TcConfig config, TcScmDjmxRequest request) {
+
+        // 参数
+        StringBuilder url = new StringBuilder(applicationServer2);
+
+        if(request.getOrderStatusType() == 0){
+            url.append(URL_QUERY_SCM_DJMX_LIST);
+        }else{
+            url.append(URL_QUERY_SCM_DJMX_DELETE_LIST);
+        }
+
+        Map<String, String> loginParams = initScmParams(config);
+
+        if(StringUtils.isNotBlank(request.getBeginDate())){
+            loginParams.put("beginDate", request.getBeginDate());
+        }
+
+        if(StringUtils.isNotBlank(request.getEndDate())){
+            loginParams.put("endDate", request.getEndDate());
+        }
+
+        if(StringUtils.isNotBlank(request.getLastModifyTime())){
+            loginParams.put("busdate", request.getLastModifyTime());
+        }
+
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader("", config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendGetWithParams(url.toString(), loginParams, headMap));
+
+        JSONObject jsonObj = new JSONObject(responseData);
+        TcScmDjmxDataResponse dataResponse = JSON.parseObject(jsonObj.toString()
+            , TcScmDjmxDataResponse.class);
+
+        if(Boolean.FALSE.equals(dataResponse.getResult())){
+            throw new RuntimeException("查询品项失败：" + dataResponse.getMessage());
+        }
+        return dataResponse;
+    }
+
+    /**
+     * query scm px
+     *
+     * @param config            config
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcScmGysDataResponse queryScmGysList(TcConfig config) {
+
+        // 参数
+        String url = applicationServer2 + URL_QUERY_SCM_GYS_LIST;
+
+        Map<String, String> loginParams = initScmParams(config);
+
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader("", config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendGetWithParams(url, loginParams, headMap));
+
+        JSONObject jsonObj = new JSONObject(responseData);
+        TcScmGysDataResponse dataResponse = JSON.parseObject(jsonObj.toString()
+            , TcScmGysDataResponse.class);
+
+        if(!"200".equals(dataResponse.getCode())){
+            throw new RuntimeException("查询品项失败：" + dataResponse.getMessage());
+        }
+        return dataResponse;
+    }
+
+    private static Map<String, String> initScmParams(TcConfig config) {
+        Map<String, String> loginParams = new LinkedHashMap<>();
+        loginParams.put("ent", "ENTa5bv");
+        loginParams.put("username", "admin");
+        loginParams.put("password", "tcsl123456");
+        return loginParams;
     }
 
     /**

@@ -36,4 +36,6 @@ public class BaseDataResponse {
      */
     private Boolean success;
 
+    private Boolean result;
+
 }

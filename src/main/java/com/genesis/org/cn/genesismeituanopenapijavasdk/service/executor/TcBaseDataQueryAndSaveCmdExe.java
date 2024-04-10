@@ -45,6 +45,12 @@ public class TcBaseDataQueryAndSaveCmdExe {
     @Resource
     private TcRecipeCardQueryAndSaveCmdExe tcRecipeCardQueryAndSaveCmdExe;
 
+    @Resource
+    private TcScmPxQueryAndSaveCmdExe tcScmPxQueryAndSaveCmdExe;
+
+    @Resource
+    private TcScmGysQueryAndSaveCmdExe tcScmGysQueryAndSaveCmdExe;
+
     @SneakyThrows
     public ApiResult<Object> execute(TcBaseDataQryCmd cmd)
     {
@@ -75,6 +81,12 @@ public class TcBaseDataQueryAndSaveCmdExe {
         }
         if(cmd.getSyncType() == null || cmd.getSyncType().equals(TcSyncTypeEnums.RECIPE_CARD)){
             tcRecipeCardQueryAndSaveCmdExe.syncData(cmd.getTcRecipeCardQueryCmd());
+        }
+        if(cmd.getSyncType() == null || cmd.getSyncType().equals(TcSyncTypeEnums.SCM_PX)){
+            tcScmPxQueryAndSaveCmdExe.syncData();
+        }
+        if(cmd.getSyncType() == null || cmd.getSyncType().equals(TcSyncTypeEnums.SCM_GYS)){
+            tcScmGysQueryAndSaveCmdExe.syncData();
         }
         // 打印日志 - 结束.
         log.info("TcBaseDataQueryAndSaveCmdExe.execute() - end");

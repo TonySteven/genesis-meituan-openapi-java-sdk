@@ -35,6 +35,14 @@ public enum TcSyncTypeEnums {
      * 成本卡
      */
     RECIPE_CARD("RECIPE_CARD", "成本卡"),
+    /**
+     * 供应链品项
+     */
+    SCM_PX("SCM_PX", "供应链品项"),
+    /**
+     * 供应链供应商
+     */
+    SCM_GYS("SCM_GYS", "供应链供应商"),
     ;
 
     private final String code;

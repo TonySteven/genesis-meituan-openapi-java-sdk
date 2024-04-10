@@ -5,7 +5,22 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.base.BaseVO;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcBaseDataQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcItemQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcRecipeCardQueryCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.*;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcScmDjmxCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemCategoryQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodClassesQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodsQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPayTypeQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcPaywayDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcRecipeCardQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmDjmxQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmGysQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmPxQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopErrorBillingQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,6 +84,15 @@ public class CallTCController {
 
     @Resource
     private TcShopErrorBillingQueryAndSaveCmdExe tcShopErrorBillingQueryAndSaveCmdExe;
+
+    @Resource
+    private TcScmPxQueryAndSaveCmdExe tcScmPxQueryAndSaveCmdExe;
+
+    @Resource
+    private TcScmGysQueryAndSaveCmdExe tcScmGysQueryAndSaveCmdExe;
+
+    @Resource
+    private TcScmDjmxQueryAndSaveCmdExe tcScmDjmxQueryAndSaveCmdExe;
 
 
     /**
@@ -215,4 +239,32 @@ public class CallTCController {
         }
         tcBaseDataQueryAndSaveCmdExe.execute(cmd);
     }
+
+    /**
+     * 天财SaaS-调用查询供应商实时并落库
+     */
+    @ApiOperation(value = "天财SaaS-调用查询供应商实时并落库api", notes = "天财SaaS-调用查询供应商实时并落库")
+    @GetMapping("/get-scm-gys")
+    public void getScmGys() {
+        tcScmGysQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 天财SaaS-调用查询品项信息实时并落库
+     */
+    @ApiOperation(value = "天财SaaS-调用查询品项信息实时并落库api", notes = "天财SaaS-调用查询品项信息实时并落库")
+    @GetMapping("/get-scm-px")
+    public void getScmPx() {
+        tcScmPxQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 天财SaaS-调用查询供应链单据明细息实时并落库api
+     */
+    @ApiOperation(value = "天财SaaS-调用查询供应链单据明细息实时并落库api", notes = "天财SaaS-调用查询供应链单据明细息实时并落库api")
+    @GetMapping("/get-scm-djmx")
+    public void getScmPx(@RequestBody TcScmDjmxCmd cmd) {
+        tcScmDjmxQueryAndSaveCmdExe.execute(cmd);
+    }
+
 }
