@@ -281,7 +281,7 @@ public class KingdeeSavePayableOrderCmdExe {
             queryWrapper.in("BillType", billTypeList);
         } else {
             // BillType In ('门店自采入库','门店统配入库','店间调入')
-            queryWrapper.in("BillType", "门店自采入库", "门店统配入库", "店间调入");
+            queryWrapper.in("BillType", "门店自采入库", "门店统配入库", "店间调入", "门店统配退货单", "门店自采退货");
         }
         // 获取cmd.门店名称
         List<String> shopNameList = cmd.getShopNameList();
