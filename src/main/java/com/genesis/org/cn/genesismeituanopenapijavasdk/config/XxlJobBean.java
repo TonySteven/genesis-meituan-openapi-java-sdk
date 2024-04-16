@@ -12,14 +12,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcScmDj
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCashCredentialOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCredentialOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmDjmxQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopErrorBillingQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.*;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -88,7 +81,7 @@ public class XxlJobBean {
     }
 
     /**
-     * 天财定时拉取门店信息任务.
+     * 天财定时修复门店异常pos账单任务.
      */
     @XxlJob("autoFixTcShopErrorBillHandler")
     public void autoFixTcShopErrorBillHandler() {
