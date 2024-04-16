@@ -24,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -357,9 +358,15 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             .errorMsg("此门店日期期间获取实时账单信息失败!")
             .beginDate(DateUtil.parse(beginTime, "yyyy-MM-dd HH:mm:ss"))
             .endDate(DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss"))
+            // 创建人
             .createBy("system")
+            // 创建时间
+            .createTime(LocalDateTime.now())
+            // 更新人
             .updateBy("system")
-            .remarks("system")
+            // 更新时间
+            .updateTime(LocalDateTime.now())
+            .remarks("错误信息")
             .build();
     }
 
