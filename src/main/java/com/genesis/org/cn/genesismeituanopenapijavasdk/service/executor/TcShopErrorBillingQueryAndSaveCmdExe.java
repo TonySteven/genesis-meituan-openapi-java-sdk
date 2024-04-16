@@ -7,6 +7,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.reque
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -39,6 +40,7 @@ public class TcShopErrorBillingQueryAndSaveCmdExe {
      * @return {@link BaseVO}
      */
     @SneakyThrows
+    @Transactional(rollbackFor = Exception.class)
     public BaseVO execute() {
         // 打印日志 - 开始. 打印cmd.
         log.info("TcShopErrorBillingQueryAndSaveCmdExe.execute() - start");
