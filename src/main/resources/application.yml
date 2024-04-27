@@ -94,4 +94,4 @@ xxl:
       intentionalities: 3
     admin:
       # 调度中心部署地址
-      addresses: ${XXL_JOB_ADMIN_ADDRESSES:http://127.0.0.1:2222/xxl-job-admin}
+      addresses: ${XXL_JOB_ADMIN_ADDRESSES:http://62.234.13.121:2222/xxl-job-admin}
