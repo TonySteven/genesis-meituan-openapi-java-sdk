@@ -36,3 +36,16 @@ tiancai:
     username: ${TIANCAI_APP_USERNAME:admin}
     # 自有服务器密码
     password: ${TIANCAI_APP_PASSWORD:123456}
+
+
+# 调度平台配置
+xxl:
+  job:
+    executor:
+      appName: ${XXL_JOB_EXECUTOR_APPNAME:genesis-meituan-openapi-java-service}
+      logPath: /data/applogs/xxl-job/jobhandler
+      accessToken: ${XXL_JOB_EXECUTOR_ACCESS_TOKEN:dasj2nd81jf9asjdkl5jk234}
+      intentionalities: 3
+    admin:
+      # 调度中心部署地址
+      addresses: ${XXL_JOB_ADMIN_ADDRESSES:http://dth.dev.genesis.org.cn:2222/xxl-job-admin}
