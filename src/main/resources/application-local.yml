@@ -44,4 +44,4 @@ xxl:
       intentionalities: 3
     admin:
       # 调度中心部署地址
-      addresses: ${XXL_JOB_ADMIN_ADDRESSES:http://dth.dev.genesis.org.cn:2222/xxl-job-admin}
+      addresses: ${XXL_JOB_ADMIN_ADDRESSES:http://43.142.89.24:2222/xxl-job-admin}
