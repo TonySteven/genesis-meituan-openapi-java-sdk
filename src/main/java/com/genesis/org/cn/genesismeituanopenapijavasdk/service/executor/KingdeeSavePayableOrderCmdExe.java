@@ -367,10 +367,11 @@ public class KingdeeSavePayableOrderCmdExe {
         String otherSideCode = jdScmShopBillEntity.getOtherSideCode();
         // 2.4 门店编码
         String shopCode = jdScmShopBillEntity.getShopCode();
-        // 2.5 备注 付+供应商名称+货款
+        // 2.5 备注 billTypeString + "-" otherSideName
         // 供应商名称
         String otherSideName = jdScmShopBillEntity.getOtherSideName();
-        String remark = "付" + otherSideName + "货款";
+        String billTypeString = jdScmShopBillEntity.getBillType();
+        String remark = billTypeString + "-" + otherSideName;
 
         // 2.6 不含税金额 totalStoreMoney 保留两位小数
         String totalStoreMoney = jdScmShopBillEntity.getTotalstoremoney()
