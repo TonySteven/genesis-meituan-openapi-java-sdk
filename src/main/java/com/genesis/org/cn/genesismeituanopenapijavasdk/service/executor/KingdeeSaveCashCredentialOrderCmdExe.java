@@ -487,6 +487,17 @@ public class KingdeeSaveCashCredentialOrderCmdExe {
                 // 获取voucherGroupingVoucherAccountingEntryEntity.accountsIndex
                 String accountsIndex = voucherGroupingVoucherAccountingEntryEntity.getAccountsIndex();
 
+
+                Integer direction = voucherGroupingVoucherAccountingEntryEntity.getDirection();
+                // 如果direction为1,则借方金额为totalStoreMoney为正数,反之则为负数.
+                // 如果direction为2,则贷方金额为totalStoreMoney为负数
+                if (direction == 1) {
+                    totalStoreMoney = totalStoreMoney.abs();
+                } else if (direction == 2) {
+                    totalStoreMoney = totalStoreMoney.abs().negate();
+                }
+
+
                 // 如果accounts不包含逗号,则FDetailID单个拼装,否则则多个拼装.
                 if (debit == 1) {
                     fEntities.add(KingdeeSaveCredentialOrderFEntity.builder()
