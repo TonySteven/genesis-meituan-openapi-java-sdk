@@ -22,7 +22,7 @@ spring:
     #    username: ${DATASOURCE_USER_NAME:root}
     #    password: ${DATASOURCE_PASSWORD:Mc666888@@}
     # 数据源配置 大叹号正式库mysql
-    url: ${DATASOURCE_URL:jdbc:mysql://62.234.13.121:3306/}dth_data_prod?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8&connectTimeout=30000&socketTimeout=30000&useSSL=false&useCursorFetch=true&rewriteBatchedStatements=true
+    url: ${DATASOURCE_URL:jdbc:mysql://62.234.13.121:3306/}dth_data?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8&connectTimeout=30000&socketTimeout=30000&useSSL=false&useCursorFetch=true&rewriteBatchedStatements=true
     username: ${DATASOURCE_USER_NAME:root}
     password: ${DATASOURCE_PASSWORD:Dth666888@@}
     driver-class-name: com.mysql.cj.jdbc.Driver
