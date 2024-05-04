@@ -90,14 +90,16 @@ public class KingdeeSaveCredentialOrderCmdExe {
         // 查询VoucherGroupingVoucherAccountingEntryEntity List
         List<VoucherGroupingVoucherAccountingEntryEntity> voucherGroupingVoucherAccountingEntryEntities
             = iVoucherGroupingVoucherAccountingEntryDao.list();
-        // voucherGroupingVoucherAccountingEntryEntities 根据item_type_name进行分组
-        // 如果getItemTypeName为null,则跳过.
+
+        // 获取voucherGroupingVoucherAccountingEntryEntityMap, 根据item_type_name 和 filtration 进行分组
         Map<String, List<VoucherGroupingVoucherAccountingEntryEntity>> voucherGroupingVoucherAccountingEntryEntityMap
             = voucherGroupingVoucherAccountingEntryEntities.stream()
             .filter(voucherGroupingVoucherAccountingEntryEntity ->
+                // 如果getItemTypeName为null,则跳过.
                 voucherGroupingVoucherAccountingEntryEntity.getItemTypeName() != null)
-            .collect(Collectors.groupingBy(VoucherGroupingVoucherAccountingEntryEntity::getItemTypeName));
-
+            // voucherGroupingVoucherAccountingEntryEntities 根据item_type_name 和 filtration 进行分组
+            .collect(Collectors.groupingBy(voucherGroupingVoucherAccountingEntryEntity ->
+                voucherGroupingVoucherAccountingEntryEntity.getItemTypeName() + voucherGroupingVoucherAccountingEntryEntity.getFiltration()));
 
         for (Map.Entry<String, List<JdScmShopBillPzEntity>> entry : collect.entrySet()) {
             // 获取当前entry.getKey()的索引顺序值
@@ -427,10 +429,10 @@ public class KingdeeSaveCredentialOrderCmdExe {
         // 2.4 门店编码
         String shopCode = jdScmShopBillPzEntity.getShopCode();
 
-        // 摘要 = shopname+ billtype
-        String billPzType = jdScmShopBillPzEntity.getBillType();
+        // 获取 billPzTypeFinanceTypeCodeString = jdScmShopBillPzEntity.getBillType() + jdScmShopBillPzEntity.getFinanceTypeCode();
+        String billPzTypeFinanceTypeCodeString = jdScmShopBillPzEntity.getBillType() + jdScmShopBillPzEntity.getFinancetypeCode();
         List<VoucherGroupingVoucherAccountingEntryEntity> voucherGroupingVoucherAccountingEntryEntities
-            = voucherGroupingVoucherAccountingEntryEntityMap.get(billPzType);
+            = voucherGroupingVoucherAccountingEntryEntityMap.get(billPzTypeFinanceTypeCodeString);
         if (voucherGroupingVoucherAccountingEntryEntities == null || voucherGroupingVoucherAccountingEntryEntities.isEmpty()) {
             throw new IllegalArgumentException("没有找到对应的凭证规则!");
         }
