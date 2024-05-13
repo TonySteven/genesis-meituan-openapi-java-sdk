@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TcPaywayDetailDaoImpl extends BaseServiceImpl<TcPaywayDetailMapper, TcPaywayDetailEntity> implements ITcPaywayDetailDao {
+
     /**
      * 根据集团编码查询类别信息
      *

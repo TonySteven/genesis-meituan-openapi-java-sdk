@@ -9,10 +9,19 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.Kingdee
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.KingdeePayableBillCalledCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcBaseDataQryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcScmDjmxCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcShopBillingTicketQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.*;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCashCredentialOrderCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCredentialOrderCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmDjmxQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingO2oTicketQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopErrorBillingQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -69,6 +78,9 @@ public class XxlJobBean {
 
     @Resource
     TcScmDjmxQueryAndSaveCmdExe tcScmDjmxQueryAndSaveCmdExe;
+
+    @Resource
+    private TcShopBillingO2oTicketQueryAndSaveCmdExe tcShopBillingO2oTicketQueryAndSaveCmdExe;
 
     /**
      * 天财定时拉取门店信息任务.
@@ -319,6 +331,24 @@ public class XxlJobBean {
         log.info("syncTcScmDjmxHandler cmd:{}", JSONUtil.toJsonStr(cmd));
 
         tcScmDjmxQueryAndSaveCmdExe.execute(cmd);
+    }
+    /**
+     * 每天凌晨一点半同步天才账单明细数据
+     */
+    @XxlJob("syncTcShopBillingO2oTicketHandler")
+    public void syncTcShopBillingO2oTicketHandler() {
+        String jobParam = XxlJobHelper.getJobParam();
+        log.info("syncTcShopBillingO2oTicketHandler jobParam:{}", jobParam);
+        // 如果jobParam.isBlank，直接返回
+        if (StringUtils.isBlank(jobParam)) {
+            return;
+        }
+        // jobParam转TcShopBillingTicketQueryCmd
+        TcShopBillingTicketQueryCmd cmd = JSONUtil.toBean(jobParam, TcShopBillingTicketQueryCmd.class);
+        // 打印cmd日志
+        log.info("syncTcShopBillingO2oTicketHandler cmd:{}", JSONUtil.toJsonStr(cmd));
+
+        tcShopBillingO2oTicketQueryAndSaveCmdExe.execute(cmd);
     }
 
 }

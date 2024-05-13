@@ -10,6 +10,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.enums
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcItemQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcRecipeCardQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcScmDjmxRequest;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingTicketQueryRequest;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.LoginResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsInRealTimeResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.QueryBillDetailsResponse;
@@ -25,6 +26,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.respo
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcScmDjmxDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcScmGysDataResponse;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcScmPxDataResponse;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.response.TcShopBillingTicketDataResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -79,6 +81,11 @@ public class QueryShopInfoAction {
      * url query methods list
      */
     static final String URL_QUERY_ITEM_METHODS_LIST = "/api/datatransfer/getitemmethods";
+
+    /**
+     * url query o2o ticket list
+     */
+    static final String URL_QUERY_O2O_TICKET_LIST = "/api/datatransfer/getO2oTicket";
 
     /**
      * url query unit list
@@ -457,6 +464,45 @@ public class QueryShopInfoAction {
         JSONObject jsonObj = new JSONObject(responseData);
         return JSON.parseObject(jsonObj.toString()
             , TcItemMethodsDataResponse.class);
+    }
+
+    /**
+     * query O2oTicket list
+     *
+     * @param config            config
+     * @param token             token
+     * @param request           request
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcShopBillingTicketDataResponse queryO2oTicketList(TcConfig config, String token, TcShopBillingTicketQueryRequest request) {
+
+        // 参数
+        String url = getUrl(config) + URL_QUERY_O2O_TICKET_LIST;
+
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("centerId", config.getApi().getCenterId());
+        loginParams.put("pageNo", String.valueOf(request.getPageNo()));
+        loginParams.put("pageSize", String.valueOf(request.getPageSize()));
+        if(StringUtils.isNotEmpty(request.getShopId())){
+            loginParams.put("shopId", request.getShopId());
+        }
+        if(StringUtils.isNotEmpty(request.getBegin())){
+            loginParams.put("begin", request.getBegin());
+        }
+        if(StringUtils.isNotEmpty(request.getEnd())){
+            loginParams.put("end", request.getEnd());
+        }
+        if(StringUtils.isNotEmpty(request.getSeller())){
+            loginParams.put("seller", request.getSeller());
+        }
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader(token, config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
+        JSONObject jsonObj = new JSONObject(responseData);
+        return JSON.parseObject(jsonObj.toString()
+            , TcShopBillingTicketDataResponse.class);
     }
 
     /**

@@ -6,6 +6,8 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcBaseD
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcItemQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcRecipeCardQueryCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcScmDjmxCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcShopBillingTicketQueryCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemCategoryQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcItemMethodClassesQueryAndSaveCmdExe;
@@ -20,6 +22,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmGys
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmPxQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailInRealTimeQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingO2oTicketQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopErrorBillingQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
@@ -97,6 +100,9 @@ public class CallTCController {
 
     @Resource
     private TcItemUnitQueryAndSaveCmdExe tcItemUnitQueryAndSaveCmdExe;
+
+    @Resource
+    private TcShopBillingO2oTicketQueryAndSaveCmdExe tcShopBillingO2oTicketQueryAndSaveCmdExe;
 
 
     /**
@@ -278,6 +284,15 @@ public class CallTCController {
     @GetMapping("/get-item-unit")
     public void getItemUnit() {
         tcItemUnitQueryAndSaveCmdExe.execute();
+    }
+
+    /**
+     * 天财SaaS-调用查询账单明细数据实时并落库api
+     */
+    @ApiOperation(value = "天财SaaS-调用查询账单明细数据实时并落库api", notes = "天财SaaS-调用查询账单明细数据实时并落库api")
+    @GetMapping("/get-o2o-ticket")
+    public ApiResult<Object> getO2oTicket(@RequestBody TcShopBillingTicketQueryCmd cmd) {
+        return tcShopBillingO2oTicketQueryAndSaveCmdExe.execute(cmd);
     }
 
 }
