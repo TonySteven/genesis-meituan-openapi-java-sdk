@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * TcShopBillingErrorInfo实体类
  *
  * @author 人工智能
- * @date 2024-04-07 09:55:27
+ * &#064;date  2024-04-07 09:55:27
  */
 @Data
 @Builder
