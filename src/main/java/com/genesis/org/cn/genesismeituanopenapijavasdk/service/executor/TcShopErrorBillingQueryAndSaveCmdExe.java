@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,9 +56,9 @@ public class TcShopErrorBillingQueryAndSaveCmdExe {
                 // 获取shopId
                 String shopId = tcShopBillingErrorInfoEntity.getShopId();
                 // 获取beginDate
-                Date beginDate = tcShopBillingErrorInfoEntity.getBeginDate();
+                LocalDateTime beginDate = tcShopBillingErrorInfoEntity.getBeginDate();
                 // 获取endDate
-                Date endDate = tcShopBillingErrorInfoEntity.getEndDate();
+                LocalDateTime endDate = tcShopBillingErrorInfoEntity.getEndDate();
                 TcShopBillingDetailQueryCmd cmd = new TcShopBillingDetailQueryCmd();
                 cmd.setShopIdList(Collections.singletonList(shopId));
                 cmd.setBeginDate(String.valueOf(beginDate));

@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 /**
@@ -53,13 +52,13 @@ public class TcShopBillingErrorInfoEntity {
      * 账单开始日期
      */
     @TableField(value = "beginDate")
-    private Date beginDate;
+    private LocalDateTime beginDate;
 
     /**
      * 账单结束日期
      */
     @TableField(value = "endDate")
-    private Date endDate;
+    private LocalDateTime endDate;
 
     /**
      * 创建人

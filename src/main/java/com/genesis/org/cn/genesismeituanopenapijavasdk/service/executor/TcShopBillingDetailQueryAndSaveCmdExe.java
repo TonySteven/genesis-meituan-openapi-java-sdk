@@ -356,8 +356,8 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             .centerId(centerId)
             .shopId(shopId)
             .errorMsg("此门店日期期间获取实时账单信息失败!")
-            .beginDate(DateUtil.parse(beginTime, "yyyy-MM-dd HH:mm:ss"))
-            .endDate(DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss"))
+            .beginDate(DateUtil.parse(beginTime, "yyyy-MM-dd HH:mm:ss").toLocalDateTime())
+            .endDate(DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss").toLocalDateTime())
             // 创建人
             .createBy("system")
             // 创建时间
