@@ -274,7 +274,9 @@ public class CallTCController {
     @ApiOperation(value = "天财SaaS-调用查询供应链单据明细息实时并落库api", notes = "天财SaaS-调用查询供应链单据明细息实时并落库api")
     @GetMapping("/get-scm-djmx")
     public ApiResult<Object> getScmPx(@RequestBody TcScmDjmxCmd cmd) {
-        return tcScmDjmxQueryAndSaveCmdExe.execute(cmd);
+        // 异步执行
+        CompletableFuture.runAsync(() -> tcScmDjmxQueryAndSaveCmdExe.execute(cmd));
+        return ApiResult.success();
     }
 
     /**
