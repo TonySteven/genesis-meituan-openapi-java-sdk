@@ -2,6 +2,7 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.api.*;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.dao.entity.*;
@@ -199,6 +200,8 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
                     // 如果success为false,则重试三次.
                     if (!ResponseStatusEnum.SUCCESS.getInfo().equals(queryBillDetailsResponse2.getMsg())) {
                         for (int j = 0; j < 3; j++) {
+                            // 每次重试间隔3秒内随机秒数.
+                            Thread.sleep(RandomUtil.randomInt(1, 3) * 1000L);
                             queryBillDetailsResponse2 = QueryShopInfoAction
                                 .queryBillingDetails(protocol, applicationServer, applicationPort, accessId
                                     , accessToken, i, pageSize, shopId, beginDate, endDate);
@@ -356,8 +359,8 @@ public class TcShopBillingDetailQueryAndSaveCmdExe {
             .centerId(centerId)
             .shopId(shopId)
             .errorMsg("此门店日期期间获取实时账单信息失败!")
-            .beginDate(DateUtil.parse(beginTime, "yyyy-MM-dd HH:mm:ss"))
-            .endDate(DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss"))
+            .beginDate(DateUtil.parse(beginTime, "yyyy-MM-dd HH:mm:ss").toLocalDateTime())
+            .endDate(DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss").toLocalDateTime())
             // 创建人
             .createBy("system")
             // 创建时间

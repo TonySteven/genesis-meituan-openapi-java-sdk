@@ -7,14 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 /**
  * TcShopBillingErrorInfo实体类
  *
  * @author 人工智能
- * @date 2024-04-07 09:55:27
+ * &#064;date  2024-04-07 09:55:27
  */
 @Data
 @Builder
@@ -53,13 +52,13 @@ public class TcShopBillingErrorInfoEntity {
      * 账单开始日期
      */
     @TableField(value = "beginDate")
-    private Date beginDate;
+    private LocalDateTime beginDate;
 
     /**
      * 账单结束日期
      */
     @TableField(value = "endDate")
-    private Date endDate;
+    private LocalDateTime endDate;
 
     /**
      * 创建人
