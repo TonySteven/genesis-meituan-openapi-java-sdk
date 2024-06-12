@@ -173,8 +173,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取品项类别信息落库api", notes = "天财SaaS-调用获取品项类别信息落库api")
     @GetMapping("/save-item-category")
-    public void saveItemCategory() {
-        tcItemCategoryQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> saveItemCategory() {
+        return tcItemCategoryQueryAndSaveCmdExe.execute();
     }
 
 
@@ -183,8 +183,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取品项信息落库api", notes = "天财SaaS-调用获取品项信息落库api")
     @GetMapping("/save-item")
-    public void saveItem(@RequestBody @Validated TcItemQueryCmd cmd) {
-        tcItemQueryAndSaveCmdExe.execute(cmd);
+    public ApiResult<Object> saveItem(@RequestBody @Validated TcItemQueryCmd cmd) {
+        return tcItemQueryAndSaveCmdExe.execute(cmd);
     }
 
     /**
@@ -192,8 +192,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取品项做法类别信息落库api", notes = "天财SaaS-调用获取品项做法类别信息落库api")
     @GetMapping("/save-item-method-classes")
-    public void saveItemMethodClasses() {
-        tcItemMethodClassesQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> saveItemMethodClasses() {
+        return tcItemMethodClassesQueryAndSaveCmdExe.execute();
     }
 
     /**
@@ -201,8 +201,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取品项做法信息落库api", notes = "天财SaaS-调用获取品项做法信息落库api")
     @GetMapping("/save-item-methods")
-    public void saveItemMethods() {
-        tcItemMethodsQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> saveItemMethods() {
+        return tcItemMethodsQueryAndSaveCmdExe.execute();
     }
 
 
@@ -211,8 +211,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取结算方式类型落库api", notes = "天财SaaS-调用获取结算方式类型落库api")
     @GetMapping("/save-pay-type")
-    public void savePayType() {
-        tcPayTypeQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> savePayType() {
+        return tcPayTypeQueryAndSaveCmdExe.execute();
     }
 
     /**
@@ -220,8 +220,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取结算方式详情落库api", notes = "天财SaaS-调用获取结算方式详情落库api")
     @GetMapping("/save-payway-detail")
-    public void savePaywayDetail() {
-        tcPaywayDetailQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> savePaywayDetail() {
+        return tcPaywayDetailQueryAndSaveCmdExe.execute();
     }
 
     /**
@@ -229,13 +229,13 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用获取菜品成本卡详细信息api", notes = "天财SaaS-调用获取菜品成本卡详细信息api")
     @GetMapping("/get-recipe-card")
-    public void getRecipeCard(@RequestBody @Validated TcRecipeCardQueryCmd cmd) {
-        tcRecipeCardQueryAndSaveCmdExe.execute(cmd);
+    public ApiResult<Object> getRecipeCard(@RequestBody @Validated TcRecipeCardQueryCmd cmd) {
+        return tcRecipeCardQueryAndSaveCmdExe.execute(cmd);
     }
 
     @ApiOperation(value = "天财SaaS-调用获取基础数据api", notes = "天财SaaS-调用获取基础数据api")
     @GetMapping("/get-base-data")
-    public void getBaseData(@RequestBody @Validated TcBaseDataQryCmd cmd) {
+    public ApiResult<Object> getBaseData(@RequestBody @Validated TcBaseDataQryCmd cmd) {
         if (ObjectUtils.isEmpty(cmd.getItemQueryCmd().getLastTime())) {
             // 获取前一天的时间的0点和24点.
             // 获取当前时间
@@ -247,7 +247,7 @@ public class CallTCController {
 
             cmd.getItemQueryCmd().setLastTime(startOfDay.format(DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN)));
         }
-        tcBaseDataQueryAndSaveCmdExe.execute(cmd);
+        return tcBaseDataQueryAndSaveCmdExe.execute(cmd);
     }
 
     /**
@@ -255,8 +255,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用查询供应商实时并落库api", notes = "天财SaaS-调用查询供应商实时并落库")
     @GetMapping("/get-scm-gys")
-    public void getScmGys() {
-        tcScmGysQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> getScmGys() {
+        return tcScmGysQueryAndSaveCmdExe.execute();
     }
 
     /**
@@ -264,8 +264,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用查询品项信息实时并落库api", notes = "天财SaaS-调用查询品项信息实时并落库")
     @GetMapping("/get-scm-px")
-    public void getScmPx() {
-        tcScmPxQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> getScmPx() {
+        return tcScmPxQueryAndSaveCmdExe.execute();
     }
 
     /**
@@ -273,8 +273,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用查询供应链单据明细息实时并落库api", notes = "天财SaaS-调用查询供应链单据明细息实时并落库api")
     @GetMapping("/get-scm-djmx")
-    public void getScmPx(@RequestBody TcScmDjmxCmd cmd) {
-        tcScmDjmxQueryAndSaveCmdExe.execute(cmd);
+    public ApiResult<Object> getScmPx(@RequestBody TcScmDjmxCmd cmd) {
+        return tcScmDjmxQueryAndSaveCmdExe.execute(cmd);
     }
 
     /**
@@ -282,8 +282,8 @@ public class CallTCController {
      */
     @ApiOperation(value = "天财SaaS-调用查询品项单位实时并落库api", notes = "天财SaaS-调用查询品项单位实时并落库api")
     @GetMapping("/get-item-unit")
-    public void getItemUnit() {
-        tcItemUnitQueryAndSaveCmdExe.execute();
+    public ApiResult<Object> getItemUnit() {
+        return tcItemUnitQueryAndSaveCmdExe.execute();
     }
 
     /**
