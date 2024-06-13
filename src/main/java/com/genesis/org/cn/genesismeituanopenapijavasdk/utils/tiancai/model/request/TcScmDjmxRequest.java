@@ -21,10 +21,5 @@ public class TcScmDjmxRequest {
     /**
      * 上次修改时间
      */
-    private String lastModifyTime;
-
-    /**
-     * 订单状态类型 0-正常订单 1-反审订单
-     */
-    private Integer orderStatusType;
+    private String busDate;
 }

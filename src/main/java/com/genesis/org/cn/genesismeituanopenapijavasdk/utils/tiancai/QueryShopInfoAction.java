@@ -678,16 +678,10 @@ public class QueryShopInfoAction {
      * @param config            config
      * @return {@link QueryShopInfoResponse}
      */
-    public static TcScmDjmxDataResponse queryScmDjmxList(TcConfig config, TcScmDjmxRequest request) {
+    public static TcScmDjmxDataResponse queryDeleteScmDjmxList(TcConfig config, TcScmDjmxRequest request) {
 
         // 参数
-        StringBuilder url = new StringBuilder(applicationServer2);
-
-        if(request.getOrderStatusType() == 0){
-            url.append(URL_QUERY_SCM_DJMX_LIST);
-        }else{
-            url.append(URL_QUERY_SCM_DJMX_DELETE_LIST);
-        }
+        String url = applicationServer2 + URL_QUERY_SCM_DJMX_DELETE_LIST;
 
         Map<String, String> loginParams = initScmParams(config);
 
@@ -699,15 +693,44 @@ public class QueryShopInfoAction {
             loginParams.put("endDate", request.getEndDate());
         }
 
-        if(StringUtils.isNotBlank(request.getLastModifyTime())){
-            loginParams.put("busdate", request.getLastModifyTime());
+        // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
+        Map<String, String> headMap = getHeader("", config.getApi().getAccessId());
+        // 打印loginUrl
+        log.info("requestUrl=" + url);
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendGetWithParams(url, loginParams, headMap));
+
+        JSONObject jsonObj = new JSONObject(responseData);
+        TcScmDjmxDataResponse dataResponse = JSON.parseObject(jsonObj.toString()
+            , TcScmDjmxDataResponse.class);
+
+        if(Boolean.FALSE.equals(dataResponse.getResult())){
+            throw new RuntimeException("查询品项失败：" + dataResponse.getMessage());
+        }
+        return dataResponse;
+    }
+
+    /**
+     * query scm px
+     *
+     * @param config            config
+     * @return {@link QueryShopInfoResponse}
+     */
+    public static TcScmDjmxDataResponse queryScmDjmxList(TcConfig config, TcScmDjmxRequest request) {
+
+        // 参数
+        String url = applicationServer2 + URL_QUERY_SCM_DJMX_LIST;
+
+        Map<String, String> loginParams = initScmParams(config);
+
+        if(StringUtils.isNotBlank(request.getBusDate())){
+            loginParams.put("busdate", request.getBusDate());
         }
 
         // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
         Map<String, String> headMap = getHeader("", config.getApi().getAccessId());
         // 打印loginUrl
         log.info("requestUrl=" + url);
-        String responseData = httpRetry(() -> HttpPostRequestUtil.sendGetWithParams(url.toString(), loginParams, headMap));
+        String responseData = httpRetry(() -> HttpPostRequestUtil.sendGetWithParams(url, loginParams, headMap));
 
         JSONObject jsonObj = new JSONObject(responseData);
         TcScmDjmxDataResponse dataResponse = JSON.parseObject(jsonObj.toString()

@@ -2,6 +2,8 @@ package com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 
 @Data
 public class TcScmDjmxCmd {
@@ -9,15 +11,10 @@ public class TcScmDjmxCmd {
     /**
      * 开始时间
      */
-    private String beginDate;
+    private LocalDateTime beginDate;
 
     /**
      * 结束时间
      */
-    private String endDate;
-
-    /**
-     * 上次修改时间
-     */
-    private String lastModifyTime;
+    private LocalDateTime endDate;
 }

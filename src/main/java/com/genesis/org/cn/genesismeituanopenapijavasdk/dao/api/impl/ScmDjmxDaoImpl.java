@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,16 @@ public class ScmDjmxDaoImpl extends BaseServiceImpl<ScmDjmxMapper, ScmDjmxEntity
      */
     @Override
     public List<ScmDjmxEntity> getList(List<String> zhujianList) {
-        LambdaQueryWrapper<ScmDjmxEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.in(ObjectUtils.isNotEmpty(zhujianList),ScmDjmxEntity::getZhujian, zhujianList);
-        wrapper.orderByAsc(ScmDjmxEntity::getZhujian);
-        return this.listAll(wrapper);
+        List<ScmDjmxEntity> list = new ArrayList<>();
+        // 根据主键分批次查询
+        List<List<String>> groupList = ListUtil.partition(zhujianList,500);
+        for (List<String> idList:groupList){
+            LambdaQueryWrapper<ScmDjmxEntity> wrapper = new LambdaQueryWrapper<>();
+            wrapper.in(ScmDjmxEntity::getZhujian, idList);
+            wrapper.orderByAsc(ScmDjmxEntity::getZhujian);
+            list.addAll(this.list(wrapper));
+        }
+        return list;
     }
 
     /**

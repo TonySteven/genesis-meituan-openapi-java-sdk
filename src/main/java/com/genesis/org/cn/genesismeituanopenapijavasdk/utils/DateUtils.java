@@ -72,7 +72,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
         try {
 
-            if(!dateStr.contains("Apr")){
+            if(!dateStr.contains("AM") && !dateStr.contains("PM")){
                 return DateUtils.parseDate(dateStr);
             }
 
