@@ -5,23 +5,11 @@ import cn.hutool.json.JSONUtil;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.BaseAllCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.settle_ledger.DySettleLedgerRecordAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopAllSyncCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.KingdeeCredentialBillCalledCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.KingdeePayableBillCalledCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcBaseDataQryCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcScmDjmxCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.TcShopBillingTicketQueryCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.request.*;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyShopSyncCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCashCredentialOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSaveCredentialOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.KingdeeSavePayableOrderCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcBaseDataQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcScmDjmxQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingDetailQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopBillingO2oTicketQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopErrorBillingQueryAndSaveCmdExe;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.TcShopInfoQueryAndSaveCmdExe;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.service.executor.*;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.utils.tiancai.model.request.TcShopBillingDetailQueryCmd;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -121,15 +109,16 @@ public class XxlJobBean {
         if (StringUtils.isBlank(cmd.getBeginDate()) || StringUtils.isBlank(cmd.getEndDate())) {
             // 打印日志 进入默认查询前一天的数据
             log.info("tcShopBillingDetailQueryAndSaveCmdExe cmd.getBeginDate() or cmd.getEndDate() is blank, default query previous day data.");
-            // 获取前一天的时间的0点和24点.
+            // 获取前一天的时间的0点和到今天的24点.
             // 获取当前时间
             LocalDateTime now = LocalDateTime.now();
             // 获取前一天的时间
             LocalDateTime previousDay = now.minusDays(1);
+            // 获取今天的时间
             // 获取前一天的0点
             LocalDateTime startOfDay = previousDay.withHour(0).withMinute(0).withSecond(0);
-            // 获取前一天的24点
-            LocalDateTime endOfDay = previousDay.withHour(23).withMinute(59).withSecond(59);
+            // 获取今天的的24点
+            LocalDateTime endOfDay = now.withHour(23).withMinute(59).withSecond(59);
             // 转换成Date
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             cmd.setBeginDate(startOfDay.format(df));
