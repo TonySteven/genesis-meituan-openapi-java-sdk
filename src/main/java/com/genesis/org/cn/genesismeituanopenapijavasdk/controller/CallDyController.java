@@ -4,7 +4,7 @@ import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.Bas
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.fulfilment_verify.FulfilmentVerifyRecordSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.settle_ledger.DySettleLedgerRecordAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.settle_ledger.DySettleLedgerRecordSyncCmd;
-import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopSyncCmd;
+import com.genesis.org.cn.genesismeituanopenapijavasdk.model.api.dy.goodlife.shop.ShopAllSyncCmd;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.result.ApiResult;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DyFulfilmentVerifyRecordSyncCmdExe;
 import com.genesis.org.cn.genesismeituanopenapijavasdk.service.dy.executor.DySettleLedgerRecordSyncCmdExe;
@@ -48,8 +48,8 @@ public class CallDyController {
      */
     @ApiOperation(value = "抖音SaaS-同步抖音门店信息api", notes = "抖音SaaS-同步抖音门店信息api")
     @GetMapping("/syncShop")
-    public ApiResult<String> syncShop(@Validated ShopSyncCmd cmd) {
-        return dyShopSyncCmdExe.execute(cmd);
+    public ApiResult<Object> syncShop(@Validated ShopAllSyncCmd cmd) {
+        return dyShopSyncCmdExe.executeAll(cmd);
     }
 
     /**

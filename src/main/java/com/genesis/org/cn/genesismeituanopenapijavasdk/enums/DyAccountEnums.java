@@ -11,7 +11,9 @@ import java.util.List;
  */
 @Getter
 public enum DyAccountEnums {
-    DTH("7047437174853240835","市北区青北大叹号韩式烤肉店","awh1hb9zi8u74mdt");
+    QD_DTH("7047437174853240835","市北区青北大叹号韩式烤肉店","awh1hb9zi8u74mdt"),
+    YJ_DTH("7038469403746240550","延吉市建工大叹号美味吧","aw3thojeoe188nh1"),
+    SK_DTH("7306031614503421964","珲春市延山葵烤肉店（有限合伙）","awjt4xcaj0u26eqh");
 
     /**
      * 账户ID

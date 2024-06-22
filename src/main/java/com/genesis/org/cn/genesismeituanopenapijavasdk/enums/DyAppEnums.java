@@ -10,7 +10,9 @@ public enum DyAppEnums {
     /**
      * 大叹号
      */
-    DTH("awh1hb9zi8u74mdt","c1a14404b5564f745cb567bfbc9e7f98","大叹号");
+    QD_DTH("awh1hb9zi8u74mdt","c1a14404b5564f745cb567bfbc9e7f98","市北区青北大叹号韩式烤肉店"),
+    YJ_DTH("aw3thojeoe188nh1","e5853c2a57913438ea61cea99666025e","延吉市建工大叹号美味吧"),
+    SK_DTH("awjt4xcaj0u26eqh","adf5e1710ba05e21376ccb4c173d4af8","珲春市延山葵烤肉店（有限合伙）");
 
     private final String appId;
 

@@ -86,7 +86,7 @@ public class DyShopSyncCmdExe {
             request.setSize(100);
 
             do {
-                // 查询抖音验券历史记录
+                // 查询抖音门店信息
                 ShopQueryResponse response = dyConfigContextService
                     .getDyService(cmd.getAppId()).queryShopList(request);
 
