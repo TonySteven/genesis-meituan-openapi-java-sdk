@@ -22,4 +22,9 @@ public class TcScmDjmxRequest {
      * 上次修改时间
      */
     private String busDate;
+
+    /**
+     * 单号
+     */
+    private String billNo;
 }
