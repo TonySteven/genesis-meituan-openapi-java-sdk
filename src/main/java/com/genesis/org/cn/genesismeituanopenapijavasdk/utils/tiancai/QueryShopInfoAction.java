@@ -726,6 +726,10 @@ public class QueryShopInfoAction {
             loginParams.put("busdate", request.getBusDate());
         }
 
+        if(StringUtils.isNotBlank(request.getBillNo())){
+            loginParams.put("billNo", request.getBillNo());
+        }
+
         // 将xtoken添加到httpHeader里，调用服务一定要添加认证过的token
         Map<String, String> headMap = getHeader("", config.getApi().getAccessId());
         // 打印loginUrl

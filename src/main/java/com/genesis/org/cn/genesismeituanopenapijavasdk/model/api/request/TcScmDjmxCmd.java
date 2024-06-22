@@ -17,4 +17,9 @@ public class TcScmDjmxCmd {
      * 结束时间
      */
     private LocalDateTime endDate;
+
+    /**
+     * 单号
+     */
+    private String billNo;
 }

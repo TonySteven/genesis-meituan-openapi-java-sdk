@@ -95,7 +95,7 @@ public class TcScmDjmxQueryAndSaveCmdExe {
                 }else{
                     busDate = cmd.getBeginDate();
                 }
-                List<TcScmDjmxResponse> responseList = queryResponseAll(busDate.format(DatePattern.NORM_DATE_FORMATTER));
+                List<TcScmDjmxResponse> responseList = queryResponseAll(busDate.format(DatePattern.NORM_DATE_FORMATTER),cmd);
 
 
                 // 2. 调用天财接口获取所有单据明细信息实时信息.
@@ -161,11 +161,12 @@ public class TcScmDjmxQueryAndSaveCmdExe {
         }
     }
 
-    private List<TcScmDjmxResponse> queryResponseAll(String busDate){
+    private List<TcScmDjmxResponse> queryResponseAll(String busDate,TcScmDjmxCmd cmd){
         List<TcScmDjmxResponse> list = new ArrayList<>();
         try {
             TcScmDjmxRequest request = new TcScmDjmxRequest();
             request.setBusDate(busDate);
+            request.setBillNo(cmd.getBillNo());
             TcScmDjmxDataResponse response = QueryShopInfoAction.queryScmDjmxList(tcConfig,request);
 
             list.addAll(response.getData());

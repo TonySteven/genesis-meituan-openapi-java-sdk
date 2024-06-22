@@ -77,7 +77,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             }
 
             // 定义具有合适模式的 SimpleDateFormat
-            FastDateFormat formatter = FastDateFormat.getInstance("MMM d, yyyy h:mm:ss a", TimeZone.getTimeZone("GMT"), Locale.US);
+            FastDateFormat formatter = FastDateFormat.getInstance("MMM d, yyyy h:mm:ss a",TimeZone.getTimeZone("GMT+8"), Locale.US);
 
             return formatter.parse(dateStr);
         } catch (ParseException e) {
