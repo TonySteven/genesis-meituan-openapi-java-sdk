@@ -11,7 +11,7 @@ public class TcShopBillingTicketQueryResponse {
     /**
      * ticket
      */
-    private List<TcShopBillingTicketResponse> ticketDataList;
+    private List<TcShopBillingTicketResponse> dataList;
 
     /**
      * category list

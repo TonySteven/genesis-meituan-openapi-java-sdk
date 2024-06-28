@@ -500,8 +500,7 @@ public class QueryShopInfoAction {
         // 打印loginUrl
         log.info("requestUrl=" + url);
         String responseData = httpRetry(() -> HttpPostRequestUtil.sendPostWithParams(url, loginParams, headMap));
-        JSONObject jsonObj = new JSONObject(responseData);
-        return JSON.parseObject(jsonObj.toString()
+        return JSON.parseObject(responseData
             , TcShopBillingTicketDataResponse.class);
     }
 
