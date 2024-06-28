@@ -127,7 +127,7 @@ public class TcShopBillingO2oTicketQueryAndSaveCmdExe {
                     // 拼接唯一索引key
                     String key = responseEntity.getShopId() + responseEntity.getBsId() +
                         responseEntity.getTicketCode() +
-                        LocalDateTimeUtil.format(responseEntity.getUseTime(), DatePattern.PURE_DATETIME_PATTERN);
+                        LocalDateTimeUtil.format(responseEntity.getUseTime(), DatePattern.PURE_DATETIME_PATTERN) + StringUtils.defaultString(responseEntity.getIsTimes());
 
                     TcShopBillingTicketEntity tcEntity = dbMap.get(key);
                     // 3.1.2 如果数据库中不存在该信息,则新增.
@@ -180,7 +180,7 @@ public class TcShopBillingO2oTicketQueryAndSaveCmdExe {
                 break;
             }
 
-            resultList.addAll(response.getData().getTicketDataList());
+            resultList.addAll(response.getData().getDataList());
 
             if(request.getPageNo() >= response.getData().getPageInfo().getPageTotal()){
                 break;

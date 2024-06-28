@@ -61,7 +61,7 @@ public class TcShopBillingTicketDaoImpl extends BaseServiceImpl<TcShopBillingTic
         }
         // 根据唯一索引转map
         return list.stream()
-            .collect(Collectors.toMap(item -> item.getShopId() + item.getBsId() + item.getTicketCode() + LocalDateTimeUtil.format(item.getUseTime(), DatePattern.PURE_DATETIME_PATTERN),
+            .collect(Collectors.toMap(item -> item.getShopId() + item.getBsId() + item.getTicketCode() + LocalDateTimeUtil.format(item.getUseTime(), DatePattern.PURE_DATETIME_PATTERN) + StringUtils.defaultString(item.getIsTimes()),
                 item -> item));
     }
 
